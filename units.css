@@ -1,0 +1,26 @@
+body{
+    background-color: #f0f0f0;
+    font-family: Arial,sans-serif;
+}
+h1{
+    font-size: 32px;
+    /* color: red;  name */
+    /* color: #3498db; hex */
+    color: rgb(255,0,0);
+    text-align: center;
+}
+h2{
+    color: #2ecc71;
+}
+div{
+    width: 50%;
+    background-color: rgba(0,0,0,0.5);
+}
+/* p{
+    font-size: 2em;  1em=16px, 2em=32px 
+} */
+ p{
+    font-size: 1.5rem;
+    line-height: 1.6;
+    font-weight: bold;
+ }

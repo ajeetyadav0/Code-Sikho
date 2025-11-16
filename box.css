@@ -1,0 +1,15 @@
+.box{
+    width: 300px;
+    height: 150px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 2px dotted red;
+    margin: 40px;
+}
+.eg{
+padding-top: 20px;
+padding-bottom: 10px;
+padding-left: 30px;
+padding-right: 30px;
+}
+padding:10px 20px;

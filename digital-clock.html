@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Clock In Html & Css </title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #2b2d42, #8d99ae);
+            font-family: 'segoe ui', sans-serif;
+        }
+        .clock{
+            display: flex;
+            gap: 15px;
+            background: rgba(0,0,0,0.3);
+            padding:20px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        .digit{
+            width: 60px;
+            height:90px;
+            background: #edf2f4;
+            color: #2b2d42;
+            font-size: 3rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            animation: tick 1s infinite;
+        }
+        @keyframes tick{
+            0%{transform: translateY(0);
+        }
+        50%{transform: translateY(-4px);
+        }
+    }
+    .colon{
+        color:#edf2f4;
+        font-size: 3rem;
+        line-height: 90px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="clock" role="timer" aria-label="Digital clock showing static example time">
+        <div class="digit">1</div>
+        <div class="digit">2</div>
+        <!-- <div class="digit">3</div> -->
+        <div class="digit">:</div>
+        <div class="digit">4</div>
+        <div class="digit">5</div>
+    </div>
+
+
+</body>
+
+</html>

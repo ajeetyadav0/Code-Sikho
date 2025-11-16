@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>India Flag – HTML & CSS (Code Sikho)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        :root {
+            --saffron: #FF9933;
+            --white: #FFFFFF;
+            --green: #138808;
+            --navy: #000080;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100svh;
+            display: grid;
+            place-items: center;
+            background: #f6f7fb;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        }
+
+        .flag {
+            width: min(92vw, 900px);
+            aspect-ratio: 3/2;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .12), 0 12px 40px rgba(0, 0, 0, .08);
+        }
+
+        .band {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 33.333333%;
+        }
+
+        .saffron {
+            top: 0;
+            background: var(--saffron);
+        }
+
+        .white {
+            top: 33.333333%;
+            background: var(--white);
+        }
+
+        .green {
+            top: 66.666666%;
+            background: var(--green);
+        }
+
+        .chakra {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 33.333333%;
+            height: 33.333333%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            box-shadow: inset 0 0 0 calc(1.2% + 2px) var(--navy);
+            background:
+                radial-gradient(circle at center, transparent 68%, var(--navy) 68% 70%, transparent 70%),
+                repeating-conic-gradient(from -3.75deg, var(--navy) 0deg 2deg, transparent 2deg 15deg);
+            -webkit-mask: radial-gradient(circle, #000 69%, transparent 70%);
+            mask: radial-gradient(circle, #000 69%, transparent 70%);
+        }
+
+        .hub {
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            width: 12%;
+            height: 12%;
+            border-radius: 50%;
+            background: var(--navy);
+            box-shadow: 0 0 0 calc(0.5% + 1px) var(--navy);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        figcaption {
+            text-align: center;
+            color: #222;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .flag:where(:hover, :focus-within) {
+            outline: 4px solid rgba(0, 0, 0, .06);
+            outline-offset: 6px;
+        }
+    </style>
+</head>
+
+<body>
+    <figure aria-labelledby="flag-title flag-desc">
+        <div class="flag" role="img" aria-describedby="flag-desc">
+            <span id="flag-title" class="sr-only">Flag of India</span>
+            <span id="flag-desc" class="sr-only">
+                A horizontal tricolour of deep saffron, white, and India green with a navy-blue Ashoka Chakra of 24
+                spokes centered in the white band.
+            </span>
+            <div class="band saffron" aria-hidden="true"></div>
+            <div class="band white" aria-hidden="true"></div>
+            <div class="band green" aria-hidden="true"></div>
+            <div class="chakra" aria-hidden="true">
+                <div class="hub" aria-hidden="true"></div>
+            </div>
+        </div>
+        <figcaption>Happy Independence Day 🇮🇳 — Made with pure HTML & CSS (Code Sikho)</figcaption>
+    </figure>
+</body>
+
+</html>

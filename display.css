@@ -1,0 +1,21 @@
+.block{
+    display: block;
+    background-color: lightblue;
+    margin: 10px;
+    padding: 10px;
+}
+.inline{
+    display: inline;
+    background-color: lightgreen;
+    padding: 5px;
+}
+.inline-block{
+    display: inline-block;
+    background-color:orange ;
+    margin: 5px;
+    padding: 10px;
+    width: 100px;
+}
+.none{
+    display: none;
+}
