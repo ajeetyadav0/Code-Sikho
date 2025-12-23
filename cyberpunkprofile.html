@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberpunk Profile - Neural Interface</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0033 50%, #0a0a0a 100%);
+            font-family: 'Rajdhani', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated background grid */
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 0, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 10s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Scanning lines */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255, 0, 255, 0.03) 2px,
+                rgba(255, 0, 255, 0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 2;
+            animation: scan 8s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(10px); }
+        }
+
+        /* Main container */
+        .main-container {
+            position: relative;
+            width: 450px;
+            height: 600px;
+            z-index: 10;
+            perspective: 1000px;
+        }
+
+        /* Profile card */
+        .profile-card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(20, 20, 40, 0.9), rgba(40, 20, 60, 0.9));
+            border: 2px solid transparent;
+            border-image: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff) 1;
+            border-radius: 20px;
+            box-shadow: 
+                0 0 50px rgba(255, 0, 255, 0.5),
+                inset 0 0 30px rgba(0, 255, 255, 0.2);
+            overflow: hidden;
+            transition: all 0.5s ease;
+            transform-style: preserve-3d;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff, #00ffff);
+            border-radius: 20px;
+            z-index: -1;
+            animation: borderGlow 3s linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Profile header */
+        .profile-header {
+            position: relative;
+            padding: 30px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1));
+            border-bottom: 1px solid rgba(255, 0, 255, 0.3);
+        }
+
+        /* Avatar */
+        .avatar-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 
+                0 0 30px rgba(255, 0, 255, 0.8),
+                inset 0 0 20px rgba(0, 255, 255, 0.5);
+            animation: avatarPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes avatarPulse {
+            0%, 100% { 
+                box-shadow: 
+                    0 0 30px rgba(255, 0, 255, 0.8),
+                    inset 0 0 20px rgba(0, 255, 255, 0.5);
+            }
+            50% { 
+                box-shadow: 
+                    0 0 50px rgba(255, 0, 255, 1),
+                    inset 0 0 30px rgba(0, 255, 255, 0.8);
+            }
+        }
+
+        /* Status indicator */
+        .status-indicator {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            background: #00ff00;
+            border-radius: 50%;
+            border: 3px solid #0a0a0a;
+            box-shadow: 0 0 20px #00ff00;
+            animation: statusBlink 2s ease-in-out infinite;
+        }
+
+        @keyframes statusBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Profile info */
+        .profile-info {
+            padding: 30px;
+        }
+
+        .profile-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(255, 0, 255, 0.8);
+            animation: textGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes textGlow {
+            0%, 100% { text-shadow: 0 0 20px rgba(255, 0, 255, 0.8); }
+            50% { text-shadow: 0 0 30px rgba(0, 255, 255, 1); }
+        }
+
+        .profile-title {
+            color: #00ffff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 0, 255, 0.1);
+            border: 1px solid rgba(255, 0, 255, 0.3);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .stat:hover {
+            background: rgba(255, 0, 255, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 0, 255, 0.3);
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #ff00ff;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        .stat-label {
+            color: #00ffff;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        /* Power button */
+        .power-button {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            box-shadow: 
+                0 0 30px rgba(255, 0, 255, 0.8),
+                inset 0 0 20px rgba(0, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            z-index: 20;
+        }
+
+        .power-button:hover {
+            transform: translateX(-50%) scale(1.1);
+            box-shadow: 
+                0 0 50px rgba(255, 0, 255, 1),
+                inset 0 0 30px rgba(0, 255, 255, 0.8);
+        }
+
+        .power-button:active {
+            transform: translateX(-50%) scale(0.95);
+        }
+
+        .power-button.active {
+            animation: powerPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes powerPulse {
+            0%, 100% { 
+                box-shadow: 
+                    0 0 30px rgba(255, 0, 255, 0.8),
+                    inset 0 0 20px rgba(0, 255, 255, 0.5);
+            }
+            50% { 
+                box-shadow: 
+                    0 0 60px rgba(255, 0, 255, 1),
+                    inset 0 0 40px rgba(0, 255, 255, 0.8);
+            }
+        }
+
+        /* Sliding form */
+        .slide-form {
+            position: absolute;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10, 10, 30, 0.95), rgba(30, 10, 50, 0.95));
+            border-radius: 20px;
+            padding: 40px;
+            transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            overflow-y: auto;
+            z-index: 30;
+        }
+
+        .slide-form.active {
+            right: 0;
+        }
+
+        /* Form header */
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            margin-bottom: 10px;
+        }
+
+        .form-subtitle {
+            color: #ff00ff;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Form groups */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #00ffff;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 0, 255, 0.1);
+            border: 2px solid rgba(255, 0, 255, 0.3);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 16px;
+            font-family: 'Rajdhani', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #00ffff;
+            background: rgba(0, 255, 255, 0.1);
+            box-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.5),
+                inset 0 0 10px rgba(255, 0, 255, 0.2);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Form actions */
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 0, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #ff00ff;
+            border: 2px solid #ff00ff;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 0, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Close button */
+        .close-form {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 0, 255, 0.2);
+            border: 2px solid #ff00ff;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-form:hover {
+            background: rgba(255, 0, 255, 0.4);
+            transform: rotate(90deg);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+        }
+
+        /* Success notification */
+        .notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(255, 0, 255, 0.5);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 100;
+        }
+
+        .notification.show {
+            top: 30px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .main-container {
+                width: 95%;
+                height: auto;
+                min-height: 500px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .slide-form {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background effects -->
+    <div class="cyber-grid"></div>
+    <div class="scanlines"></div>
+
+    <!-- Main container -->
+    <div class="main-container">
+        <!-- Profile card -->
+        <div class="profile-card">
+            <!-- Profile header -->
+            <div class="profile-header">
+                <div class="avatar-container">
+                    <div class="avatar">CY</div>
+                    <div class="status-indicator"></div>
+                </div>
+            </div>
+
+            <!-- Profile info -->
+            <div class="profile-info">
+                <h2 class="profile-name">CYBER_NEXUS</h2>
+                <p class="profile-title">Neural Interface Specialist</p>
+                
+                <!-- Stats -->
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">2.8K</div>
+                        <div class="stat-label">Connections</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">98%</div>
+                        <div class="stat-label">Sync Rate</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">LVL 42</div>
+                        <div class="stat-label">Clearance</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Power button -->
+            <button class="power-button" id="powerBtn">⚡</button>
+
+            <!-- Sliding form -->
+            <div class="slide-form" id="slideForm">
+                <button class="close-form" id="closeForm">✕</button>
+                
+                <div class="form-header">
+                    <h3 class="form-title">Neural Sync</h3>
+                    <p class="form-subtitle">Update your cybernetic profile</p>
+                </div>
+                
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" placeholder="Enter cyber-username" value="CYBER_NEXUS">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Neural Email</label>
+                        <input type="email" id="email" placeholder="neural@cyberspace.net" value="nexus@cyberspace.net">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bio">Bio Matrix</label>
+                        <textarea id="bio" placeholder="Describe your cybernetic enhancements...">Specializing in neural interfaces and cybernetic augmentation. 10+ years in the digital realm.</textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Sync Data</button>
+                        <button type="button" class="btn btn-secondary" id="resetBtn">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">Neural Sync Complete!</div>
+
+    <script>
+        // Get elements
+        const powerBtn = document.getElementById('powerBtn');
+        const slideForm = document.getElementById('slideForm');
+        const closeForm = document.getElementById('closeForm');
+        const profileForm = document.getElementById('profileForm');
+        const resetBtn = document.getElementById('resetBtn');
+        const notification = document.getElementById('notification');
+        const profileName = document.querySelector('.profile-name');
+        const profileTitle = document.querySelector('.profile-title');
+
+        let isFormOpen = false;
+
+        // Show notification
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Power button click
+        powerBtn.addEventListener('click', function() {
+            if (!isFormOpen) {
+                isFormOpen = true;
+                this.classList.add('active');
+                slideForm.classList.add('active');
+                showNotification('Neural Interface Activated');
+                
+                // Add electric effect
+                this.style.animation = 'none';
+                setTimeout(() => {
+                    this.style.animation = '';
+                }, 100);
+            } else {
+                closeFormPanel();
+            }
+        });
+
+        // Close form
+        closeForm.addEventListener('click', closeFormPanel);
+
+        function closeFormPanel() {
+            isFormOpen = false;
+            powerBtn.classList.remove('active');
+            slideForm.classList.remove('active');
+            showNotification('Interface Deactivated');
+        }
+
+        // Form submission
+        profileForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const bio = document.getElementById('bio').value;
+            
+            if (username && email) {
+                // Update profile display
+                profileName.textContent = username.toUpperCase();
+                profileTitle.textContent = email.split('@')[0].replace('.', ' ').replace('_', ' ').toUpperCase();
+                
+                showNotification('Profile Updated Successfully!');
+                
+                // Add success animation
+                const avatar = document.querySelector('.avatar');
+                avatar.style.animation = 'none';
+                setTimeout(() => {
+                    avatar.style.animation = '';
+                }, 100);
+                
+                // Close form after delay
+                setTimeout(() => {
+                    closeFormPanel();
+                }, 2000);
+            }
+        });
+
+        // Reset button
+        resetBtn.addEventListener('click', function() {
+            profileForm.reset();
+            showNotification('Form Reset');
+        });
+
+        // Add hover effects to stats
+        document.querySelectorAll('.stat').forEach(stat => {
+            stat.addEventListener('mouseenter', function() {
+                this.style.background = 'rgba(0, 255, 255, 0.2)';
+                this.style.borderColor = 'rgba(0, 255, 255, 0.5)';
+            });
+            
+            stat.addEventListener('mouseleave', function() {
+                this.style.background = '';
+                this.style.borderColor = '';
+            });
+        });
+
+        // Add keyboard support
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && isFormOpen) {
+                closeFormPanel();
+            }
+            if (e.key === 'Enter' && e.ctrlKey && !isFormOpen) {
+                powerBtn.click();
+            }
+        });
+
+        // Add power button pulse on load
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                powerBtn.classList.add('active');
+                setTimeout(() => {
+                    powerBtn.classList.remove('active');
+                }, 1000);
+            }, 1000);
+        });
+
+        // Add random glitch effect to border
+        setInterval(() => {
+            if (Math.random() > 0.95) {
+                const card = document.querySelector('.profile-card');
+                card.style.filter = 'brightness(1.5) hue-rotate(180deg)';
+                setTimeout(() => {
+                    card.style.filter = '';
+                }, 100);
+            }
+        }, 5000);
+
+        // Add typing effect to form inputs
+        document.querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.animation = 'textGlow 1s ease-in-out infinite';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.animation = '';
+            });
+        });
+    </script>
+</body>
+</html>

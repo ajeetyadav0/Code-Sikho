@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unique Animated Button</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for the power icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    /* --- Global Styles & Variables --- */
+    /* --- Global Styles & Variables --- */
+:root {
+    --bg-color: #0a0a0f;
+    --btn-color: #1a1a2e;
+    --glow-color: #16c79a;
+    --glow-intense: #40ffbe;
+    --text-color: #f0f0f0;
+    --particle-color: #aaffdd;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+}
+
+.container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(45deg, var(--glow-color), var(--glow-intense));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* --- The Power Button --- */
+.power-btn {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    margin-top: 2rem;
+    transition: transform 0.3s ease;
+}
+
+.power-btn:hover {
+    transform: scale(1.05);
+}
+
+/* --- The Outer Ring --- */
+.btn-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 3px solid var(--btn-color);
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--btn-color), transparent 70%);
+    transition: all 0.5s ease;
+}
+
+/* --- The Inner Core --- */
+.btn-core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background: var(--btn-color);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    color: var(--text-color);
+    overflow: hidden; /* Contains the ::before pseudo-element */
+    transition: all 0.5s ease;
+}
+
+.btn-core::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: var(--glow-color);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    transition: all 0.6s ease;
+}
+
+/* --- The Particles --- */
+.particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Allows clicks to go through to the button */
+}
+
+.particle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: var(--particle-color);
+    border-radius: 50%;
+    opacity: 0;
+}
+
+/* --- HOVER STATE --- */
+.power-btn:hover .btn-ring {
+    border-color: var(--glow-color);
+    box-shadow: 0 0 20px var(--glow-color), inset 0 0 20px rgba(22, 199, 154, 0.3);
+}
+
+.power-btn:hover .btn-core {
+    background: var(--btn-color);
+    box-shadow: 0 0 15px var(--glow-color);
+    animation: core-spin 2s linear infinite;
+}
+
+.power-btn:hover .btn-core::before {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0.5;
+}
+
+.power-btn:hover .particle {
+    animation: particle-float 2s ease-out infinite;
+}
+
+/* Stagger the particle animations */
+.power-btn:hover .particle:nth-child(1) { animation-delay: 0s; }
+.power-btn:hover .particle:nth-child(2) { animation-delay: 0.5s; }
+.power-btn:hover .particle:nth-child(3) { animation-delay: 1s; }
+.power-btn:hover .particle:nth-child(4) { animation-delay: 1.5s; }
+
+/* --- ACTIVATION STATE (Triggered by JS) --- */
+.power-btn.activating .btn-core {
+    animation: core-overload 1.5s ease-out forwards;
+}
+
+.power-btn.activating .btn-ring {
+    animation: ring-shockwave 1.5s ease-out forwards;
+}
+
+/* --- FINAL ACTIVE STATE --- */
+.power-btn.active .btn-ring {
+    border-color: var(--glow-intense);
+    background: radial-gradient(circle, var(--glow-color), transparent 70%);
+    box-shadow: 0 0 30px var(--glow-intense), inset 0 0 30px rgba(64, 255, 190, 0.3);
+}
+
+.power-btn.active .btn-core {
+    background: var(--glow-color);
+    box-shadow: 0 0 25px var(--glow-intense);
+    color: var(--bg-color);
+}
+
+.power-btn.active .btn-core i {
+    transform: rotate(180deg);
+    transition: transform 0.5s ease;
+}
+
+/* --- KEYFRAME ANIMATIONS --- */
+@keyframes core-spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes particle-float {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+    100% {
+        /* Distribute particles in a circle */
+        transform: translate(
+            calc(-50% + (cos(var(--i, 1)) * 80px)),
+            calc(-50% + (sin(var(--i, 1)) * 80px))
+        ) scale(1);
+        opacity: 0;
+    }
+}
+
+/* I had to adjust the particle animation to be more realistic */
+@keyframes particle-float {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(
+            calc(-50% + (random() * 160px - 80px)),
+            calc(-50% + (random() * 160px - 80px))
+        ) scale(1);
+        opacity: 0;
+    }
+}
+
+/* A more practical particle float */
+@keyframes particle-float {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(
+            calc(-50% + (var(--x, 1) * 100px)),
+            calc(-50% + (var(--y, 1) * 100px))
+        ) scale(0);
+        opacity: 0;
+    }
+}
+
+/* Set variables for each particle */
+.particle:nth-child(1) { --x: 1; --y: 0; }
+.particle:nth-child(2) { --x: 0; --y: -1; }
+.particle:nth-child(3) { --x: -1; --y: 0; }
+.particle:nth-child(4) { --x: 0; --y: 1; }
+
+
+@keyframes core-overload {
+    0% { transform: translate(-50%, -50%) scale(1); }
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+        box-shadow: 0 0 40px var(--glow-intense);
+    }
+    100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes ring-shockwave {
+    0% { transform: scale(1); opacity: 1; }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+        border-color: var(--glow-intense);
+        box-shadow: 0 0 50px var(--glow-intense);
+    }
+}
+</style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Power Core Interface</h1>
+        <p>Click the button to initiate the sequence.</p>
+
+        <button id="power-btn" class="power-btn">
+            <span class="btn-ring"></span>
+            <span class="btn-core">
+                <i class="fas fa-power-off"></i>
+            </span>
+            <span class="particles">
+                <span class="particle"></span>
+                <span class="particle"></span>
+                <span class="particle"></span>
+                <span class="particle"></span>
+            </span>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const powerBtn = document.getElementById('power-btn');
+
+    powerBtn.addEventListener('click', () => {
+        // If the button is already active, do nothing
+        if (powerBtn.classList.contains('active')) {
+            return;
+        }
+
+        // Add the 'activating' class to trigger the animation
+        powerBtn.classList.add('activating');
+
+        // After the animation duration (1.5s), switch to the final 'active' state
+        setTimeout(() => {
+            powerBtn.classList.remove('activating');
+            powerBtn.classList.add('active');
+        }, 1500); // This duration must match the CSS animation duration
+    });
+});
+    </script>
+</body>
+</html>

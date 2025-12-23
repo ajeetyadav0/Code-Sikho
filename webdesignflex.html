@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Secret to Responsive Web Design with Flexbox</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+<style>
+    /* --- Global Styles & Variables --- */
+:root {
+    --bg-color: #0d1117;
+    --surface-color: #161b22;
+    --border-color: #30363d;
+    --text-primary: #c9d1d9;
+    --text-secondary: #8b949e;
+    --accent-color: #58a6ff;
+    --accent-hover: #79c0ff;
+    --code-bg: #010409;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+/* --- Layout --- */
+.tutorial-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem; /* Flexbox controls the space between sections! */
+}
+
+/* --- Typography --- */
+h1 {
+    font-size: 2.5rem;
+    text-align: center;
+    background: linear-gradient(45deg, var(--accent-color), var(--accent-hover));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    border-left: 4px solid var(--accent-color);
+    padding-left: 0.75rem;
+}
+
+p {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+strong {
+    color: var(--accent-color);
+}
+
+/* --- Header & Footer --- */
+.main-header {
+    text-align: center;
+    padding: 3rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+}
+
+footer {
+    text-align: center;
+    padding: 2rem;
+    margin-top: 3rem;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+/* --- Tutorial Sections --- */
+.tutorial-section {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+}
+
+/* --- Code Blocks --- */
+.code-block {
+    background-color: var(--code-bg);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+}
+
+.code-block code {
+    font-family: 'Source Code Pro', monospace;
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* --- Live Demos --- */
+.demo {
+    border: 2px dashed var(--border-color);
+    border-radius: 6px;
+    padding: 1.5rem;
+    background-color: var(--bg-color);
+}
+
+/* --- Flexbox Demo Styles --- */
+.flex-container {
+    display: flex; /* The foundation for all demos */
+    border: 1px solid var(--accent-color);
+    padding: 0.5rem;
+    min-height: 100px;
+    border-radius: 4px;
+}
+
+.flex-item {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    padding: 1rem;
+    margin: 0.25rem;
+    border-radius: 4px;
+    font-weight: 600;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* --- Individual Demo Overrides --- */
+.demo-2 { flex-direction: column; }
+.demo-3 { flex-wrap: wrap; }
+.demo-4 { justify-content: space-between; align-items: center; }
+.demo-5 .flex-item { flex: 1; } /* The magic! */
+.demo-5 .flex-item:nth-child(2) { flex: 2; } /* This one gets more space */
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+    h1 { font-size: 2rem; }
+    .tutorial-container { gap: 2rem; }
+    .tutorial-section { padding: 1.5rem; }
+    .flex-item { font-size: 0.8rem; padding: 0.75rem; }
+}
+</style>
+</head>
+<body>
+
+    <header class="main-header">
+        <h1>The Secret to Responsive Design</h1>
+        <p class="subtitle">A Practical Guide to Mastering CSS Flexbox</p>
+    </header>
+
+    <main class="tutorial-container">
+        
+        <!-- Section 1: The Foundation -->
+        <section class="tutorial-section">
+            <h2>1. The Foundation: `display: flex;`</h2>
+            <p>This is the switch that turns on Flexbox. It turns a direct parent into a <strong>flex container</strong> and its children into <strong>flex items</strong>. By default, items will try to fit on one line.</p>
+            <div class="code-block">
+                <pre><code>.container {
+  display: flex;
+}</code></pre>
+            </div>
+            <div class="demo">
+                <div class="flex-container demo-1">
+                    <div class="flex-item">Item 1</div>
+                    <div class="flex-item">Item 2</div>
+                    <div class="flex-item">Item 3</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: The Main Axis -->
+        <section class="tutorial-section">
+            <h2>2. The Main Axis: `flex-direction`</h2>
+            <p>Flexbox is one-dimensional. It works along a main axis (horizontal by default). You can easily switch it to a vertical column.</p>
+            <div class="code-block">
+                <pre><code>.container {
+  display: flex;
+  flex-direction: column; /* or row (default) */
+}</code></pre>
+            </div>
+            <div class="demo">
+                <div class="flex-container demo-2">
+                    <div class="flex-item">Item 1</div>
+                    <div class="flex-item">Item 2</div>
+                    <div class="flex-item">Item 3</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section 3: The Secret Sauce: Wrapping -->
+        <section class="tutorial-section">
+            <h2>3. The Secret Sauce: `flex-wrap`</h2>
+            <p>This is a key to responsiveness! By default, items try to squish onto one line. With <strong>`flex-wrap: wrap`</strong>, items can flow onto the next line when they run out of space.</p>
+            <div class="code-block">
+                <pre><code>.container {
+  display: flex;
+  flex-wrap: wrap; /* or nowrap (default) */
+}</code></pre>
+            </div>
+            <div class="demo">
+                <div class="flex-container demo-3">
+                    <div class="flex-item">Item 1</div>
+                    <div class="flex-item">Item 2</div>
+                    <div class="flex-item">Item 3</div>
+                    <div class="flex-item">Item 4</div>
+                    <div class="flex-item">Item 5</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Alignment & Spacing -->
+        <section class="tutorial-section">
+            <h2>4. Alignment & Spacing</h2>
+            <p>Easily control the distribution and alignment of items. <strong>`justify-content`</strong> works on the main axis, while <strong>`align-items`</strong> works on the cross axis.</p>
+            <div class="code-block">
+                <pre><code>.container {
+  display: flex;
+  justify-content: space-between; /* center, flex-end, space-around... */
+  align-items: center; /* stretch, flex-start, flex-end... */
+}</code></pre>
+            </div>
+            <div class="demo">
+                <div class="flex-container demo-4">
+                    <div class="flex-item">Item 1</div>
+                    <div class="flex-item">Item 2</div>
+                    <div class="flex-item">Item 3</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: The Ultimate Secret: The `flex` Property -->
+        <section class="tutorial-section">
+            <h2>5. The Ultimate Secret: The `flex` Property</h2>
+            <p>This is a shorthand for <strong>`flex-grow`, `flex-shrink`,` and `flex-basis`</strong>. It tells items how to behave in a flexible container. <strong>`flex: 1`</strong> is a magic value that tells an item to grow and fill any available space.</p>
+            <div class="code-block">
+                <pre><code>.item {
+  flex: 1; /* Shorthand for: 1 1 0% */
+  /* flex-grow: 1;   (can grow) */
+  /* flex-shrink: 1; (can shrink) */
+  /* flex-basis: 0%; (start with no size) */
+}</code></pre>
+            </div>
+            <div class="demo">
+                <div class="flex-container demo-5">
+                    <div class="flex-item">Item 1 (flex: 1)</div>
+                    <div class="flex-item" style="flex: 2;">Item 2 (flex: 2)</div>
+                    <div class="flex-item">Item 3 (flex: 1)</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Made with Flexbox & ❤️</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+    const demo3Container = document.querySelector('.demo-3');
+    const demo3CodeBlock = document.querySelector('.demo-3').parentElement.previousElementSibling.querySelector('code');
+
+    // Create a toggle button
+    const toggleButton = document.createElement('button');
+    toggleButton.textContent = 'Toggle `flex-wrap`';
+    toggleButton.style.marginTop = '1rem';
+    toggleButton.style.padding = '0.5rem 1rem';
+    toggleButton.style.border = `1px solid var(--accent-color)`;
+    toggleButton.style.background = 'transparent';
+    toggleButton.style.color = 'var(--accent-color)';
+    toggleButton.style.borderRadius = '4px';
+    toggleButton.style.cursor = 'pointer';
+    toggleButton.style.fontFamily = 'Poppins, sans-serif';
+    toggleButton.style.fontWeight = '600';
+
+    // Insert the button after the demo box
+    demo3Container.parentElement.appendChild(toggleButton);
+
+    // Add click event listener
+    toggleButton.addEventListener('click', () => {
+        const currentWrap = window.getComputedStyle(demo3Container).flexWrap;
+
+        if (currentWrap === 'wrap') {
+            demo3Container.style.flexWrap = 'nowrap';
+            demo3CodeBlock.textContent = `.container {\n  display: flex;\n  flex-wrap: nowrap; /* Changed! */\n}`;
+        } else {
+            demo3Container.style.flexWrap = 'wrap';
+            demo3CodeBlock.textContent = `.container {\n  display: flex;\n  flex-wrap: wrap; /* Changed! */\n}`;
+        }
+    });
+
+});
+    </script>
+</body>
+</html>

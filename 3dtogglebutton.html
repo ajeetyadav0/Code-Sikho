@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Develop a Unique 3D Toggle Button with HTML & CSS.</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for a futuristic look -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+<style>
+    /* --- Global Styles --- */
+:root {
+    --bg-color: #1a1a2e;
+    --button-size: 80px;
+    --button-bg-off: #2d2d44;
+    --button-bg-on: #00d9ff;
+    --glow-color: #00a8cc;
+    --lever-color: #f4f4f4;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Orbitron', sans-serif;
+}
+
+/* --- Hide the actual checkbox input --- */
+.toggle-input {
+    display: none;
+}
+
+/* --- The Clickable Label --- */
+.toggle-label {
+    cursor: pointer;
+    /* This perspective is crucial for the 3D effect */
+    perspective: 1000px; 
+}
+
+/* --- The Main Button Element --- */
+.toggle-button {
+    width: var(--button-size);
+    height: var(--button-size);
+    background-color: var(--button-bg-off);
+    border-radius: 50%;
+    position: relative;
+    /* The magic for the "raised" 3D effect */
+    box-shadow: 
+        0 8px 10px rgba(0, 0, 0, 0.4),  /* Main shadow */
+        inset 0 -5px 8px rgba(0, 0, 0, 0.3); /* Inner shadow for depth */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* --- The Inner Lever --- */
+.toggle-lever {
+    width: 30px;
+    height: 30px;
+    background-color: var(--lever-color);
+    border-radius: 50%;
+    position: absolute;
+    left: 15px; /* Start position (off) */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* --- The "ON" State --- */
+/* When the hidden checkbox is checked, style the following elements */
+.toggle-input:checked + .toggle-label .toggle-button {
+    background-color: var(--button-bg-on);
+    /* The magic for the "pressed" 3D effect */
+    box-shadow: 
+        0 2px 5px rgba(0, 0, 0, 0.4),  /* Smaller shadow, looks closer to surface */
+        inset 0 3px 5px rgba(0, 0, 0, 0.3), /* Inner shadow flips */
+        0 0 25px var(--glow-color); /* The glow effect! */
+    /* Physically move the button down */
+    transform: translateY(4px);
+}
+
+.toggle-input:checked + .toggle-label .toggle-lever {
+    /* Move the lever to the right (on) */
+    left: calc(100% - 45px); /* 80px - 15px - 30px */
+    box-shadow: 0 0 10px var(--glow-color);
+}
+
+/* --- Hover Effects --- */
+.toggle-label:hover .toggle-button {
+    transform: scale(1.05);
+}
+
+/* Prevent the button from scaling down when pressed if it's also hovered */
+.toggle-input:checked + .toggle-label:hover .toggle-button {
+    transform: translateY(4px) scale(1.05);
+}
+</style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- The core input is hidden, but it's essential for functionality -->
+        <input type="checkbox" id="toggle" class="toggle-input">
+        
+        <!-- The label is what we see and click -->
+        <label for="toggle" class="toggle-label">
+            <div class="toggle-button">
+                <span class="toggle-lever"></span>
+            </div>
+        </label>
+    </div>
+
+</body>
+</html>

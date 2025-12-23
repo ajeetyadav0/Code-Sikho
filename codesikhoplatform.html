@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Sikho - Learn Coding from Scratch</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--light);
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+
+        .logo i {
+            -webkit-text-fill-color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .subscribe-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .subscribe-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-text h1 {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 1rem;
+            animation: slideInLeft 0.8s ease;
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            animation: slideInLeft 1s ease;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            animation: slideInLeft 1.2s ease;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--primary);
+        }
+
+        .hero-visual {
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .video-preview {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .play-button:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            background: white;
+        }
+
+        .play-button i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-left: 5px;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--dark);
+            margin-top: 0.5rem;
+        }
+
+        /* Courses Section */
+        .courses {
+            padding: 4rem 2rem;
+            background: var(--light);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .course-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .course-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+        }
+
+        .course-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .course-content {
+            padding: 1.5rem;
+        }
+
+        .course-category {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: var(--gradient);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-title {
+            font-size: 1.2rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Community Section */
+        .community {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .community-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .community h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .community p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-link {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Animations */
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-text h1 {
+                font-size: 2rem;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .course-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-circle {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Loading spinner for video details */
+        .video-loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 180px;
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loader -->
+    <div class="loader" id="loader">
+        <div class="loader-circle"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-code"></i>
+                Code Sikho
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#courses">Courses</a></li>
+                <li><a href="#tutorials">Tutorials</a></li>
+                <li><a href="#community">Community</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+            <a href="https://www.youtube.com/@codesikho01" target="_blank" class="subscribe-btn">
+                <i class="fab fa-youtube"></i> Subscribe
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Learn Coding, Build Your Future</h1>
+                <p>Master programming with our comprehensive tutorials, from beginner to advanced. Join thousands of learners transforming their careers.</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary" onclick="scrollToSection('courses')">
+                        <i class="fas fa-play-circle"></i> Start Learning
+                    </button>
+                    <button class="btn-secondary" onclick="scrollToSection('community')">
+                        <i class="fas fa-users"></i> Join Community
+                    </button>
+                </div>
+            </div>
+            <div class="hero-visual">
+    <img src="https://picsum.photos/seed/coding123/500/300.jpg" 
+         alt="Coding Tutorial" 
+         class="video-preview">
+
+    <div class="play-button" onclick="playVideo()">
+        <i class="fas fa-play"></i>
+    </div>
+
+    <!-- Hidden video iframe (shown on play) -->
+    <iframe id="tutorialVideo"
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/W_MaKBk0VeE?si=ccjLRrCoAqKLk0Gz"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+            style="display:none;">
+    </iframe>
+</div>
+
+
+
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number" data-target="59">0</div>
+                <div class="stat-label">Subscribers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" data-target="70">0</div>
+                <div class="stat-label">Video Tutorials</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" data-target="2">0</div>
+                <div class="stat-label">Complete Courses</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" data-target="98">0</div>
+                <div class="stat-label">Success Rate %</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section class="courses" id="courses">
+        <div class="section-header">
+            <h2>Popular Courses</h2>
+            <p>Choose from our wide range of programming courses</p>
+        </div>
+        <div class="course-grid" id="courseGrid">
+            <!-- Course cards will be dynamically loaded here -->
+        </div>
+    </section>
+
+    <!-- Community Section -->
+    <section class="community" id="community">
+        <div class="community-content">
+            <h2>Join Our Growing Community</h2>
+            <p>Connect with fellow developers, share your projects, and get help 24/7</p>
+            <div class="social-links">
+                <a href="https://www.youtube.com/@codesikho01" target="_blank" class="social-link">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="#" class="social-link" onclick="openSocial('discord')">
+                    <i class="fab fa-discord"></i>
+                </a>
+                <a href="#" class="social-link" onclick="openSocial('github')">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="#" class="social-link" onclick="openSocial('telegram')">
+                    <i class="fab fa-telegram"></i>
+                </a>
+                <a href="#" class="social-link" onclick="openSocial('twitter')">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </div>
+            <button class="btn-primary" style="background: white; color: var(--primary);" onclick="joinCommunity()">
+                <i class="fas fa-user-plus"></i> Join Now
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="https://infinigrowthmedia.in/" target="_blank">Our Website</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Contact Us</a>
+        </div>
+        <p>&copy; 2024 Code Sikho. All rights reserved. | Made with <i class="fas fa-heart" style="color: var(--accent);"></i> for developers</p>
+    </footer>
+
+    <script>
+        // YouTube video data
+        const youtubeVideos = [
+            { id: '7aERE3qxfqk', category: 'HTML', title: 'HTML Basics Hindi', videos: 1, hours: 5 },
+            { id: 'StFmGZvbWcg', category: 'HTML', title: 'Anchor Secret Tags', videos: 1, hours: 15 },
+            { id: 'D9IcRgEsGUI', category: 'CSS', title: 'CSS Floats', videos: 1, hours: 10 },
+            { id: 'IVTa24FM2Sk', category: 'CSS', title: 'Correct Display Code Avoid These Mistkes', videos: 1, hours: 20 },
+            { id: '0WzcnpQg6A8', category: 'CSS', title: 'Master CSS Boxes', videos: 1, hours: 14 },
+            { id: 'm2II1WwEb40', category: 'CSS', title: 'Fix CSS now', videos: 1, hours: 11 }
+        ];
+
+        // Function to extract video ID from YouTube URL
+        function extractVideoId(url) {
+            const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[7].length === 11) ? match[7] : null;
+        }
+
+        // Function to fetch YouTube video details
+        async function fetchVideoDetails(videoId) {
+            try {
+                // Note: In a production environment, you would use the YouTube Data API
+                // For this example, we'll simulate the API response
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        // Simulated data - in real use, fetch from YouTube API
+                        resolve({
+                            title: "Sample Video Title",
+                            duration: "12:34"
+                        });
+                    }, 1000);
+                });
+            } catch (error) {
+                console.error('Error fetching video details:', error);
+                return null;
+            }
+        }
+        // Function to create course cards
+        async function createCourseCards() {
+            const courseGrid = document.getElementById('courseGrid');
+
+            for (const video of youtubeVideos) {
+                const videoDetails = await fetchVideoDetails(video.id);
+
+                const courseCard = document.createElement('div');
+                courseCard.className = 'course-card';
+
+                courseCard.innerHTML = `
+                    <div class="video-container">
+                        <img src="https://img.youtube.com/vi/${video.id}/maxresdefault.jpg" alt="${video.title}" class="course-thumbnail">
+                        <div class="video-duration">${videoDetails ? videoDetails.duration : '<div class="spinner"></div>'}</div>
+                    </div>
+                    <div class="course-content">
+                        <div class="course-category">${video.category}</div>
+                        <div class="course-title">${video.title}</div>
+                        <div class="course-meta">
+                            <span>${video.videos} Videos</span>
+                            <span>${video.hours} Hours</span>
+                        </div>
+                    </div>
+                `;
+
+                courseGrid.appendChild(courseCard);
+            }
+        }
+        // Scroll to section
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+        }
+        // Play video function (placeholder)
+        function playVideo() {
+            alert('Play video functionality to be implemented.');
+        }
+        // Open social links (placeholder)
+        function openSocial(platform) {
+            alert(`Open ${platform} link functionality to be implemented.`);
+        }
+        // Join community function (placeholder)
+        function joinCommunity() {
+            alert('Join community functionality to be implemented.');
+        }
+        // Animate stats numbers
+        function animateStats() {
+            const stats = document.querySelectorAll('.stat-number');
+            stats.forEach(stat => {
+                const target = +stat.getAttribute('data-target');
+                let count = 0;
+                const increment = target / 200;
+
+                const updateCount = () => {
+                    count += increment;
+                    if (count < target) {
+                        stat.innerText = Math.ceil(count);
+                        requestAnimationFrame(updateCount);
+                    } else {
+                        stat.innerText = target;
+                    }
+                };
+                updateCount();
+            });
+        }
+        // Loader functionality
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            loader.classList.add('hidden');
+            createCourseCards();
+            animateStats();
+        });
+    </script>
+    <script>
+function playVideo() {
+    document.querySelector('.video-preview').style.display = 'none';
+    document.querySelector('.play-button').style.display = 'none';
+    document.getElementById('tutorialVideo').style.display = 'block';
+}
+</script>
+</body>
+</html>

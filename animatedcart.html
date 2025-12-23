@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animation Cart Demo</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    /* --- Global Styles & Variables --- */
+:root {
+    --bg-color: #0f0f1e;
+    --surface-color: #1a1a2e;
+    --text-primary: #ffffff;
+    --text-secondary: #b4b4b4;
+    --accent-color: #4caf50;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --card-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+/* --- Header & Cart Icon --- */
+.main-header {
+    background: var(--surface-color);
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--card-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.main-header nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+.cart-icon {
+    position: relative;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    transition: transform 0.2s ease;
+}
+
+.cart-count {
+    position: absolute;
+    top: -10px;
+    right: -15px;
+    background: var(--accent-color);
+    color: var(--text-primary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 50%;
+    min-width: 20px;
+    text-align: center;
+}
+
+/* --- Main Content & Product Card --- */
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 70px);
+    padding: 2rem;
+}
+
+.product-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    overflow: hidden;
+    width: 100%;
+    max-width: 350px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.product-image-container {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.1);
+}
+
+.product-info {
+    padding: 1.5rem;
+}
+
+.product-info h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.product-price {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+}
+
+.product-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.add-to-cart-btn {
+    width: 100%;
+    padding: 0.8rem;
+    background: var(--accent-color);
+    color: var(--text-primary);
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.add-to-cart-btn:hover {
+    background: #45a049;
+}
+
+/* --- The Flying Item Animation --- */
+.flying-item {
+    position: fixed;
+    z-index: 1000;
+    pointer-events: none;
+    animation: fly-to-cart 1s ease-out forwards;
+}
+
+@keyframes fly-to-cart {
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+    100% {
+        /* These final coordinates will be set by JavaScript */
+        transform: scale(0.5) rotate(360deg);
+    }
+}
+
+/* --- The Cart Wiggle Animation --- */
+@keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+}
+
+.cart-icon.wiggle {
+    animation: wiggle 0.5s ease-in-out;
+}
+</style>
+</head>
+<body>
+
+    <header class="main-header">
+        <nav>
+            <div class="logo">PlantShop</div>
+            <div class="cart-icon" id="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count" id="cart-count">0</span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Monstera Plant" class="product-image">
+            </div>
+            <div class="product-info">
+                <h2>Monstera Deliciosa</h2>
+                <p class="product-price">$45.00</p>
+                <p class="product-description">A beautiful, low-maintenance plant perfect for any home.</p>
+                <button class="add-to-cart-btn" id="add-to-cart-btn">Add to Cart</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+         document.addEventListener('DOMContentLoaded', () => {
+    const addToCartBtn = document.getElementById('add-to-cart-btn');
+    const cartIcon = document.getElementById('cart-icon');
+    const cartCount = document.getElementById('cart-count');
+    const productImage = document.querySelector('.product-image');
+
+    let itemCount = 0;
+
+    addToCartBtn.addEventListener('click', (e) => {
+        // 1. Create a clone of the product image
+        const flyingItem = productImage.cloneNode(true);
+        flyingItem.classList.add('flying-item');
+
+        // 2. Get positions
+        const productRect = productImage.getBoundingClientRect();
+        const cartRect = cartIcon.getBoundingClientRect();
+
+        // 3. Set initial position and styles for the clone
+        flyingItem.style.left = `${productRect.left}px`;
+        flyingItem.style.top = `${productRect.top}px`;
+        flyingItem.style.width = `${productRect.width}px`;
+        flyingItem.style.height = `${productRect.height}px`;
+
+        // 4. Append the clone to the body
+        document.body.appendChild(flyingItem);
+
+        // 5. Trigger the animation
+        // We use a tiny timeout to ensure the browser renders the clone at its starting position
+        setTimeout(() => {
+            const animation = flyingItem.animate([
+                // Keyframes
+                { 
+                    transform: `translate(0, 0) scale(1)`,
+                },
+                { 
+                    transform: `translate(${cartRect.left - productRect.left}px, ${cartRect.top - productRect.top}px) scale(0.2)`,
+                }
+            ], {
+                // Timing options
+                duration: 800,
+                easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+            });
+
+            animation.onfinish = () => {
+                // 6. Clean up and update cart
+                flyingItem.remove();
+                updateCart();
+            };
+        }, 10); // 10ms delay
+    });
+
+    function updateCart() {
+        // Increment item count
+        itemCount++;
+        cartCount.textContent = itemCount;
+
+        // Add wiggle class to cart icon
+        cartIcon.classList.add('wiggle');
+        
+        // Remove wiggle class after animation finishes
+        setTimeout(() => {
+            cartIcon.classList.remove('wiggle');
+        }, 500);
+    }
+});
+    </script>
+</body>
+</html>

@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robot Assistant - Chat Interface</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Quicksand', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background particles */
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: floatUp 15s infinite linear;
+        }
+
+        @keyframes floatUp {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Robot container */
+        .robot-container {
+            position: relative;
+            width: 200px;
+            height: 250px;
+            margin-right: 50px;
+            margin-bottom: 30px;
+            z-index: 10;
+        }
+
+        /* Robot body */
+        .robot {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .robot:hover {
+            transform: scale(1.1);
+        }
+
+        /* Robot head */
+        .robot-head {
+            position: absolute;
+            width: 120px;
+            height: 100px;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            border-radius: 60px 60px 30px 30px;
+            box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
+        }
+
+        /* Robot eyes */
+        .eyes {
+            position: absolute;
+            top: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .eye {
+            width: 25px;
+            height: 25px;
+            background: white;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .eye::before {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #333;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+
+        .robot.blink .eye::before {
+            height: 2px;
+            border-radius: 2px;
+        }
+
+        /* Robot mouth */
+        .mouth {
+            position: absolute;
+            width: 40px;
+            height: 20px;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            border-radius: 0 0 20px 20px;
+            overflow: hidden;
+        }
+
+        .mouth::before {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 10px;
+            background: #ff6b6b;
+            border-radius: 5px;
+            top: 5px;
+            left: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .robot.happy .mouth::before {
+            height: 15px;
+            background: #4ade80;
+            border-radius: 10px;
+        }
+
+        /* Robot body */
+        .robot-body {
+            position: absolute;
+            width: 140px;
+            height: 120px;
+            top: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3);
+        }
+
+        /* Robot arms */
+        .arms {
+            position: absolute;
+            top: 130px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .arm {
+            width: 20px;
+            height: 60px;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .arm.left {
+            left: 10px;
+            transform: rotate(-10deg);
+        }
+
+        .arm.right {
+            right: 10px;
+            transform: rotate(10deg);
+        }
+
+        /* Robot antenna */
+        .antenna {
+            position: absolute;
+            width: 4px;
+            height: 30px;
+            background: #4facfe;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .antenna::before {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            top: -6px;
+            left: -4px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 0 10px rgba(255, 107, 107, 0);
+                transform: scale(1.1);
+            }
+        }
+
+        /* Chat bubble */
+        .chat-bubble {
+            position: absolute;
+            bottom: 280px;
+            right: 0;
+            width: 320px;
+            background: white;
+            border-radius: 20px 20px 0 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.8) translateY(20px);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 20;
+        }
+
+        .chat-bubble.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) translateY(0);
+        }
+
+        /* Bubble tail */
+        .bubble-tail {
+            position: absolute;
+            bottom: -20px;
+            right: 30px;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 20px solid white;
+            transform: rotate(45deg);
+        }
+
+        /* Chat content */
+        .chat-content {
+            padding: 20px;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .bot-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #4facfe;
+            margin-right: 10px;
+        }
+
+        .bot-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            color: #4ade80;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: statusPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Quick replies */
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .quick-reply {
+            padding: 8px 15px;
+            background: rgba(79, 172, 254, 0.1);
+            border: 1px solid rgba(79, 172, 254, 0.2);
+            border-radius: 20px;
+            font-size: 14px;
+            color: #4facfe;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-reply:hover {
+            background: rgba(79, 172, 254, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Chat input */
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 14px;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .send-btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(79, 172, 254, 0.4);
+        }
+
+        .send-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Close button */
+        .close-chat {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .close-chat:hover {
+            background: rgba(0, 0, 0, 0.2);
+            transform: rotate(90deg);
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .typing-indicator.active {
+            display: flex;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #4facfe;
+            border-radius: 50%;
+            animation: typingBounce 1.4s ease-in-out infinite;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        /* Success message */
+        .success-message {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 100;
+        }
+
+        .success-message.show {
+            top: 30px;
+        }
+
+        .success-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .success-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .robot-container {
+                width: 150px;
+                height: 200px;
+                margin-right: 20px;
+                margin-bottom: 20px;
+            }
+
+            .robot-head {
+                width: 90px;
+                height: 80px;
+                border-radius: 45px 45px 20px 20px;
+            }
+
+            .robot-body {
+                width: 110px;
+                height: 90px;
+                border-radius: 20px;
+            }
+
+            .chat-bubble {
+                width: 280px;
+                right: -10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .robot-container {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                margin: 0;
+            }
+
+            .chat-bubble {
+                width: calc(100% - 40px);
+                right: 20px;
+                bottom: 280px;
+                top: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Robot Assistant -->
+    <div class="robot-container">
+        <div class="robot" id="robot">
+            <!-- Antenna -->
+            <div class="antenna"></div>
+            
+            <!-- Head -->
+            <div class="robot-head">
+                <div class="eyes">
+                    <div class="eye"></div>
+                    <div class="eye"></div>
+                </div>
+                <div class="mouth"></div>
+            </div>
+            
+            <!-- Body -->
+            <div class="robot-body"></div>
+            
+            <!-- Arms -->
+            <div class="arms">
+                <div class="arm left"></div>
+                <div class="arm right"></div>
+            </div>
+        </div>
+
+        <!-- Chat Bubble -->
+        <div class="chat-bubble" id="chatBubble">
+            <div class="bubble-tail"></div>
+            <button class="close-chat" id="closeChat">✕</button>
+            
+            <div class="chat-content">
+                <div class="chat-header">
+                    <span class="bot-name">Bot Assistant</span>
+                    <div class="bot-status">
+                        <div class="status-dot"></div>
+                        <span>Online</span>
+                    </div>
+                </div>
+                
+                <!-- Quick Replies -->
+                <div class="quick-replies">
+                    <div class="quick-reply" data-message="Hello! How can I help you today?">👋 Hello!</div>
+                    <div class="quick-reply" data-message="Tell me about your services">ℹ️ Services</div>
+                    <div class="quick-reply" data-message="I need help with coding">💻 Coding Help</div>
+                    <div class="quick-reply" data-message="What can you do?">🤔 Capabilities</div>
+                </div>
+                
+                <!-- Typing Indicator -->
+                <div class="typing-indicator" id="typingIndicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+                
+                <!-- Chat Input -->
+                <div class="chat-input">
+                    <input type="text" class="input-field" id="messageInput" placeholder="Type your message...">
+                    <button class="send-btn" id="sendBtn">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div class="success-message" id="successMessage">
+        <div class="success-icon">✓</div>
+        <span class="success-text">Message sent successfully!</span>
+    </div>
+
+    <script>
+        // Generate particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Get elements
+        const robot = document.getElementById('robot');
+        const chatBubble = document.getElementById('chatBubble');
+        const closeChat = document.getElementById('closeChat');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const quickReplies = document.querySelectorAll('.quick-reply');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const successMessage = document.getElementById('successMessage');
+        const successText = document.querySelector('.success-text');
+
+        let isChatOpen = false;
+
+        // Show success message
+        function showSuccess(message) {
+            successText.textContent = message;
+            successMessage.classList.add('show');
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 3000);
+        }
+
+        // Toggle chat
+        function toggleChat() {
+            isChatOpen = !isChatOpen;
+            
+            if (isChatOpen) {
+                chatBubble.classList.add('active');
+                robot.classList.add('happy');
+                showSuccess('Chat opened! I\'m here to help.');
+            } else {
+                chatBubble.classList.remove('active');
+                robot.classList.remove('happy');
+            }
+        }
+
+        // Robot click
+        robot.addEventListener('click', toggleChat);
+        closeChat.addEventListener('click', toggleChat);
+
+        // Random blinking
+        function blink() {
+            robot.classList.add('blink');
+            setTimeout(() => {
+                robot.classList.remove('blink');
+            }, 200);
+        }
+
+        setInterval(blink, 4000);
+
+        // Quick reply clicks
+        quickReplies.forEach(reply => {
+            reply.addEventListener('click', function() {
+                const message = this.dataset.message;
+                messageInput.value = message;
+                sendMessage();
+            });
+        });
+
+        // Send message
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            
+            if (message) {
+                // Show typing indicator
+                typingIndicator.classList.add('active');
+                
+                // Simulate bot response
+                setTimeout(() => {
+                    typingIndicator.classList.remove('active');
+                    showSuccess(`Bot received: "${message}"`);
+                    messageInput.value = '';
+                }, 1500);
+            }
+        }
+
+        // Send button click
+        sendBtn.addEventListener('click', sendMessage);
+
+        // Enter key to send
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Add hover effects
+        robot.addEventListener('mouseenter', function() {
+            if (!isChatOpen) {
+                this.style.transform = 'scale(1.05) rotate(5deg)';
+            }
+        });
+
+        robot.addEventListener('mouseleave', function() {
+            if (!isChatOpen) {
+                this.style.transform = '';
+            }
+        });
+
+        // Add floating animation enhancement
+        robot.addEventListener('click', function() {
+            this.style.animation = 'none';
+            setTimeout(() => {
+                this.style.animation = 'bounce 0.5s ease';
+                setTimeout(() => {
+                    this.style.animation = '';
+                }, 500);
+            }, 100);
+        });
+
+        // Add bounce animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes bounce {
+                0%, 100% { transform: translateY(0); }
+                25% { transform: translateY(-10px); }
+                75% { transform: translateY(-5px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Keyboard support
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && isChatOpen) {
+                toggleChat();
+            }
+            if (e.key === 'c' && e.ctrlKey && !isChatOpen) {
+                e.preventDefault();
+                toggleChat();
+            }
+        });
+
+        // Add entrance animation
+        window.addEventListener('load', function() {
+            robot.style.animation = 'robotEntrance 1s ease-out';
+        });
+
+        // Add entrance animation
+        const entranceStyle = document.createElement('style');
+        entranceStyle.textContent = `
+            @keyframes robotEntrance {
+                from {
+                    transform: translateY(50px) scale(0.8);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0) scale(1);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(entranceStyle);
+    </script>
+</body>
+</html>

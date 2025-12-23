@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Day Love Letter Creator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Lovers+Quarrel&family=Pacifico&family=Satisfy&display=swap" rel="stylesheet">
+    <style>        
+/* --- General Setup & Layout --- */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+    background-color: #ffe4e1;
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+    position: relative;
+}
+
+/* --- Toolbar --- */
+.toolbar {
+    width: 300px;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    overflow-y: auto;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.toolbar h2 {
+    text-align: center;
+    color: #d63384;
+    margin-top: 0;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.control-group label {
+    font-weight: bold;
+    color: #555;
+}
+
+#message-text {
+    width: 100%;
+    height: 150px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    resize: vertical;
+    background: transparent;
+}
+
+select, input[type="color"] {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+/* --- Sticker Palette --- */
+.sticker-palette {
+    display: flex;
+    flex-direction: column;
+}
+
+.sticker-palette label {
+    margin-bottom: 10px;
+}
+
+.sticker-palette .sticker {
+    display: inline-block;
+    font-size: 2rem;
+    margin: 5px;
+    cursor: grab;
+    padding: 5px;
+    border-radius: 5px;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.sticker-palette .sticker:hover {
+    transform: scale(1.2);
+    background-color: #f0f0f0;
+}
+
+.sticker-palette .sticker:active {
+    cursor: grabbing;
+}
+
+/* --- Actions --- */
+.actions {
+    margin-top: auto;
+    display: flex;
+    gap: 10px;
+}
+
+.actions button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: #d63384;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.actions button:hover {
+    background-color: #b02a5a;
+}
+
+/* --- Canvas Area --- */
+.canvas-area {
+    flex-grow: 1;
+    position: relative;
+    background-color: #fff0f5; /* Default background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.5s;
+}
+
+.letter-content {
+    width: 80%;
+    height: 80%;
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    padding: 40px;
+    font-size: 2rem;
+    color: #d63384;
+    overflow: hidden;
+    font-family: 'Dancing Script', cursive; /* Default font */
+    transition: color 0.5s, font-family 0.5s;
+}
+
+#message-text {
+    font-family: inherit; /* Inherit font from letter-content */
+    color: inherit; /* Inherit color from letter-content */
+}
+
+/* --- Dropped Stickers --- */
+.dropped-sticker {
+    position: absolute;
+    font-size: 2.5rem;
+    cursor: move;
+    user-select: none; /* Prevents text selection while dragging */
+}
+
+/* --- Background Hearts Animation --- */
+.hearts-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.bg-heart {
+    position: absolute;
+    color: rgba(255, 182, 193, 0.4); /* Light pink */
+    font-size: 1.5rem;
+    animation: float-up 10s linear infinite;
+}
+
+@keyframes float-up {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Animated Background Hearts -->
+        <div class="hearts-bg" aria-hidden="true"></div>
+
+        <!-- Toolbar -->
+        <aside class="toolbar">
+            <h2>Create Your Letter</h2>
+            
+            <div class="control-group">
+                <label for="message-text">Your Message:</label>
+                <textarea id="message-text" placeholder="Write from the heart..."></textarea>
+            </div>
+
+            <div class="control-group">
+                <label for="font-select">Font:</label>
+                <select id="font-select">
+                    <option value="'Dancing Script', cursive">Dancing Script</option>
+                    <option value="'Lovers Quarrel', cursive">Lovers Quarrel</option>
+                    <option value="'Pacifico', cursive">Pacifico</option>
+                    <option value="'Satisfy', cursive">Satisfy</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="text-color">Text Color:</label>
+                <input type="color" id="text-color" value="#d63384">
+            </div>
+
+            <div class="control-group">
+                <label for="bg-color">Background:</label>
+                <input type="color" id="bg-color" value="#fff0f5">
+            </div>
+
+            <div class="control-group sticker-palette">
+                <label>Drag Stickers:</label>
+                <div class="sticker" draggable="true" data-sticker="❤️">❤️</div>
+                <div class="sticker" draggable="true" data-sticker="💕">💕</div>
+                <div class="sticker" draggable="true" data-sticker="💖">💖</div>
+                <div class="sticker" draggable="true" data-sticker="💗">💗</div>
+                <div class="sticker" draggable="true" data-sticker="💝">💝</div>
+                <div class="sticker" draggable="true" data-sticker="💌">💌</div>
+            </div>
+
+            <div class="control-group actions">
+                <button id="clear-btn">Clear All</button>
+                <button id="download-btn">Download (Simulated)</button>
+            </div>
+        </aside>
+
+        <!-- Main Canvas Area -->
+        <main class="canvas-area" id="canvas">
+            <div class="letter-content" id="letter-content">
+                <!-- Stickers will be dropped here -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+    // --- 1. DOM Element References ---
+    const canvas = document.getElementById('canvas');
+    const letterContent = document.getElementById('letter-content');
+    const messageText = document.getElementById('message-text');
+    const fontSelect = document.getElementById('font-select');
+    const textColorInput = document.getElementById('text-color');
+    const bgColorInput = document.getElementById('bg-color');
+    const clearBtn = document.getElementById('clear-btn');
+    const downloadBtn = document.getElementById('download-btn');
+    const stickerPalette = document.querySelector('.sticker-palette');
+    const heartsBg = document.querySelector('.hearts-bg');
+
+    // --- 2. Floating Background Hearts ---
+    function createBackgroundHeart() {
+        const heart = document.createElement('div');
+        heart.classList.add('bg-heart');
+        heart.innerHTML = '❤️';
+
+        // Randomize horizontal position and animation duration
+        heart.style.left = `${Math.random() * 100}%`;
+        const duration = Math.random() * 5 + 10; // 10s to 15s
+        const delay = Math.random() * 5; // 0s to 5s
+        heart.style.animationDuration = `${duration}s`;
+        heart.style.animationDelay = `${delay}s`;
+
+        heartsBg.appendChild(heart);
+
+        // Remove the heart after its animation completes
+        setTimeout(() => {
+            heart.remove();
+        }, (duration + delay) * 1000);
+    }
+
+    // Create a new heart periodically
+    setInterval(createBackgroundHeart, 2000);
+
+
+    // --- 3. Drag and Drop Functionality ---
+    let draggedElement = null;
+
+    stickerPalette.addEventListener('dragstart', (e) => {
+        if (e.target.classList.contains('sticker')) {
+            draggedElement = e.target;
+            e.dataTransfer.effectAllowed = 'copy';
+        }
+    });
+
+    letterContent.addEventListener('dragover', (e) => {
+        e.preventDefault(); // Necessary to allow dropping
+        e.dataTransfer.dropEffect = 'copy';
+    });
+
+    letterContent.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (draggedElement) {
+            // Create a new sticker element on the canvas
+            const newSticker = document.createElement('div');
+            newSticker.classList.add('dropped-sticker');
+            newSticker.innerHTML = draggedElement.dataset.sticker;
+            
+            // Position the sticker relative to the letter content
+            const rect = letterContent.getBoundingClientRect();
+            newSticker.style.left = `${e.clientX - rect.left - 20}px`; // -20 to center the sticker
+            newSticker.style.top = `${e.clientY - rect.top - 20}px`;
+            
+            letterContent.appendChild(newSticker);
+            draggedElement = null;
+        }
+    });
+    
+    // Make dropped stickers draggable within the canvas
+    let isDragging = false;
+    let currentSticker = null;
+    let offsetX, offsetY;
+
+    letterContent.addEventListener('mousedown', (e) => {
+        if (e.target.classList.contains('dropped-sticker')) {
+            isDragging = true;
+            currentSticker = e.target;
+            const rect = currentSticker.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+            currentSticker.style.zIndex = 1000; // Bring to front while dragging
+        }
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging && currentSticker) {
+            const rect = letterContent.getBoundingClientRect();
+            const newX = e.clientX - rect.left - offsetX;
+            const newY = e.clientY - rect.top - offsetY;
+            currentSticker.style.left = `${newX}px`;
+            currentSticker.style.top = `${newY}px`;
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (currentSticker) {
+            currentSticker.style.zIndex = ''; // Reset z-index
+        }
+        isDragging = false;
+        currentSticker = null;
+    });
+
+
+    // --- 4. Style Controls ---
+    messageText.addEventListener('input', (e) => {
+        // The textarea itself updates, no extra logic needed here
+        // unless we wanted to do character counting, etc.
+    });
+
+    fontSelect.addEventListener('change', (e) => {
+        letterContent.style.fontFamily = e.target.value;
+        messageText.style.fontFamily = e.target.value;
+    });
+
+    textColorInput.addEventListener('input', (e) => {
+        letterContent.style.color = e.target.value;
+        messageText.style.color = e.target.value;
+    });
+
+    bgColorInput.addEventListener('input', (e) => {
+        canvas.style.backgroundColor = e.target.value;
+    });
+
+
+    // --- 5. Action Buttons ---
+    clearBtn.addEventListener('click', () => {
+        // Clear all dynamically added stickers
+        const stickers = letterContent.querySelectorAll('.dropped-sticker');
+        stickers.forEach(sticker => sticker.remove());
+        // Clear the text area
+        messageText.value = '';
+        // Reset styles to default
+        fontSelect.selectedIndex = 0;
+        fontSelect.dispatchEvent(new Event('change'));
+        textColorInput.value = '#d63384';
+        textColorInput.dispatchEvent(new Event('input'));
+        bgColorInput.value = '#fff0f5';
+        bgColorInput.dispatchEvent(new Event('input'));
+    });
+
+    downloadBtn.addEventListener('click', () => {
+        // This is a SIMULATION of a download feature.
+        // A real implementation would require a library like html2canvas.
+        alert('In a real application, this would save your creation as an image file!');
+        
+        // For demonstration, we'll log the state to the console.
+        const letterState = {
+            text: messageText.value,
+            font: letterContent.style.fontFamily,
+            textColor: letterContent.style.color,
+            bgColor: canvas.style.backgroundColor,
+            stickers: []
+        };
+
+        const stickers = letterContent.querySelectorAll('.dropped-sticker');
+        stickers.forEach(sticker => {
+            letterState.stickers.push({
+                content: sticker.innerHTML,
+                left: sticker.style.left,
+                top: sticker.style.top
+            });
+        });
+
+        console.log('Current Letter State:', letterState);
+    });
+
+});
+    </script>
+</body>
+</html>

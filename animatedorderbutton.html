@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Order Button</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated background */
+        .bg-animation {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .bg-circle:nth-child(1) {
+            width: 200px;
+            height: 200px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .bg-circle:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .bg-circle:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0) translateX(0) scale(1);
+            }
+            25% { 
+                transform: translateY(-20px) translateX(10px) scale(1.05);
+            }
+            50% { 
+                transform: translateY(-10px) translateX(-5px) scale(1.1);
+            }
+            75% { 
+                transform: translateY(-5px) translateX(5px) scale(1.05);
+            }
+        }
+
+        /* Order button */
+        .order-container {
+            position: relative;
+            z-index: 10;
+        }
+
+        .order-btn {
+            position: relative;
+            width: 200px;
+            height: 60px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .order-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border-radius: 30px;
+            transform: scale(0.9);
+            transition: all 0.5s ease;
+        }
+
+        .order-btn.loading::before {
+            animation: loadingRotate 1s linear infinite;
+        }
+
+        @keyframes loadingRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Button states */
+        .order-btn.idle {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+
+        .order-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+        }
+
+        .order-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        /* Button text */
+        .btn-text {
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .btn-text.loading {
+            opacity: 0;
+        }
+
+        /* Ripple effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0);
+            opacity: 0;
+            animation: rippleEffect 0.6s ease-out;
+        }
+
+        @keyframes rippleEffect {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Success state */
+        .order-btn.success {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            animation: successPulse 0.6s ease;
+        }
+
+        @keyframes successPulse {
+            0% { 
+                box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+            }
+            50% { 
+                box-shadow: 0 15px 40px rgba(76, 175, 80, 0.5);
+            }
+            100% { 
+                box-shadow: 0 20px 50px rgba(76, 175, 80, 0.7);
+            }
+        }
+
+        /* Checkmark */
+        .checkmark {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            opacity: 0;
+            transform: scale(0) rotate(-45deg);
+            stroke-dasharray: 50;
+            stroke-dashoffset: 50;
+            stroke: white;
+            stroke-width: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .order-btn.success .checkmark {
+            stroke-dashoffset: 0;
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* Order form */
+        .order-form {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.2),
+                0 10px 30px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            visibility: hidden;
+            z-index: 20;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .order-form.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* Form header */
+        .form-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        /* Form groups */
+        .form-group {
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideIn 0.5s forwards;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+
+        /* Form actions */
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideIn 0.5s 0.4s forwards;
+        }
+
+        .form-actions:nth-child(1) { animation-delay: 0.4s; }
+        .form-actions:nth-child(2) { animation-delay: 0.5s; }
+
+        /* Buttons */
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #4CAF50;
+            border: 2px solid #4CAF50;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        /* Close button */
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 50%;
+            color: #333;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(0, 0, 0, 0.2);
+            transform: rotate(90deg);
+        }
+
+        /* Success message */
+        .success-message {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 20px 40px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .success-message.show {
+            top: 30px;
+        }
+
+        /* Order summary */
+        .order-summary {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            text-align: center;
+            color: #333;
+        }
+
+        .summary-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .summary-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-label {
+            font-weight: 500;
+            color: #999;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .order-btn {
+                width: 160px;
+                height: 50px;
+                font-size: 16px;
+            }
+
+            .order-form {
+                width: 350px;
+                padding: 25px;
+            }
+
+            .form-group input {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .btn {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated background -->
+    <div class="bg-animation">
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+    </div>
+
+    <!-- Order container -->
+    <div class="order-container">
+        <!-- Order button -->
+        <button class="order-btn" id="orderBtn">
+            <span class="btn-text">Place Order</span>
+            <div class="ripple"></div>
+            <div class="checkmark"></div>
+        </button>
+
+        <!-- Order form -->
+        <div class="order-form" id="orderForm">
+            <button class="close-btn" id="closeBtn">✕</button>
+            
+            <div class="form-header">
+                <h2 class="form-title">Complete Your Order</h2>
+            </div>
+            
+            <form id="orderFormElement">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="your@email.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" placeholder="+1 (555) 123-4567">
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Delivery Address</label>
+                    <input type="text" id="address" placeholder="Enter your address" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes">Special Instructions</label>
+                    <textarea id="notes" placeholder="Any special requests?" rows="3"></textarea>
+                </div>
+            </form>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Submit Order</button>
+                <button type="button" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success message -->
+    <div class="success-message" id="successMessage">
+        <div class="success-icon">✓</div>
+        <div class="success-text">Order placed successfully!</div>
+    </div>
+
+    <script>
+        // Get elements
+        const orderBtn = document.getElementById('orderBtn');
+        const orderForm = document.getElementById('orderForm');
+        const closeBtn = document.getElementById('closeBtn');
+        const orderFormElement = document.getElementById('orderFormElement');
+        const successMessage = document.getElementById('successMessage');
+        const btnText = orderBtn.querySelector('.btn-text');
+        const checkmark = orderBtn.querySelector('.checkmark');
+        const ripple = orderBtn.querySelector('.ripple');
+
+        // State management
+        let isFormOpen = false;
+        let isLoading = false;
+
+        // Show success message
+        function showSuccess(message) {
+            const successText = successMessage.querySelector('.success-text');
+            successText.textContent = message;
+            successMessage.classList.add('show');
+            
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            isLoading = false;
+                orderBtn.classList.remove('loading');
+                orderBtn.classList.remove('success');
+                btnText.textContent = 'Place Order';
+                checkmark.style.opacity = '0';
+            }, 3000);
+        }
+
+        // Create ripple effect
+        function createRipple(x, y) {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            
+            const size = Math.random() * 20 + 10;
+            ripple.style.width = size + 'px';
+            ripple.style.height = size + 'px';
+            ripple.style.left = (x - size / 2) + 'px';
+            ripple.style.top = (y - size / 2) + 'px';
+            ripple.style.borderRadius = '50%';
+            
+            orderBtn.appendChild(ripple);
+            
+            // Animate ripple
+            ripple.animate([
+                { transform: 'scale(0)', offset: 0 },
+                { transform: 'scale(4)', offset: '0' },
+                { transform: 'scale(0)', offset: '0' }
+            ], {
+                duration: 600,
+                easing: 'ease-out'
+            }).onfinish = () => ripple.remove();
+        }
+
+        // Toggle form
+        function toggleForm() {
+            isFormOpen = !isFormOpen;
+            
+            if (isFormOpen) {
+                orderBtn.classList.add('loading');
+                isLoading = true;
+                btnText.textContent = 'Processing...';
+                checkmark.style.opacity = '0';
+                
+                // Show form after animation
+                setTimeout(() => {
+                    orderForm.classList.add('active');
+                orderBtn.classList.remove('loading');
+                    btnText.textContent = 'Place Order';
+                    checkmark.style.opacity = '1';
+                }, 800);
+            } else {
+                orderForm.classList.remove('active');
+            }
+        }
+
+        // Button click handler
+        orderBtn.addEventListener('click', function(e) {
+            if (!isLoading) {
+                // Create ripple at click position
+                const rect = this.getBoundingClientRect();
+                createRipple(e.clientX - rect.left, e.clientY - rect.top);
+                
+                // Start loading state
+                this.classList.add('loading');
+                isLoading = true;
+                btnText.textContent = 'Loading...';
+                
+                // Show form after loading
+                setTimeout(() => {
+                    toggleForm();
+                    
+                    // Show success after form submission
+                    setTimeout(() => {
+                        showSuccess('Order placed successfully!');
+                        
+                        // Reset form after delay
+                        setTimeout(() => {
+                            orderFormElement.reset();
+                            toggleForm();
+                        }, 2000);
+                    }, 1500);
+                }, 1500);
+            }
+        });
+
+        // Form submission
+        orderFormElement.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const formData = new FormData(orderFormElement);
+            
+            // Simulate order processing
+            setTimeout(() => {
+                showSuccess('Order placed successfully!');
+                
+                // Reset form
+                orderFormElement.reset();
+                toggleForm();
+            }, 1000);
+        });
+
+        // Close button
+        closeBtn.addEventListener('click', function() {
+            toggleForm();
+        });
+
+        // Form field animations
+        const formGroups = orderFormElement.querySelectorAll('.form-group');
+        formGroups.forEach((group, index) => {
+            group.style.animationDelay = `${index * 0.1}s`;
+        });
+
+        // Add hover effects
+        orderBtn.addEventListener('mouseenter', function() {
+            if (!isLoading) {
+                this.style.transform = 'translateY(-3px)';
+            }
+        });
+
+        orderBtn.addEventListener('mouseleave', function() {
+            if (!isLoading) {
+                this.style.transform = '';
+            }
+        });
+
+        // Keyboard support
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && isFormOpen) {
+                toggleForm();
+            }
+            if (e.key === 'o' && !isFormOpen) {
+                e.preventDefault();
+                toggleForm();
+            }
+        });
+
+        // Entrance animation
+        window.addEventListener('load', function() {
+            orderBtn.style.animation = 'entrance 1s ease-out';
+        });
+
+        // Add entrance animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes entrance {
+                from {
+                    transform: translateY(-50px) scale(0.8);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0) scale(1);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Send Button</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+   /* --- Global Styles & Variables --- */
+:root {
+    --bg-color: #0f0f1e;
+    --surface-color: #1a1a2e;
+    --text-color: #e0e0e0;
+    --accent-color: #6c5ce7;
+    --accent-hover: #5f4bd8;
+    --success-color: #00b894;
+    --input-bg: rgba(255, 255, 255, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* --- Form Styling --- */
+.contact-form {
+    width: 100%;
+    max-width: 400px;
+    padding: 2.5rem;
+    background: var(--surface-color);
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.contact-form h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: var(--input-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    transition: border-color 0.3s ease;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+/* --- The Animated Send Button --- */
+.send-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--accent-color);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.send-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+}
+
+/* --- Button Content States --- */
+.btn-content, .loader, .success-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.4s ease;
+}
+
+.btn-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.loader {
+    width: 25px;
+    height: 25px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    opacity: 0;
+}
+
+.success-icon {
+    font-size: 1.5rem;
+    opacity: 0;
+    color: #fff;
+}
+
+/* --- SENDING STATE --- */
+.send-btn.sending {
+    background: #f39c12; /* Orange/yellow for "in progress" */
+    pointer-events: none; /* Prevent clicking again */
+    cursor: not-allowed;
+}
+
+.send-btn.sending .btn-content {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+}
+
+.send-btn.sending .loader {
+    opacity: 1;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* --- SUCCESS STATE --- */
+.send-btn.success {
+    background: var(--success-color);
+    pointer-events: none;
+}
+
+.send-btn.success .btn-content,
+.send-btn.success .loader {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+}
+
+.send-btn.success .success-icon {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    animation: success-pulse 0.6s ease-out;
+}
+
+@keyframes success-pulse {
+    0% { transform: translate(-50%, -50%) scale(0); }
+    50% { transform: translate(-50%, -50%) scale(1.2); }
+    100% { transform: translate(-50%, -50%) scale(1); }
+}
+</style>
+</head>
+<body>
+
+    <div class="contact-form">
+        <h2>Send Us a Message</h2>
+        <form id="message-form">
+            <input type="email" placeholder="Your email" required>
+            <textarea placeholder="Your message..." rows="5" required></textarea>
+            
+            <button type="submit" id="send-btn" class="send-btn">
+                <span class="btn-content">
+                    <i class="fas fa-paper-plane"></i>
+                    <span class="btn-text">Send Message</span>
+                </span>
+                <div class="loader"></div>
+                <div class="success-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('message-form');
+    const sendBtn = document.getElementById('send-btn');
+
+    form.addEventListener('submit', (e) => {
+        // Prevent actual form submission
+        e.preventDefault();
+
+        // 1. Add the 'sending' state
+        sendBtn.classList.add('sending');
+
+        // 2. Simulate a network request (e.g., sending a message)
+        setTimeout(() => {
+            // 3. Remove 'sending' and add 'success' state
+            sendBtn.classList.remove('sending');
+            sendBtn.classList.add('success');
+
+            // 4. Reset the button after a short delay
+            setTimeout(() => {
+                sendBtn.classList.remove('success');
+                form.reset(); // Also clear the form fields
+            }, 2500); // 2.5 seconds
+
+        }, 2000); // 2 seconds for the "sending" part
+    });
+});
+    </script>
+</body>
+</html>

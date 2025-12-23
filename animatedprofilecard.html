@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Animated Profile Card</title>
+    <style>
+        body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #121212;
+    font-family: Arial;
+}
+
+.card {
+    width: 350px;
+    padding: 20px;
+    background: #1f1f1f;
+    border-radius: 20px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.avatar {
+    width: 120px;
+    border-radius: 50%;
+    border: 4px solid #444;
+}
+
+.bulb-area {
+    margin-top: 15px;
+}
+
+.bulb {
+    font-size: 40px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.bulb:hover {
+    transform: scale(1.2) rotate(10deg);
+    text-shadow: 0 0 20px yellow;
+}
+
+/* Hidden Form Section */
+.form-section {
+    margin-top: 20px;
+    background: #292929;
+    padding: 15px;
+    border-radius: 15px;
+    transform: scale(0);
+    opacity: 0;
+    transform-origin: top;
+    transition: 0.4s ease;
+}
+
+.form-section.active {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.form-section input,
+.form-section textarea {
+    width: 100%;
+    margin: 7px 0;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #ffcc00;
+    color: #000;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="profile-section">
+        <img src="https://i.ibb.co/4ZPf9VX/user.png" class="avatar">
+        <h2>John Doe</h2>
+        <p>UI/UX Designer</p>
+
+        <!-- Bulb -->
+        <div class="bulb-area">
+            <div class="bulb" id="bulbBtn">💡</div>
+        </div>
+    </div>
+
+    <div class="form-section" id="formSection">
+        <h3>Contact Form</h3>
+        <input type="text" placeholder="Your Name">
+        <input type="email" placeholder="Email">
+        <textarea placeholder="Message"></textarea>
+        <button>Send</button>
+    </div>
+</div>
+
+<script>
+    const bulbBtn = document.getElementById("bulbBtn");
+const formSection = document.getElementById("formSection");
+
+bulbBtn.addEventListener("click", () => {
+    formSection.classList.toggle("active");
+
+    // change the bulb glow color
+    if (formSection.classList.contains("active")) {
+        bulbBtn.style.textShadow = "0 0 20px yellow";
+    } else {
+        bulbBtn.style.textShadow = "none";
+    }
+});
+
+</script>
+</body>
+</html>

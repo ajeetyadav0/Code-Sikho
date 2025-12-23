@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative Morphing Button</title>
+    <style>
+        body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+}
+
+.scene {
+    filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+}
+
+.morph-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    outline: none;
+    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.morph-btn:hover {
+    transform: scale(1.05);
+}
+
+/* The path that defines the shape */
+#shape-path {
+    /* This is the magic! It allows smooth transitions between path shapes. */
+    transition: d 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    fill: #f093fb;
+}
+
+/* The breathing animation for the idle state */
+@keyframes breathe {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+/* Apply the breathing animation to the SVG inside the button */
+.morph-btn svg {
+    animation: breathe 4s ease-in-out infinite;
+    transform-origin: center;
+}
+    </style>
+</head>
+<body>
+
+    <div class="scene">
+        <button id="morph-btn" class="morph-btn">
+            <svg width="240" height="80" viewBox="0 0 240 80">
+                <!-- The clipPath defines the visible shape of the button -->
+                <defs>
+                    <clipPath id="button-clip">
+                        <path id="shape-path" d=""></path>
+                    </clipPath>
+                </defs>
+
+                <!-- The group that will be clipped by the shape -->
+                <g clip-path="url(#button-clip)">
+                    <!-- Background for the clipped area -->
+                    <rect width="240" height="80" fill="#1a1a2e"/>
+                    
+                    <!-- The generative pattern will be drawn here -->
+                    <g id="pattern-group"></g>
+                </g>
+
+                <!-- The text on top of the button -->
+                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold" pointer-events="none">
+                    Generate
+                </text>
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const button = document.getElementById('morph-btn');
+    const shapePath = document.getElementById('shape-path');
+    const patternGroup = document.getElementById('pattern-group');
+
+    // --- CONFIGURATION ---
+    const POINTS = 6; // Number of points on the blob shape
+    const MORPH_VARIANCE = 15; // How much the shape can change on hover
+    const PATTERN_COUNT = 15; // Number of elements in the internal pattern
+
+    let currentPoints = [];
+
+    /**
+     * Generates a random point with some variance
+     * @param {number} baseX - The base x-coordinate
+     * @param {number} baseY - The base y-coordinate
+     * @param {number} variance - The maximum variance for x and y
+     * @returns {{x: number, y: number}} A point object
+     */
+    function getRandomPoint(baseX, baseY, variance) {
+        return {
+            x: baseX + (Math.random() - 0.5) * variance,
+            y: baseY + (Math.random() - 0.5) * variance
+        };
+    }
+
+    /**
+     * Generates an SVG path string for a blob shape
+     * @param {number} variance - The variance for point randomness
+     * @returns {string} The SVG path 'd' attribute string
+     */
+    function generateBlobPath(variance = 0) {
+        const width = 240;
+        const height = 80;
+        const angleStep = (Math.PI * 2) / POINTS;
+        const points = [];
+
+        for (let i = 0; i < POINTS; i++) {
+            const angle = angleStep * i;
+            const baseX = width / 2 + Math.cos(angle) * (width / 2.5);
+            const baseY = height / 2 + Math.sin(angle) * (height / 2.5);
+            points.push(getRandomPoint(baseX, baseY, variance));
+        }
+
+        // Store the current points for smooth morphing on hover
+        if (variance === 0) {
+            currentPoints = points;
+        }
+
+        let d = `M ${points[0].x} ${points[0].y}`;
+        for (let i = 0; i < points.length; i++) {
+            const p1 = points[i];
+            const p2 = points[(i + 1) % points.length];
+            const mx = (p1.x + p2.x) / 2;
+            const my = (p1.y + p2.y) / 2;
+            d += ` Q ${p1.x} ${p1.y}, ${mx} ${my}`;
+        }
+        d += ' Z';
+
+        return d;
+    }
+
+    /**
+     * Generates a random internal pattern (e.g., flowing lines)
+     */
+    function generatePattern() {
+        patternGroup.innerHTML = ''; // Clear old pattern
+        const colors = ['#f5576c', '#4facfe', '#43e97b', '#fee140', '#30cfd0'];
+
+        for (let i = 0; i < PATTERN_COUNT; i++) {
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', Math.random() * 240);
+            line.setAttribute('y1', Math.random() * 80);
+            line.setAttribute('x2', Math.random() * 240);
+            line.setAttribute('y2', Math.random() * 80);
+            line.setAttribute('stroke', colors[Math.floor(Math.random() * colors.length)]);
+            line.setAttribute('stroke-width', Math.random() * 2 + 0.5);
+            line.setAttribute('opacity', Math.random() * 0.5 + 0.2);
+            line.style.transition = 'all 1s ease-in-out';
+            patternGroup.appendChild(line);
+        }
+    }
+
+    /**
+     * The main regeneration function
+     */
+    function regenerate() {
+        // Animate the button
+        button.animate([
+            { transform: 'scale(1)' },
+            { transform: 'scale(0.95)' },
+            { transform: 'scale(1)' }
+        ], {
+            duration: 300,
+            easing: 'ease-in-out'
+        });
+
+        // Generate a new shape and pattern
+        shapePath.setAttribute('d', generateBlobPath(0));
+        generatePattern();
+    }
+
+    // --- EVENT LISTENERS ---
+
+    // Initial generation on load
+    regenerate();
+
+    // Hover effect: Morph to a slightly different shape
+    button.addEventListener('mouseenter', () => {
+        shapePath.setAttribute('d', generateBlobPath(MORPH_VARIANCE));
+    });
+
+    button.addEventListener('mouseleave', () => {
+        // Morph back to the original shape stored in currentPoints
+        let d = `M ${currentPoints[0].x} ${currentPoints[0].y}`;
+        for (let i = 0; i < currentPoints.length; i++) {
+            const p1 = currentPoints[i];
+            const p2 = currentPoints[(i + 1) % currentPoints.length];
+            const mx = (p1.x + p2.x) / 2;
+            const my = (p1.y + p2.y) / 2;
+            d += ` Q ${p1.x} ${p1.y}, ${mx} ${my}`;
+        }
+        d += ' Z';
+        shapePath.setAttribute('d', d);
+    });
+
+    // Click effect: Full regeneration
+    button.addEventListener('click', regenerate);
+});
+    </script>
+</body>
+</html>

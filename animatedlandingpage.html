@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Landing Page</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Montserrat:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- Global Styles & Variables --- */
+:root {
+    --primary-color: #6a11cb;
+    --secondary-color: #2575fc;
+    --text-dark: #333;
+    --text-light: #fff;
+    --bg-light: #f4f7f6;
+    --card-bg: #ffffff;
+    --font-heading: 'Montserrat', sans-serif;
+    --font-body: 'Roboto', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-body);
+    color: var(--text-dark);
+    line-height: 1.6;
+    background-color: var(--bg-light);
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* --- Navigation Bar --- */
+.navbar {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    padding: 1rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.navbar a {
+    color: var(--text-dark);
+    text-decoration: none;
+    margin-left: 2rem;
+    font-weight: 700;
+    font-family: var(--font-heading);
+    transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+    color: var(--primary-color);
+}
+
+/* --- Hero Section --- */
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: var(--text-light);
+    overflow: hidden;
+}
+
+.hero-content h1 {
+    font-size: 3.5rem;
+    font-family: var(--font-heading);
+    margin-bottom: 1rem;
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    max-width: 600px;
+}
+
+.hero button {
+    padding: 1rem 2.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    background: var(--text-light);
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hero button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* --- Features Section --- */
+.features-section {
+    padding: 5rem 0;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-family: var(--font-heading);
+    margin-bottom: 3rem;
+    color: var(--text-dark);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.feature-card {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.feature-card .icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+    font-family: var(--font-heading);
+    margin-bottom: 0.5rem;
+}
+
+/* --- About Section --- */
+.about-section {
+    background: var(--card-bg);
+    padding: 5rem 0;
+}
+
+.about-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.about-text {
+    flex: 1;
+}
+
+.about-text h2 {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.about-image {
+    flex: 1;
+    height: 400px;
+    background: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80') no-repeat center center/cover;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* --- Animation Classes --- */
+/* The initial hidden state */
+.hidden {
+    opacity: 0;
+    transition: all 1s ease-out;
+    /* Will be overridden by specific animation data-attributes */
+    transform: translateY(30px); 
+}
+
+/* The final visible state */
+.hidden.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- Specific Animation Keyframes & Classes --- */
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Apply specific animations based on data attribute */
+.slideInLeft { animation: slideInLeft 0.8s ease-out forwards; }
+.slideInRight { animation: slideInRight 0.8s ease-out forwards; }
+.slideInUp { animation: slideInUp 0.8s ease-out forwards; }
+.scaleIn { animation: scaleIn 0.8s ease-out forwards; }
+.fadeIn { animation: fadeIn 1s ease-out forwards; }
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+    .hero-content h1 { font-size: 2.5rem; }
+    .about-content { flex-direction: column; }
+    .navbar { flex-direction: column; }
+    .navbar nav { margin-top: 1rem; }
+    .navbar a { margin: 0 1rem; }
+}
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="container">Logo</div>
+        <nav class="container">
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#about">About</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1 class="hidden" data-animation="fadeInUp">Welcome to the Future</h1>
+                <p class="hidden" data-animation="fadeInUp" data-delay="200">Experience web design that comes to life.</p>
+                <button class="hidden" data-animation="fadeInUp" data-delay="400">Get Started</button>
+            </div>
+        </section>
+
+        <section id="features" class="container features-section">
+            <h2 class="section-title hidden" data-animation="fadeIn">Our Features</h2>
+            <div class="features-grid">
+                <div class="feature-card hidden" data-animation="slideInLeft">
+                    <div class="icon">⚡️</div>
+                    <h3>Lightning Fast</h3>
+                    <p>Built for speed and performance, ensuring a smooth user experience.</p>
+                </div>
+                <div class="feature-card hidden" data-animation="slideInUp">
+                    <div class="icon">🎨</div>
+                    <h3>Modern Design</h3>
+                    <p>Clean, intuitive, and beautiful interfaces that users love.</p>
+                </div>
+                <div class="feature-card hidden" data-animation="slideInRight">
+                    <div class="icon">📱</div>
+                    <h3>Fully Responsive</h3>
+                    <p>Looks great on any device, from desktops to mobile phones.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about-section">
+            <div class="container about-content">
+                <div class="about-text hidden" data-animation="slideInLeft">
+                    <h2>About Our Mission</h2>
+                    <p>We are dedicated to pushing the boundaries of web technology to create engaging and memorable digital experiences. Our focus is on clean code, stunning visuals, and user-centric design.</p>
+                    <p>Let's build something amazing together.</p>
+                </div>
+                <div class="about-image hidden" data-animation="scaleIn"></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+    // Get all elements with the 'hidden' class
+    const hiddenElements = document.querySelectorAll('.hidden');
+
+    // Create a new IntersectionObserver instance
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            // If the element is intersecting (in the viewport)
+            if (entry.isIntersecting) {
+                // Get the animation type from the data attribute
+                const animationType = entry.target.dataset.animation;
+                
+                // Add a small delay if specified
+                const delay = entry.target.dataset.delay || 0;
+                
+                // Use setTimeout to apply the delay
+                setTimeout(() => {
+                    // Add the specific animation class and the 'show' class
+                    entry.target.classList.add(animationType, 'show');
+                }, delay);
+
+                // Stop observing the element once it has been animated
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        // Start the animation when the element is 15% visible
+        threshold: 0.15 
+    });
+
+    // Tell the observer to watch each hidden element
+    hiddenElements.forEach(el => {
+        observer.observe(el);
+    });
+
+});
+    </script>
+</body>
+</html>

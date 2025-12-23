@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Zen Garden</title>
+    <style>
+/* --- General Setup & Layout --- */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #d2b48c; /* Tan color for the overall page */
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* --- Garden Area --- */
+.garden-area {
+    flex-grow: 1;
+    position: relative;
+    background-color: #f5deb3; /* Wheat color for the sand */
+    box-shadow: inset 0 0 50px rgba(0,0,0,0.1);
+    overflow: hidden; /* Important for containing elements */
+}
+
+#sand-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+}
+
+/* --- Toolbar --- */
+.toolbar {
+    width: 250px;
+    background-color: #f0f0f0;
+    padding: 20px;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.toolbar h2 {
+    text-align: center;
+    color: #5d4037;
+    margin-top: 0;
+    border-bottom: 2px solid #a1887f;
+    padding-bottom: 10px;
+}
+
+.toolbar p {
+    font-size: 0.9rem;
+    color: #666;
+    text-align: center;
+}
+
+/* --- Element Palette --- */
+.element-palette {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.element-palette label {
+    font-weight: bold;
+    color: #5d4037;
+}
+
+.element {
+    display: inline-block;
+    font-size: 3rem;
+    margin: 5px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    cursor: grab;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-align: center;
+}
+
+.element:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.element:active {
+    cursor: grabbing;
+}
+
+/* --- Dropped Garden Elements --- */
+.garden-element {
+    position: absolute;
+    font-size: 4rem;
+    cursor: move;
+    user-select: none;
+    z-index: 10;
+}
+
+/* --- Ambient Animations --- */
+.garden-element[data-type="lantern"] {
+    animation: flicker 4s infinite alternate;
+}
+
+@keyframes flicker {
+    0%, 100% { filter: brightness(1) hue-rotate(0deg); }
+    50% { filter: brightness(1.2) hue-rotate(10deg); }
+}
+
+.garden-element[data-type="bonsai"] {
+    animation: sway 6s infinite ease-in-out;
+    transform-origin: bottom center;
+}
+
+@keyframes sway {
+    0%, 100% { transform: rotate(-1deg); }
+    50% { transform: rotate(1deg); }
+}
+
+/* --- Actions --- */
+.actions {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.actions button {
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: #8d6e63;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.actions button:hover {
+    background-color: #6d4c41;
+}
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Main Garden Area -->
+        <main class="garden-area" id="garden">
+            <canvas id="sand-canvas"></canvas>
+            <!-- Garden elements will be dropped here -->
+        </main>
+
+        <!-- Toolbar -->
+        <aside class="toolbar">
+            <h2>Zen Garden</h2>
+            <p>Drag elements to the garden. Click and drag on the sand to rake.</p>
+            
+            <div class="element-palette">
+                <label>Garden Elements:</label>
+                <div class="element" draggable="true" data-element="rock">🪨</div>
+                <div class="element" draggable="true" data-element="lantern">🏮</div>
+                <div class="element" draggable="true" data-element="bonsai">🌳</div>
+            </div>
+
+            <div class="control-group actions">
+                <button id="clear-rake-btn">Clear Rake</button>
+                <button id="reset-garden-btn">Reset Garden</button>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+    // --- 1. DOM Element References ---
+    const garden = document.getElementById('garden');
+    const canvas = document.getElementById('sand-canvas');
+    const ctx = canvas.getContext('2d');
+    const elementPalette = document.querySelector('.element-palette');
+    const clearRakeBtn = document.getElementById('clear-rake-btn');
+    const resetGardenBtn = document.getElementById('reset-garden-btn');
+
+    // --- 2. Canvas Setup and Raking Logic ---
+    function resizeCanvas() {
+        canvas.width = garden.offsetWidth;
+        canvas.height = garden.offsetHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    let isDrawing = false;
+    let lastX = 0;
+    let lastY = 0;
+
+    function startDrawing(e) {
+        isDrawing = true;
+        [lastX, lastY] = getMousePos(canvas, e);
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        
+        const [currentX, currentY] = getMousePos(canvas, e);
+
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(currentX, currentY);
+        ctx.strokeStyle = 'rgba(139, 90, 43, 0.4)'; // Brown, semi-transparent
+        ctx.lineWidth = 20;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        [lastX, lastY] = [currentX, currentY];
+    }
+
+    function stopDrawing() {
+        isDrawing = false;
+    }
+
+    function getMousePos(canvas, e) {
+        const rect = canvas.getBoundingClientRect();
+        return [
+            e.clientX - rect.left,
+            e.clientY - rect.top
+        ];
+    }
+
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
+
+    // Touch support for mobile
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent('mousedown', {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+        });
+        canvas.dispatchEvent(mouseEvent);
+    });
+
+    canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent('mousemove', {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+        });
+        canvas.dispatchEvent(mouseEvent);
+    });
+
+    canvas.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        const mouseEvent = new MouseEvent('mouseup', {});
+        canvas.dispatchEvent(mouseEvent);
+    });
+
+
+    // --- 3. Drag and Drop Functionality ---
+    let draggedElementData = null;
+
+    elementPalette.addEventListener('dragstart', (e) => {
+        if (e.target.classList.contains('element')) {
+            draggedElementData = e.target.dataset.element;
+            e.dataTransfer.effectAllowed = 'copy';
+        }
+    });
+
+    garden.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+    });
+
+    garden.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (draggedElementData) {
+            const newElement = document.createElement('div');
+            newElement.classList.add('garden-element');
+            newElement.setAttribute('data-type', draggedElementData);
+            
+            // Set the emoji content
+            const elementEmoji = elementPalette.querySelector(`[data-element="${draggedElementData}"]`).innerHTML;
+            newElement.innerHTML = elementEmoji;
+
+            // Position the element
+            const rect = garden.getBoundingClientRect();
+            const offsetX = e.clientX - rect.left - (newElement.offsetWidth / 2);
+            const offsetY = e.clientY - rect.top - (newElement.offsetHeight / 2);
+            newElement.style.left = `${offsetX}px`;
+            newElement.style.top = `${offsetY}px`;
+            
+            garden.appendChild(newElement);
+            makeElementDraggable(newElement);
+            draggedElementData = null;
+        }
+    });
+
+    function makeElementDraggable(element) {
+        let isDraggingElement = false;
+        let offsetX, offsetY;
+
+        element.addEventListener('mousedown', (e) => {
+            isDraggingElement = true;
+            offsetX = e.clientX - element.offsetLeft;
+            offsetY = e.clientY - element.offsetTop;
+            element.style.zIndex = 1000;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDraggingElement) {
+                const newX = e.clientX - offsetX;
+                const newY = e.clientY - offsetY;
+                element.style.left = `${newX}px`;
+                element.style.top = `${newY}px`;
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isDraggingElement) {
+                element.style.zIndex = 10;
+                isDraggingElement = false;
+            }
+        });
+    }
+
+
+    // --- 4. Control Buttons ---
+    clearRakeBtn.addEventListener('click', () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+
+    resetGardenBtn.addEventListener('click', () => {
+        // Clear rake
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Remove all dropped elements
+        const elements = garden.querySelectorAll('.garden-element');
+        elements.forEach(el => el.remove());
+    });
+
+});
+    </script>
+</body>
+</html>

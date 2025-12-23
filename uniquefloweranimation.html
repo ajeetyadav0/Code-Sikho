@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unique Flower Animation</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@300&display=swap" rel="stylesheet">
+<style>
+    /* --- Global Styles & Variables --- */
+:root {
+    --petal-color: #e91e63; /* This will be overridden by JS */
+    --stem-color: #4caf50;
+    --leaf-color: #8bc34a;
+    --bg-color: #0c0c1e;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    color: #e0e0e0;
+    overflow: hidden;
+    position: relative;
+    height: 100vh;
+}
+
+/* --- Starry Night Sky Background --- */
+.sky {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #0c0c1e, #1a1a3e);
+    z-index: -1;
+}
+
+.stars, .stars2 {
+    width: 100%;
+    height: 100%;
+    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='1' fill='white'/%3E%3C/svg%3E") repeat;
+}
+.stars { animation: animStar 50s linear infinite; }
+.stars2 { animation: animStar 100s linear infinite; }
+@keyframes animStar { from { transform: translateY(0px); } to { transform: translateY(-1000px); } }
+
+/* --- Main Garden Container --- */
+.garden-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    color: #fff;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.garden {
+    position: relative;
+    width: 300px;
+    height: 400px;
+    margin: 2rem 0;
+}
+
+/* --- The Flower SVG --- */
+.flower-svg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* --- Initial State of Flower Parts (before animation) --- */
+.flower-part {
+    opacity: 0;
+}
+
+.stem {
+    stroke: var(--stem-color);
+    stroke-width: 4;
+    fill: none;
+    stroke-dasharray: 300;
+    stroke-dashoffset: 300;
+}
+
+.leaf {
+    fill: var(--leaf-color);
+    transform-origin: 0% 50%; /* Grow from the base */
+    transform: scale(0, 0);
+}
+
+.petal {
+    fill: var(--petal-color);
+    transform-origin: 50% 100%; /* Grow from the base */
+    transform: scale(0, 0) rotate(0deg);
+    opacity: 0;
+}
+
+.center {
+    fill: #ffc107;
+    transform: scale(0, 0);
+    opacity: 0;
+}
+
+/* --- The Growth Animations (triggered by JS classes) --- */
+.grow-stem {
+    animation: draw-stem 1.5s ease-out forwards;
+}
+@keyframes draw-stem {
+    to { stroke-dashoffset: 0; }
+}
+
+.unfurl-leaf {
+    animation: grow-leaf 0.8s ease-out forwards;
+}
+@keyframes grow-leaf {
+    to { transform: scale(1, 1); }
+}
+
+.bloom-petal {
+    animation: bloom-petal 1s ease-out forwards;
+}
+@keyframes bloom-petal {
+    to { transform: scale(1, 1) rotate(var(--rotation)); opacity: 1; }
+}
+
+.bloom-center {
+    animation: bloom-center 0.5s ease-out forwards;
+}
+@keyframes bloom-center {
+    to { transform: scale(1, 1); opacity: 1; }
+}
+
+/* --- Gentle Swaying Animation for the Bloomed Flower --- */
+.bloomed {
+    animation: gentle-sway 4s ease-in-out infinite;
+    transform-origin: 50% 100%;
+}
+@keyframes gentle-sway {
+    0%, 100% { transform: translateX(-50%) rotate(-2deg); }
+    50% { transform: translateX(-50%) rotate(2deg); }
+}
+
+
+/* --- Plant Button --- */
+#plant-btn {
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem;
+    font-family: 'Playfair Display', serif;
+    background: #e91e63;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(233, 30, 99, 0.4);
+}
+
+#plant-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(233, 30, 99, 0.6);
+}
+
+#plant-btn:disabled {
+    background: #555;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+</style>
+</head>
+<body>
+
+    <div class="sky">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+    </div>
+
+    <main class="garden-container">
+        <h1>Interactive Night Garden</h1>
+        <p>Click the button to plant a magical seed and watch it bloom.</p>
+        
+        <div id="garden" class="garden">
+            <!-- The flower will be dynamically inserted here by JavaScript -->
+        </div>
+
+        <button id="plant-btn">Plant a Seed</button>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const garden = document.getElementById('garden');
+    const plantBtn = document.getElementById('plant-btn');
+
+    // Array of possible petal colors
+    const petalColors = ['#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#f44336', '#ff9800'];
+
+    plantBtn.addEventListener('click', () => {
+        // Prevent spamming the button
+        plantBtn.disabled = true;
+        garden.innerHTML = ''; // Clear previous flower
+
+        // 1. Create the SVG element
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.classList.add('flower-svg');
+        svg.setAttribute('viewBox', '0 0 200 400');
+
+        // 2. Choose a random color
+        const randomColor = petalColors[Math.floor(Math.random() * petalColors.length)];
+        document.documentElement.style.setProperty('--petal-color', randomColor);
+
+        // 3. Create the Stem
+        const stem = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        stem.classList.add('flower-part', 'stem');
+        stem.setAttribute('d', 'M 100 400 Q 100 350 100 200'); // A quadratic curve
+        svg.appendChild(stem);
+
+        // 4. Create the Leaves
+        const leaf1 = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+        leaf1.classList.add('flower-part', 'leaf');
+        leaf1.setAttribute('cx', '100');
+        leaf1.setAttribute('cy', '300');
+        leaf1.setAttribute('rx', '30');
+        leaf1.setAttribute('ry', '15');
+        leaf1.setAttribute('transform', 'rotate(-30 100 300)');
+        svg.appendChild(leaf1);
+
+        const leaf2 = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+        leaf2.classList.add('flower-part', 'leaf');
+        leaf2.setAttribute('cx', '100');
+        leaf2.setAttribute('cy', '250');
+        leaf2.setAttribute('rx', '30');
+        leaf2.setAttribute('ry', '15');
+        leaf2.setAttribute('transform', 'rotate(25 100 250)');
+        svg.appendChild(leaf2);
+
+        // 5. Create the Petals
+        const petalCount = 8;
+        const petalGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        petalGroup.setAttribute('transform', 'translate(100, 200)');
+
+        for (let i = 0; i < petalCount; i++) {
+            const angle = (360 / petalCount) * i;
+            const petal = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+            petal.classList.add('flower-part', 'petal');
+            petal.setAttribute('cx', '0');
+            petal.setAttribute('cy', '-40');
+            petal.setAttribute('rx', '15');
+            petal.setAttribute('ry', '40');
+            petal.style.setProperty('--rotation', `${angle}deg`);
+            petalGroup.appendChild(petal);
+        }
+        svg.appendChild(petalGroup);
+
+        // 6. Create the Flower Center
+        const center = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        center.classList.add('flower-part', 'center');
+        center.setAttribute('cx', '100');
+        center.setAttribute('cy', '200');
+        center.setAttribute('r', '25');
+        svg.appendChild(center);
+        
+        // Add the finished flower to the garden
+        garden.appendChild(svg);
+
+        // 7. Trigger the animations with delays
+        setTimeout(() => stem.classList.add('grow-stem'), 100);
+        setTimeout(() => leaf1.classList.add('unfurl-leaf'), 1500);
+        setTimeout(() => leaf2.classList.add('unfurl-leaf'), 1700);
+
+        const petals = svg.querySelectorAll('.petal');
+        petals.forEach((petal, index) => {
+            setTimeout(() => {
+                petal.classList.add('bloom-petal');
+            }, 2000 + index * 100); // Stagger petal bloom
+        });
+        
+        setTimeout(() => center.classList.add('bloom-center'), 2000 + petalCount * 100);
+        
+        // Final step: add the gentle sway animation
+        setTimeout(() => {
+            svg.classList.add('bloomed');
+            plantBtn.disabled = false; // Re-enable button
+        }, 3500);
+
+    });
+});
+    </script>
+</body>
+</html>

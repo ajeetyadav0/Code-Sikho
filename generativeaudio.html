@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative Audio Visualizer</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+<style>
+    /* --- Global Styles & Variables --- */
+:root {
+    --bg-color: #000;
+    --control-bg: rgba(20, 20, 20, 0.7);
+    --text-color: #fff;
+    --accent-color: #00ffff;
+    --btn-bg: #333;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Orbitron', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow: hidden;
+    position: relative;
+}
+
+/* --- The Canvas Stage --- */
+#visualizer-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, #111, #000);
+}
+
+/* --- The Control Panel --- */
+.controls {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: var(--control-bg);
+    backdrop-filter: blur(10px);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border: 1px solid var(--accent-color);
+    z-index: 10;
+}
+
+.controls h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+    text-shadow: 0 0 10px var(--accent-color);
+}
+
+.audio-source, .viz-modes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+button, input[type="file"] {
+    padding: 0.7rem 1rem;
+    background: var(--btn-bg);
+    color: var(--text-color);
+    border: 1px solid #555;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    transition: all 0.3s ease;
+}
+
+button:hover, input[type="file"]:hover {
+    background: #444;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 5px var(--accent-color);
+}
+
+.mode-btn.active {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    border-color: var(--accent-color);
+}
+
+input[type="file"] {
+    padding: 0.6rem;
+}
+</style>
+</head>
+<body>
+
+    <canvas id="visualizer-canvas"></canvas>
+
+    <div class="controls">
+        <h1>Audio Visualizer</h1>
+        
+        <div class="audio-source">
+            <button id="mic-btn">Use Microphone</button>
+            <input type="file" id="audio-file" accept="audio/*">
+        </div>
+
+        <div class="viz-modes">
+            <button class="mode-btn active" data-mode="bars">Bars</button>
+            <button class="mode-btn" data-mode="wave">Wave</button>
+            <button class="mode-btn" data-mode="circular">Circular</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const canvas = document.getElementById('visualizer-canvas');
+    const ctx = canvas.getContext('2d');
+    const micBtn = document.getElementById('mic-btn');
+    const audioFileInput = document.getElementById('audio-file');
+    const modeBtns = document.querySelectorAll('.mode-btn');
+
+    let audioContext;
+    let analyser;
+    let source;
+    let dataArray;
+    let bufferLength;
+    let animationId;
+    let currentMode = 'bars';
+
+    // --- Canvas Setup ---
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // --- Audio Setup ---
+    function setupAudio(stream) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        source = audioContext.createMediaStreamSource(stream);
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+        analyser.fftSize = 256;
+        bufferLength = analyser.frequencyBinCount;
+        dataArray = new Uint8Array(bufferLength);
+        visualize();
+    }
+
+    // --- Microphone Button ---
+    micBtn.addEventListener('click', async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            setupAudio(stream);
+            micBtn.textContent = 'Microphone Active';
+            micBtn.disabled = true;
+        } catch (err) {
+            console.error('Error accessing microphone:', err);
+            alert('Could not access microphone. Please check permissions.');
+        }
+    });
+
+    // --- Audio File Input ---
+    audioFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            
+            audioContext.decodeAudioData(e.target.result, (buffer) => {
+                if (source) source.stop();
+                source = audioContext.createBufferSource();
+                source.buffer = buffer;
+                source.connect(analyser);
+                analyser.connect(audioContext.destination);
+                source.start(0);
+                
+                bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
+                visualize();
+            });
+        };
+        reader.readAsArrayBuffer(file);
+    });
+
+    // --- Visualization Mode Switching ---
+    modeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            modeBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentMode = btn.dataset.mode;
+        });
+    });
+
+    // --- The Main Visualization Loop ---
+    function visualize() {
+        animationId = requestAnimationFrame(visualize);
+        analyser.getByteFrequencyData(dataArray);
+
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        switch (currentMode) {
+            case 'bars':
+                drawBars();
+                break;
+            case 'wave':
+                drawWaveform();
+                break;
+            case 'circular':
+                drawCircular();
+                break;
+        }
+    }
+    
+    // --- Visualization Drawing Functions ---
+    function drawBars() {
+        let barWidth = (canvas.width / bufferLength) * 2.5;
+        let x = 0;
+        for (let i = 0; i < bufferLength; i++) {
+            let barHeight = (dataArray[i] / 255) * canvas.height * 0.7;
+            const r = barHeight + (25 * (i / bufferLength));
+            const g = 250 * (i / bufferLength);
+            const b = 200;
+            ctx.fillStyle = `rgb(${r},${g},${b})`;
+            ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+            x += barWidth + 1;
+        }
+    }
+
+    function drawWaveform() {
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = 'rgb(0, 255, 255)';
+        ctx.beginPath();
+        const sliceWidth = canvas.width / bufferLength;
+        let x = 0;
+        for (let i = 0; i < bufferLength; i++) {
+            const v = dataArray[i] / 128.0;
+            const y = v * canvas.height / 2;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+            x += sliceWidth;
+        }
+        ctx.stroke();
+    }
+
+    function drawCircular() {
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = Math.min(centerX, centerY) - 50;
+        for (let i = 0; i < bufferLength; i++) {
+            const angle = (i / bufferLength) * Math.PI * 2;
+            const amp = 1 + (dataArray[i] / 255);
+            const x = centerX + Math.cos(angle) * radius * amp;
+            const y = centerY + Math.sin(angle) * radius * amp;
+            
+            ctx.beginPath();
+            ctx.arc(x, y, 2, 0, Math.PI * 2);
+            ctx.fillStyle = `hsl(${(i / bufferLength) * 360}, 100%, 50%)`;
+            ctx.fill();
+        }
+    }
+});
+    </script>
+</body>
+</html>

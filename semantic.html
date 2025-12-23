@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semantic HTML Example</title>
+    <style>
+        /* --- General Layout & Theming --- */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.content-wrapper {
+    display: flex;
+    gap: 20px;
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+/* --- Semantic Tag Styling --- */
+header {
+    background-color: #333;
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+nav ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+main {
+    flex: 3; /* Main content takes up 3 parts of the flex space */
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+aside {
+    flex: 1; /* Sidebar takes up 1 part */
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    height: fit-content;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #333;
+    color: #ccc;
+}
+
+/* --- Article & Widget Specifics --- */
+article header {
+    background: none;
+    color: inherit;
+    padding: 0;
+    margin-bottom: 1rem;
+}
+
+article header h1 {
+    margin: 0;
+}
+
+article footer {
+    background: none;
+    color: #777;
+    text-align: left;
+    padding: 0;
+    margin-top: 2rem;
+}
+
+.widget h3 {
+    margin-top: 0;
+}
+
+/* --- Dark Mode Class --- */
+body.dark-mode {
+    background-color: #222;
+    color: #f0f0f0;
+}
+
+body.dark-mode main, body.dark-mode aside {
+    background-color: #2a2a2a;
+}
+
+body.dark-mode header, body.dark-mode footer {
+    background-color: #1a1a1a;
+}
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">MySite</div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="content-wrapper">
+        <main>
+            <article>
+                <header>
+                    <h1>A Post Title</h1>
+                    <div class="post-meta">Posted on <time datetime="2023-10-26">October 26, 2023</time></div>
+                </header>
+                <p>This is the main content of the blog post. It's very important.</p>
+                <footer>
+                    <small>Author: Ajeet Yadav</small>
+                </footer>
+            </article>
+        </main>
+
+        <aside>
+            <section class="widget">
+                <h3>About Me</h3>
+                <p>I am a developer who loves semantic HTML.</p>
+            </section>
+        </aside>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 MySite. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Find the toggle button (let's pretend we added one to the header)
+const toggleButton = document.createElement('button');
+toggleButton.textContent = 'Toggle Dark Mode';
+document.querySelector('header').appendChild(toggleButton);
+
+// Add the click event listener
+toggleButton.addEventListener('click', () => {
+    // Target the <body> to toggle a class. This is clean and simple.
+    document.body.classList.toggle('dark-mode');
+    
+    // Alternative: If we ONLY wanted to change main and aside, we can do this easily:
+    // document.querySelector('main').classList.toggle('dark-mode');
+    // document.querySelector('aside').classList.toggle('dark-mode');
+    
+    console.log('Dark mode toggled!');
+});
+    </script>
+</body>
+</html>

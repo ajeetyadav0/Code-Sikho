@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoboLogin - Holographic Access</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Nunito:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            font-family: 'Nunito', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Stars background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* Robot container */
+        .robot-container {
+            position: relative;
+            width: 300px;
+            height: 400px;
+            z-index: 10;
+        }
+
+        /* Robot body */
+        .robot {
+            position: relative;
+            width: 200px;
+            height: 250px;
+            margin: 0 auto;
+            cursor: pointer;
+            animation: float 4s ease-in-out infinite;
+            transition: transform 0.3s;
+        }
+
+        .robot:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Robot head */
+        .robot-head {
+            position: relative;
+            width: 120px;
+            height: 100px;
+            background: linear-gradient(135deg, #6a89cc, #4a69bd);
+            border-radius: 60px 60px 30px 30px;
+            margin: 0 auto 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        /* Robot eyes */
+        .robot-eye {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #fff;
+            border-radius: 50%;
+            top: 30px;
+            overflow: hidden;
+        }
+
+        .robot-eye.left {
+            left: 25px;
+        }
+
+        .robot-eye.right {
+            right: 25px;
+        }
+
+        .robot-pupil {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #333;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s;
+        }
+
+        .robot:hover .robot-pupil {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Robot antenna */
+        .robot-antenna {
+            position: absolute;
+            width: 4px;
+            height: 30px;
+            background: #4a69bd;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .antenna-tip {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            top: -6px;
+            left: -4px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 0 10px rgba(255, 107, 107, 0);
+                transform: scale(1.1);
+            }
+        }
+
+        /* Robot body */
+        .robot-body {
+            position: relative;
+            width: 150px;
+            height: 120px;
+            background: linear-gradient(135deg, #82ccdd, #60a3bc);
+            border-radius: 30px;
+            margin: 0 auto;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        /* Robot chest panel */
+        .robot-chest {
+            position: absolute;
+            width: 100px;
+            height: 70px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .chest-light {
+            width: 60px;
+            height: 10px;
+            background: #feca57;
+            border-radius: 5px;
+            animation: glow 2s infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { 
+                box-shadow: 0 0 5px #feca57;
+                opacity: 0.7;
+            }
+            50% { 
+                box-shadow: 0 0 20px #feca57;
+                opacity: 1;
+            }
+        }
+
+        /* Robot arms */
+        .robot-arm {
+            position: absolute;
+            width: 30px;
+            height: 80px;
+            background: linear-gradient(135deg, #82ccdd, #60a3bc);
+            border-radius: 15px;
+            top: 30px;
+        }
+
+        .robot-arm.left {
+            left: -20px;
+            transform: rotate(15deg);
+        }
+
+        .robot-arm.right {
+            right: -20px;
+            transform: rotate(-15deg);
+        }
+
+        /* Instructions */
+        .instructions {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            font-size: 18px;
+            animation: fadeInOut 3s infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Holographic form container */
+        .hologram-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 350px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 0 30px rgba(74, 105, 189, 0.5),
+                inset 0 0 30px rgba(74, 105, 189, 0.1);
+            opacity: 0;
+            visibility: hidden;
+            transform: translate(-50%, -50%) scale(0.8);
+            transition: all 0.5s ease;
+            z-index: 100;
+        }
+
+        .hologram-container.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+            animation: hologramFlicker 0.5s ease;
+        }
+
+        @keyframes hologramFlicker {
+            0%, 100% { opacity: 1; }
+            20% { opacity: 0.9; }
+            40% { opacity: 1; }
+            60% { opacity: 0.95; }
+            80% { opacity: 1; }
+        }
+
+        /* Form title */
+        .form-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(74, 105, 189, 0.8);
+        }
+
+        /* Form groups */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #fff;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #4a69bd;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 10px rgba(74, 105, 189, 0.5);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Form options */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            color: #fff;
+        }
+
+        .remember-me input {
+            margin-right: 8px;
+            width: auto;
+            accent-color: #4a69bd;
+        }
+
+        .forgot-link {
+            color: #82ccdd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .forgot-link:hover {
+            color: #fff;
+        }
+
+        /* Submit button */
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #4a69bd, #6a89cc);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #6a89cc, #82ccdd);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(74, 105, 189, 0.3);
+        }
+
+        /* Close button */
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        /* Projection beam */
+        .projection-beam {
+            position: absolute;
+            width: 100px;
+            height: 200px;
+            background: linear-gradient(to bottom, 
+                rgba(74, 105, 189, 0.4),
+                rgba(74, 105, 189, 0.2),
+                transparent);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+            z-index: 50;
+            clip-path: polygon(40% 0%, 60% 0%, 100% 100%, 0% 100%);
+        }
+
+        .projection-beam.active {
+            opacity: 1;
+            visibility: visible;
+            animation: beamPulse 2s infinite;
+        }
+
+        @keyframes beamPulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Success message */
+        .success-message {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #6a89cc, #4a69bd);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: top 0.5s ease;
+            z-index: 1000;
+        }
+
+        .success-message.show {
+            top: 30px;
+        }
+
+        /* Robot legs */
+        .robot-leg {
+            position: absolute;
+            width: 35px;
+            height: 50px;
+            background: linear-gradient(135deg, #82ccdd, #60a3bc);
+            border-radius: 15px;
+            bottom: -40px;
+        }
+
+        .robot-leg.left {
+            left: 40px;
+        }
+
+        .robot-leg.right {
+            right: 40px;
+        }
+
+        /* Robot feet */
+        .robot-foot {
+            position: absolute;
+            width: 50px;
+            height: 15px;
+            background: #4a69bd;
+            border-radius: 25px;
+            bottom: -15px;
+            left: -7px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .hologram-container {
+                width: 90%;
+                padding: 20px;
+            }
+
+            .robot {
+                width: 180px;
+                height: 220px;
+            }
+
+            .robot-head {
+                width: 100px;
+                height: 80px;
+            }
+
+            .robot-body {
+                width: 130px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Stars background -->
+    <div class="stars" id="stars"></div>
+
+    <!-- Robot container -->
+    <div class="robot-container">
+        <div class="robot" id="robot">
+            <!-- Robot head -->
+            <div class="robot-head">
+                <div class="robot-antenna">
+                    <div class="antenna-tip"></div>
+                </div>
+                <div class="robot-eye left">
+                    <div class="robot-pupil"></div>
+                </div>
+                <div class="robot-eye right">
+                    <div class="robot-pupil"></div>
+                </div>
+            </div>
+
+            <!-- Robot body -->
+            <div class="robot-body">
+                <div class="robot-chest">
+                    <div class="chest-light"></div>
+                </div>
+                <div class="robot-arm left"></div>
+                <div class="robot-arm right"></div>
+                <div class="robot-leg left">
+                    <div class="robot-foot"></div>
+                </div>
+                <div class="robot-leg right">
+                    <div class="robot-foot"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions" id="instructions">Click the robot to access the system</div>
+    </div>
+
+    <!-- Projection beam -->
+    <div class="projection-beam" id="projectionBeam"></div>
+
+    <!-- Holographic form -->
+    <div class="hologram-container" id="hologramForm">
+        <button class="close-btn" id="closeBtn">✕</button>
+        
+        <h2 class="form-title">System Access</h2>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter your username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+            
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox"> Remember me
+                </label>
+                <a href="#" class="forgot-link">Forgot password?</a>
+            </div>
+            
+            <button type="submit" class="submit-btn">Access Granted</button>
+        </form>
+    </div>
+
+    <!-- Success message -->
+    <div class="success-message" id="successMessage">Access Granted! Welcome back.</div>
+
+    <script>
+        // Generate stars
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            starsContainer.appendChild(star);
+        }
+
+        // Get elements
+        const robot = document.getElementById('robot');
+        const hologramForm = document.getElementById('hologramForm');
+        const projectionBeam = document.getElementById('projectionBeam');
+        const closeBtn = document.getElementById('closeBtn');
+        const instructions = document.getElementById('instructions');
+        const loginForm = document.getElementById('loginForm');
+        const successMessage = document.getElementById('successMessage');
+        const robotPupils = document.querySelectorAll('.robot-pupil');
+        const chestLight = document.querySelector('.chest-light');
+
+        let isFormOpen = false;
+
+        // Track mouse movement for robot eyes
+        document.addEventListener('mousemove', (e) => {
+            if (!isFormOpen) {
+                const robotRect = robot.getBoundingClientRect();
+                const robotCenterX = robotRect.left + robotRect.width / 2;
+                const robotCenterY = robotRect.top + robotRect.height / 2;
+                
+                const angleRad = Math.atan2(e.clientY - robotCenterY, e.clientX - robotCenterX);
+                const distance = Math.min(5, Math.sqrt(Math.pow(e.clientX - robotCenterX, 2) + Math.pow(e.clientY - robotCenterY, 2)) / 50);
+                
+                robotPupils.forEach(pupil => {
+                    const pupilX = Math.cos(angleRad) * distance;
+                    const pupilY = Math.sin(angleRad) * distance;
+                    pupil.style.transform = `translate(calc(-50% + ${pupilX}px), calc(-50% + ${pupilY}px))`;
+                });
+            }
+        });
+
+        // Robot click handler
+        robot.addEventListener('click', function() {
+            if (!isFormOpen) {
+                isFormOpen = true;
+                
+                // Show projection beam
+                projectionBeam.classList.add('active');
+                
+                // Robot animation
+                robot.style.animation = 'none';
+                robot.style.transform = 'scale(1.1)';
+                chestLight.style.background = '#ff6b6b';
+                chestLight.style.boxShadow = '0 0 30px #ff6b6b';
+                
+                // Show hologram form after delay
+                setTimeout(() => {
+                    hologramForm.classList.add('active');
+                    instructions.style.opacity = '0';
+                }, 500);
+                
+                // Reset robot animation after form appears
+                setTimeout(() => {
+                    robot.style.transform = 'scale(1)';
+                    chestLight.style.background = '#feca57';
+                    chestLight.style.boxShadow = '0 0 20px #feca57';
+                }, 800);
+            }
+        });
+
+        // Close button handler
+        closeBtn.addEventListener('click', function() {
+            isFormOpen = false;
+            hologramForm.classList.remove('active');
+            projectionBeam.classList.remove('active');
+            instructions.style.opacity = '1';
+            
+            // Reset form
+            loginForm.reset();
+        });
+
+        // Form submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username && password) {
+                // Show success message
+                successMessage.textContent = `Access Granted! Welcome, ${username}.`;
+                successMessage.classList.add('show');
+                
+                // Robot celebration animation
+                robot.style.animation = 'none';
+                robot.style.transform = 'scale(1.2) rotate(10deg)';
+                
+                setTimeout(() => {
+                    robot.style.transform = 'scale(1.2) rotate(-10deg)';
+                }, 200);
+                
+                setTimeout(() => {
+                    robot.style.transform = 'scale(1.2) rotate(0deg)';
+                }, 400);
+                
+                setTimeout(() => {
+                    robot.style.transform = 'scale(1)';
+                    robot.style.animation = 'float 4s ease-in-out infinite';
+                }, 600);
+                
+                // Hide form after delay
+                setTimeout(() => {
+                    closeBtn.click();
+                }, 2000);
+                
+                // Hide success message
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                }, 3000);
+            }
+        });
+
+        // Forgot password link
+        document.querySelector('.forgot-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            successMessage.textContent = 'Password reset link sent to your email!';
+            successMessage.classList.add('show');
+            
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 3000);
+        });
+
+        // Add hover sound effect simulation (visual feedback)
+        robot.addEventListener('mouseenter', function() {
+            if (!isFormOpen) {
+                chestLight.style.background = '#ff9ff3';
+                chestLight.style.boxShadow = '0 0 30px #ff9ff3';
+            }
+        });
+
+        robot.addEventListener('mouseleave', function() {
+            if (!isFormOpen) {
+                chestLight.style.background = '#feca57';
+                chestLight.style.boxShadow = '0 0 20px #feca57';
+            }
+        });
+
+        // Add random blinking to robot eyes
+        setInterval(() => {
+            if (!isFormOpen && Math.random() > 0.8) {
+                robotPupils.forEach(pupil => {
+                    pupil.style.height = '2px';
+                    setTimeout(() => {
+                        pupil.style.height = '15px';
+                    }, 150);
+                });
+            }
+        }, 3000);
+
+        // Add initial entrance animation
+        window.addEventListener('load', function() {
+            robot.style.animation = 'none';
+            robot.style.transform = 'translateY(-100px) scale(0.5)';
+            robot.style.opacity = '0';
+            
+            setTimeout(() => {
+                robot.style.transition = 'all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                robot.style.transform = 'translateY(0) scale(1)';
+                robot.style.opacity = '1';
+                
+                setTimeout(() => {
+                    robot.style.transition = '';
+                    robot.style.animation = 'float 4s ease-in-out infinite';
+                }, 1000);
+            }, 500);
+        });
+    </script>
+</body>
+</html>

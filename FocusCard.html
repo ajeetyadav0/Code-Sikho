@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create an Interactive Focus Card Featuring Hover Effects.</title>
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    /* --- Global Styles & Variables --- */
+:root {
+    --bg-color: #1a1a2e;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --text-primary: #ffffff;
+    --text-secondary: #b4b4b4;
+    --accent-color: #f39c12;
+    --card-shadow-color: rgba(243, 156, 18, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* --- Card Container for 3D Perspective --- */
+.card-container {
+    perspective: 1000px; /* This is crucial for the 3D effect */
+}
+
+/* --- The Main Focus Card --- */
+.focus-card {
+    width: 320px;
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d; /* Allows child elements to be positioned in 3D space */
+}
+
+/* Hover State for the Card */
+.focus-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 20px 40px var(--card-shadow-color);
+    border-color: var(--accent-color);
+}
+
+/* --- Card Header --- */
+.card-header .card-avatar {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    border: 4px solid var(--accent-color);
+    padding: 3px; /* Creates a gap between the image and the border */
+    background: var(--bg-color);
+    transition: transform 0.4s ease;
+}
+
+.focus-card:hover .card-avatar {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.card-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.card-name {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.card-title {
+    color: var(--accent-color);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* --- Card Body (Hidden by Default) --- */
+.card-body {
+    margin-top: 1.5rem;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.6s ease, opacity 0.5s ease 0.1s, padding 0.4s ease;
+}
+
+/* Reveal the body on hover */
+.focus-card:hover .card-body {
+    max-height: 300px; /* A value large enough to fit the content */
+    opacity: 1;
+    padding-top: 1.5rem;
+}
+
+.card-bio {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+.card-skills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.skill-tag {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.card-socials a {
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    margin: 0 0.75rem;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.card-socials a:hover {
+    color: var(--accent-color);
+    transform: translateY(-3px);
+}
+</style>
+</head>
+<body>
+
+    <div class="card-container">
+        <div class="focus-card" data-tilt>
+            <div class="card-header">
+                <div class="card-avatar">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=580&q=80" alt="Avatar">
+                </div>
+                <h2 class="card-name">Ajeet Yadav</h2>
+                <p class="card-title">Software Developer</p>
+            </div>
+
+            <div class="card-body">
+                <p class="card-bio">
+                    Passionate about building beautiful, interactive web experiences that bridge the gap between design and functionality.
+                </p>
+                <div class="card-skills">
+                    <span class="skill-tag">HTML</span>
+                    <span class="skill-tag">CSS</span>
+                    <span class="skill-tag">JavaScript</span>
+                    <span class="skill-tag">UI/UX</span>
+                </div>
+                <div class="card-socials">
+                    <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Portfolio"><i class="fas fa-globe"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+    const card = document.querySelector('[data-tilt]');
+
+    // Only apply the effect if the card exists
+    if (card) {
+        card.addEventListener('mousemove', (e) => {
+            // Get the mouse position relative to the viewport
+            const { clientX, clientY } = e;
+            
+            // Get the card's position and dimensions
+            const { offsetLeft, offsetTop, offsetWidth, offsetHeight } = card;
+            
+            // Calculate the center of the card
+            const centerX = offsetLeft + offsetWidth / 2;
+            const centerY = offsetTop + offsetHeight / 2;
+            
+            // Calculate the distance from the mouse to the center of the card
+            const deltaX = clientX - centerX;
+            const deltaY = clientY - centerY;
+            
+            // Calculate the rotation values (max rotation is 15 degrees)
+            const rotateX = (deltaY / (offsetHeight / 2)) * -15;
+            const rotateY = (deltaX / (offsetWidth / 2)) * 15;
+            
+            // Apply the transformation
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+        });
+
+        // Reset the card's transform when the mouse leaves
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+        });
+    }
+
+});
+    </script>
+</body>
+</html>

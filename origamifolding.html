@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Origami - Fold Your Story</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Quicksand', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Floating paper particles */
+        .paper-particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .paper-particle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #fff, #f0f0f0);
+            border: 1px solid #ddd;
+            opacity: 0.3;
+            animation: floatPaper 15s infinite linear;
+            transform-origin: center;
+        }
+
+        @keyframes floatPaper {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Main container */
+        .origami-container {
+            position: relative;
+            width: 400px;
+            height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        /* Paper crane container */
+        .crane-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            cursor: pointer;
+            transition: all 1s ease;
+        }
+
+        .crane-container:hover {
+            transform: scale(1.05);
+        }
+
+        /* Paper crane SVG */
+        .paper-crane {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.1));
+            transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .paper-crane.unfolding {
+            animation: unfold 2s ease-in-out forwards;
+        }
+
+        @keyframes unfold {
+            0% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2) rotate(180deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(0) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Individual origami parts for animation */
+        .origami-part {
+            position: absolute;
+            background: linear-gradient(135deg, #ffffff, #f8f8f8);
+            border: 1px solid #e0e0e0;
+            transform-origin: center;
+            opacity: 0;
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .origami-part.visible {
+            opacity: 1;
+        }
+
+        /* Signup form container */
+        .signup-form {
+            position: absolute;
+            width: 100%;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 248, 248, 0.95));
+            border-radius: 20px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.8) rotateY(90deg);
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 20;
+        }
+
+        .signup-form.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) rotateY(0deg);
+        }
+
+        /* Form header */
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeInDown 0.8s 0.3s forwards;
+        }
+
+        @keyframes fadeInDown {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-header h2 {
+            color: #333;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Form groups */
+        .form-group {
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideInRight 0.8s forwards;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.5s; }
+        .form-group:nth-child(2) { animation-delay: 0.7s; }
+        .form-group:nth-child(3) { animation-delay: 0.9s; }
+        .form-group:nth-child(4) { animation-delay: 1.1s; }
+
+        @keyframes slideInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #aaa;
+        }
+
+        /* Submit button */
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s 1.3s forwards;
+            margin-top: 10px;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Close button */
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            background: rgba(0, 0, 0, 0.05);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            opacity: 0;
+            animation: fadeIn 0.5s 1.5s forwards;
+            font-size: 18px;
+            color: #666;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .close-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+            transform: rotate(90deg);
+        }
+
+        /* Instructions */
+        .instructions {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #666;
+            font-size: 16px;
+            text-align: center;
+            animation: pulse 2s ease-in-out infinite;
+            transition: opacity 0.5s;
+        }
+
+        .instructions.hidden {
+            opacity: 0;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Success message */
+        .success-toast {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 20px 30px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+        }
+
+        .success-toast.show {
+            top: 30px;
+        }
+
+        .toast-icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        /* Paper folding animation parts */
+        .fold-line {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.1);
+            transform-origin: center;
+            transition: all 1s ease;
+        }
+
+        /* Decorative origami elements */
+        .origami-decoration {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #fff, #f0f0f0);
+            border: 1px solid #e0e0e0;
+            opacity: 0;
+            transition: all 1s ease;
+        }
+
+        .origami-decoration.visible {
+            opacity: 0.3;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .origami-container {
+                width: 90%;
+                padding: 20px;
+            }
+
+            .crane-container {
+                width: 200px;
+                height: 200px;
+            }
+
+            .signup-form {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating paper particles -->
+    <div class="paper-particles" id="paperParticles"></div>
+
+    <!-- Main container -->
+    <div class="origami-container">
+        <!-- Paper crane -->
+        <div class="crane-container" id="craneContainer">
+            <svg class="paper-crane" id="paperCrane" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <!-- Crane body -->
+                <path d="M100 40 L80 80 L120 80 Z" fill="#fff" stroke="#ddd" stroke-width="1"/>
+                <path d="M100 40 L70 90 L130 90 Z" fill="#f8f8f8" stroke="#ddd" stroke-width="1"/>
+                <path d="M100 40 L60 100 L140 100 Z" fill="#fff" stroke="#ddd" stroke-width="1"/>
+                
+                <!-- Wings -->
+                <path d="M100 60 L50 30 L60 70 Z" fill="#f0f0f0" stroke="#ddd" stroke-width="1"/>
+                <path d="M100 60 L150 30 L140 70 Z" fill="#f0f0f0" stroke="#ddd" stroke-width="1"/>
+                
+                <!-- Tail -->
+                <path d="M100 90 L85 120 L115 120 Z" fill="#f8f8f8" stroke="#ddd" stroke-width="1"/>
+                <path d="M100 100 L90 130 L110 130 Z" fill="#fff" stroke="#ddd" stroke-width="1"/>
+                
+                <!-- Head -->
+                <circle cx="100" cy="35" r="8" fill="#fff" stroke="#ddd" stroke-width="1"/>
+                <path d="M108 35 L115 33 L115 37 Z" fill="#f0f0f0" stroke="#ddd" stroke-width="1"/>
+                
+                <!-- Details -->
+                <line x1="100" y1="40" x2="100" y2="100" stroke="#ddd" stroke-width="0.5"/>
+                <line x1="80" y1="80" x2="120" y2="80" stroke="#ddd" stroke-width="0.5"/>
+                <line x1="70" y1="90" x2="130" y2="90" stroke="#ddd" stroke-width="0.5"/>
+            </svg>
+        </div>
+
+        <!-- Signup form -->
+        <div class="signup-form" id="signupForm">
+            <button class="close-btn" id="closeBtn">✕</button>
+            
+            <div class="form-header">
+                <h2>Fold Your Story</h2>
+                <p>Create your account with precision and care</p>
+            </div>
+            
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="your@email.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Create a strong password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Re-enter your password" required>
+                </div>
+                
+                <button type="submit" class="submit-btn">Create Account</button>
+            </form>
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions" id="instructions">Click the crane to unfold your journey</div>
+    </div>
+
+    <!-- Success toast -->
+    <div class="success-toast" id="successToast">
+        <div class="toast-icon">✓</div>
+        <span id="toastMessage">Account created successfully!</span>
+    </div>
+
+    <script>
+        // Generate floating paper particles
+        const paperParticles = document.getElementById('paperParticles');
+        for (let i = 0; i < 15; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'paper-particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+            particle.style.transform = `rotate(${Math.random() * 360}deg)`;
+            paperParticles.appendChild(particle);
+        }
+
+        // Get elements
+        const craneContainer = document.getElementById('craneContainer');
+        const paperCrane = document.getElementById('paperCrane');
+        const signupForm = document.getElementById('signupForm');
+        const closeBtn = document.getElementById('closeBtn');
+        const instructions = document.getElementById('instructions');
+        const registrationForm = document.getElementById('registrationForm');
+        const successToast = document.getElementById('successToast');
+        const toastMessage = document.getElementById('toastMessage');
+
+        let isFormOpen = false;
+
+        // Create origami decoration elements
+        function createOrigamiDecorations() {
+            const decorations = [
+                { top: '10%', left: '10%', rotation: '45deg' },
+                { top: '10%', right: '10%', rotation: '-45deg' },
+                { bottom: '10%', left: '10%', rotation: '-30deg' },
+                { bottom: '10%', right: '10%', rotation: '30deg' }
+            ];
+
+            decorations.forEach((decoration, index) => {
+                const elem = document.createElement('div');
+                elem.className = 'origami-decoration';
+                Object.keys(decoration).forEach(key => {
+                    elem.style[key] = decoration[key];
+                });
+                elem.style.transform = `rotate(${decoration.rotation})`;
+                document.querySelector('.origami-container').appendChild(elem);
+            });
+        }
+
+        // Show toast message
+        function showToast(message) {
+            toastMessage.textContent = message;
+            successToast.classList.add('show');
+            setTimeout(() => {
+                successToast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Create folding paper pieces animation
+        function createFoldingPieces() {
+            const pieces = [
+                { width: '100px', height: '100px', top: '50%', left: '50%', rotation: '0deg' },
+                { width: '80px', height: '80px', top: '30%', left: '20%', rotation: '45deg' },
+                { width: '120px', height: '60px', top: '70%', left: '60%', rotation: '-30deg' },
+                { width: '90px', height: '90px', top: '20%', left: '70%', rotation: '60deg' }
+            ];
+
+            pieces.forEach((piece, index) => {
+                const elem = document.createElement('div');
+                elem.className = 'origami-part';
+                elem.style.width = piece.width;
+                elem.style.height = piece.height;
+                elem.style.top = piece.top;
+                elem.style.left = piece.left;
+                elem.style.transform = `translate(-50%, -50%) rotate(${piece.rotation})`;
+                document.querySelector('.origami-container').appendChild(elem);
+            });
+        }
+
+        // Unfold animation
+        function unfoldCrane() {
+            if (!isFormOpen) {
+                isFormOpen = true;
+                
+                // Add unfolding animation to crane
+                paperCrane.classList.add('unfolding');
+                
+                // Show folding pieces
+                document.querySelectorAll('.origami-part').forEach((part, index) => {
+                    setTimeout(() => {
+                        part.classList.add('visible');
+                        part.style.transform = `translate(-50%, -50%) rotate(${Math.random() * 360}deg) scale(0)`;
+                    }, index * 100);
+                });
+                
+                // Hide instructions
+                instructions.classList.add('hidden');
+                
+                // Show form after animation
+                setTimeout(() => {
+                    signupForm.classList.add('active');
+                    showToast('Unfolded! Please fill in your details');
+                    
+                    // Show decorations
+                    document.querySelectorAll('.origami-decoration').forEach((dec, index) => {
+                        setTimeout(() => {
+                            dec.classList.add('visible');
+                        }, index * 200);
+                    });
+                }, 1000);
+                
+                // Hide crane completely
+                setTimeout(() => {
+                    craneContainer.style.opacity = '0';
+                    craneContainer.style.pointerEvents = 'none';
+                }, 1500);
+            }
+        }
+
+        // Refold animation
+        function refoldCrane() {
+            isFormOpen = false;
+            signupForm.classList.remove('active');
+            
+            // Hide decorations
+            document.querySelectorAll('.origami-decoration').forEach(dec => {
+                dec.classList.remove('visible');
+            });
+            
+            // Hide folding pieces
+            document.querySelectorAll('.origami-part').forEach((part, index) => {
+                setTimeout(() => {
+                    part.classList.remove('visible');
+                }, index * 50);
+            });
+            
+            // Restore crane
+            setTimeout(() => {
+                craneContainer.style.opacity = '1';
+                craneContainer.style.pointerEvents = 'auto';
+                paperCrane.classList.remove('unfolding');
+                instructions.classList.remove('hidden');
+                showToast('Refolded! Click to unfold again');
+            }, 800);
+        }
+
+        // Event listeners
+        craneContainer.addEventListener('click', unfoldCrane);
+        closeBtn.addEventListener('click', refoldCrane);
+
+        // Form submission
+        registrationForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Validation
+            if (!fullName || !email || !password || !confirmPassword) {
+                showToast('Please fill in all fields');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showToast('Passwords do not match');
+                return;
+            }
+
+            if (password.length < 6) {
+                showToast('Password must be at least 6 characters');
+                return;
+            }
+
+            // Success
+            showToast(`Welcome, ${fullName.split(' ')[0]}! Account created successfully.`);
+            
+            // Reset form and close after delay
+            setTimeout(() => {
+                this.reset();
+                refoldCrane();
+            }, 2000);
+        });
+
+        // Add hover effect to crane
+        craneContainer.addEventListener('mouseenter', function() {
+            if (!isFormOpen) {
+                this.style.filter = 'drop-shadow(0 15px 40px rgba(0, 0, 0, 0.15))';
+            }
+        });
+
+        craneContainer.addEventListener('mouseleave', function() {
+            if (!isFormOpen) {
+                this.style.filter = 'drop-shadow(0 10px 30px rgba(0, 0, 0, 0.1))';
+            }
+        });
+
+        // Add focus effects to form inputs
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+            });
+
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+
+        // Initialize decorations and folding pieces
+        createOrigamiDecorations();
+        createFoldingPieces();
+
+        // Add entrance animation
+        window.addEventListener('load', function() {
+            craneContainer.style.animation = 'craneEntrance 1.5s ease-out';
+        });
+
+        // Add entrance animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes craneEntrance {
+                from {
+                    transform: translateY(-50px) scale(0.5) rotate(-180deg);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0) scale(1) rotate(0deg);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

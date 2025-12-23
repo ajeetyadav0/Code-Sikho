@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fully Animated & Validated Form</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    /* --- Global Styles & Variables --- */
+:root {
+    --bg-color: #0f0f1e;
+    --form-bg: rgba(255, 255, 255, 0.05);
+    --text-color: #e0e0e0;
+    --primary-color: #6c5ce7;
+    --success-color: #00b894;
+    --error-color: #d63031;
+    --input-bg: rgba(255, 255, 255, 0.1);
+    --input-border: rgba(255, 255, 255, 0.2);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* --- Form Container --- */
+.form-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+.signup-form, .success-message {
+    background: var(--form-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--input-border);
+    border-radius: 15px;
+    padding: 2.5rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.signup-form h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 700;
+}
+
+/* --- Input Groups --- */
+.input-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 1rem;
+    background: var(--input-bg);
+    border: 2px solid var(--input-border);
+    border-radius: 8px;
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.input-group label {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    color: #b2bec3;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.input-group i {
+    position: absolute;
+    right: 1rem;
+    top: 1.2rem;
+    font-size: 1.2rem;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+/* --- Floating Label & Focus States --- */
+.input-group input:focus,
+.input-group input:valid {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.input-group input:focus ~ label,
+.input-group input:valid ~ label {
+    top: -0.5rem;
+    left: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--primary-color);
+    background: var(--bg-color);
+    padding: 0 0.5rem;
+}
+
+/* --- Success & Error States --- */
+.input-group.success input {
+    border-color: var(--success-color);
+}
+.input-group.success i.fa-check-circle {
+    color: var(--success-color);
+    opacity: 1;
+}
+
+.input-group.error input {
+    border-color: var(--error-color);
+}
+.input-group.error i.fa-exclamation-circle {
+    color: var(--error-color);
+    opacity: 1;
+}
+.input-group.error label {
+    color: var(--error-color);
+}
+
+.error-message {
+    color: var(--error-color);
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    min-height: 1em;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.input-group.error .error-message {
+    opacity: 1;
+}
+
+/* --- Password Strength Meter --- */
+.password-strength {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: -1rem;
+    margin-bottom: 1.5rem;
+    height: 5px;
+}
+.strength-meter {
+    flex-grow: 1;
+    background: var(--input-border);
+    border-radius: 5px;
+    overflow: hidden;
+}
+.strength-meter::before {
+    content: '';
+    display: block;
+    height: 100%;
+    width: 0;
+    transition: width 0.5s ease, background-color 0.5s ease;
+}
+.strength-text {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+.strength-meter.weak::before { width: 33%; background-color: var(--error-color); }
+.strength-meter.medium::before { width: 66%; background-color: #fdcb6e; }
+.strength-meter.strong::before { width: 100%; background-color: var(--success-color); }
+
+/* --- Checkbox Group --- */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.checkbox-group input[type="checkbox"] {
+    width: auto;
+}
+.checkbox-group label {
+    position: static;
+    pointer-events: auto;
+    font-size: 0.9rem;
+}
+
+/* --- Submit Button --- */
+.submit-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+.submit-btn:hover { background: #5f4bd8; }
+
+/* --- Form Shake Animation --- */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+    20%, 40%, 60%, 80% { transform: translateX(10px); }
+}
+.signup-form.shake {
+    animation: shake 0.6s ease-in-out;
+}
+
+/* --- Success Message --- */
+.success-message {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.8);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.success-message.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+}
+.success-icon {
+    font-size: 4rem;
+    color: var(--success-color);
+    margin-bottom: 1rem;
+}
+</style>
+</head>
+<body>
+
+    <div class="form-container">
+        <!-- The form that will be validated -->
+        <form id="signup-form" class="signup-form" novalidate>
+            <h1>Create Account</h1>
+
+            <!-- Username Field -->
+            <div class="input-group">
+                <input type="text" id="username" name="username" required>
+                <label for="username">Username</label>
+                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-exclamation-circle"></i>
+                <div class="error-message"></div>
+            </div>
+
+            <!-- Email Field -->
+            <div class="input-group">
+                <input type="email" id="email" name="email" required>
+                <label for="email">Email</label>
+                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-exclamation-circle"></i>
+                <div class="error-message"></div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="input-group">
+                <input type="password" id="password" name="password" required>
+                <label for="password">Password</label>
+                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-exclamation-circle"></i>
+                <div class="error-message"></div>
+            </div>
+            
+            <!-- Password Strength Meter -->
+            <div class="password-strength">
+                <div class="strength-meter"></div>
+                <span class="strength-text"></span>
+            </div>
+
+            <!-- Terms Checkbox -->
+            <div class="input-group checkbox-group">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">I agree to the Terms and Conditions</label>
+                <div class="error-message"></div>
+            </div>
+
+            <button type="submit" class="submit-btn">Sign Up</button>
+        </form>
+
+        <!-- Success Message (Hidden by default) -->
+        <div id="success-message" class="success-message">
+            <div class="success-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h2>Success!</h2>
+            <p>Your account has been created.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('signup-form');
+    const username = document.getElementById('username');
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+    const terms = document.getElementById('terms');
+    const successMessage = document.getElementById('success-message');
+
+    // --- Validation Functions ---
+    const showError = (input, message) => {
+        const inputGroup = input.parentElement;
+        inputGroup.classList.remove('success');
+        inputGroup.classList.add('error');
+        const errorDiv = inputGroup.querySelector('.error-message');
+        errorDiv.textContent = message;
+    };
+
+    const showSuccess = (input) => {
+        const inputGroup = input.parentElement;
+        inputGroup.classList.remove('error');
+        inputGroup.classList.add('success');
+        const errorDiv = inputGroup.querySelector('.error-message');
+        errorDiv.textContent = '';
+    };
+    
+    const checkEmail = (email) => {
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    };
+
+    const checkPasswordStrength = (password) => {
+        const strengthMeter = document.querySelector('.strength-meter');
+        const strengthText = document.querySelector('.strength-text');
+        let strength = 0;
+        if (password.length >= 8) strength++;
+        if (password.match(/[a-z]+/)) strength++;
+        if (password.match(/[A-Z]+/)) strength++;
+        if (password.match(/[0-9]+/)) strength++;
+
+        strengthMeter.classList.remove('weak', 'medium', 'strong');
+        if (strength <= 1) {
+            strengthMeter.classList.add('weak');
+            strengthText.textContent = 'Weak';
+        } else if (strength === 2) {
+            strengthMeter.classList.add('medium');
+            strengthText.textContent = 'Medium';
+        } else {
+            strengthMeter.classList.add('strong');
+            strengthText.textContent = 'Strong';
+        }
+    };
+
+    // --- Real-time Validation ---
+    form.addEventListener('input', (e) => {
+        switch (e.target.id) {
+            case 'username':
+                if (e.target.value.trim() === '') {
+                    showError(e.target, 'Username is required.');
+                } else {
+                    showSuccess(e.target);
+                }
+                break;
+            case 'email':
+                if (e.target.value.trim() === '') {
+                    showError(e.target, 'Email is required.');
+                } else if (!checkEmail(e.target.value)) {
+                    showError(e.target, 'Please enter a valid email.');
+                } else {
+                    showSuccess(e.target);
+                }
+                break;
+            case 'password':
+                if (e.target.value.trim() === '') {
+                    showError(e.target, 'Password is required.');
+                } else {
+                    showSuccess(e.target);
+                    checkPasswordStrength(e.target.value);
+                }
+                break;
+        }
+    });
+
+    // --- Form Submission ---
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Final validation on submit
+        let isValid = true;
+        const inputs = form.querySelectorAll('input');
+        inputs.forEach(input => {
+            if (input.type !== 'checkbox' && !input.value.trim()) {
+                showError(input, `${input.previousElementSibling.textContent} is required.`);
+                isValid = false;
+            }
+            if (input.type === 'email' && !checkEmail(input.value)) {
+                 showError(input, `Please enter a valid email.`);
+                isValid = false;
+            }
+        });
+        
+        if (!terms.checked) {
+            showError(terms, 'You must agree to the terms.');
+            isValid = false;
+        }
+
+        if (isValid) {
+            // Show success message
+            form.style.opacity = '0';
+            form.style.transform = 'scale(0.8)';
+            setTimeout(() => {
+                form.style.display = 'none';
+                successMessage.classList.add('show');
+            }, 500);
+        } else {
+            // Shake the form
+            form.classList.add('shake');
+            setTimeout(() => form.classList.remove('shake'), 600);
+        }
+    });
+});
+    </script>
+</body>
+</html>

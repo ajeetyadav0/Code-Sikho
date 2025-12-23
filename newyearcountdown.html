@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Year's Eve Countdown</title>
+    <style>
+        /* --- General Setup & Scene --- */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    background-color: #000;
+    font-family: 'Arial', sans-serif;
+}
+
+.sky {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(to bottom, #000428 0%, #004e92 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+/* --- Countdown Timer --- */
+.countdown {
+    display: flex;
+    gap: 30px;
+}
+
+.bloc-time {
+    text-align: center;
+}
+
+.count-title {
+    display: block;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.figure {
+    position: relative;
+    float: left;
+    margin-right: 10px;
+    width: 60px;
+    height: 80px;
+}
+
+.figure:last-child {
+    margin-right: 0;
+}
+
+.figure span {
+    position: absolute;
+    left: 0;
+    overflow: hidden;
+    width: 60px;
+    height: 40px;
+    font-size: 4rem;
+    line-height: 40px;
+    color: #fff;
+    background: #2c3e50;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.figure .top {
+    top: 0;
+    z-index: 3;
+    transform-origin: bottom;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    transform: rotateX(0deg);
+}
+
+.figure .bottom {
+    bottom: 0;
+    z-index: 1;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.figure .top-back, .figure .bottom-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #34495e;
+    border-radius: 5px;
+}
+
+.figure .top-back {
+    top: 0;
+    z-index: 2;
+    transform: rotateX(180deg);
+}
+
+.figure .bottom-back {
+    bottom: 0;
+    z-index: 0;
+}
+
+/* --- Message --- */
+.message {
+    position: absolute;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    font-size: 6rem;
+    color: #fff;
+    text-shadow: 0 0 20px #ffdd00, 0 0 40px #ffdd00;
+    display: none; /* Hidden by default */
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 20px #ffdd00, 0 0 40px #ffdd00; }
+    to { text-shadow: 0 0 30px #ffdd00, 0 0 50px #ffdd00, 0 0 60px #ffdd00; }
+}
+
+/* --- City Skyline --- */
+.city-skyline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 200" fill="%23222"><rect x="50" y="100" width="80" height="100"/><rect x="150" y="50" width="100" height="150"/><rect x="270" y="120" width="60" height="80"/><rect x="350" y="80" width="120" height="120"/><rect x="490" y="110" width="70" height="90"/><rect x="570" y="60" width="90" height="140"/><rect x="670" y="130" width="50" height="70"/><rect x="730" y="90" width="110" height="110"/><rect x="860" y="140" width="80" height="60"/><rect x="960" y="70" width="100" height="130"/><rect x="1070" y="120" width="60" height="80"/></svg>');
+    background-size: cover;
+    z-index: 10;
+}
+
+/* --- Fireworks --- */
+.firework {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    animation: launch 1s ease-out forwards;
+    z-index: 5;
+}
+
+@keyframes launch {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(var(--launch-height)) scale(0);
+        opacity: 0;
+    }
+}
+
+.firework-particle {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    animation: explode 1.5s ease-out forwards;
+}
+
+@keyframes explode {
+    0% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--x), var(--y));
+        opacity: 0;
+    }
+}
+        </style>
+</head>
+<body>
+
+    <div class="sky" id="sky">
+        <!-- The Countdown Timer -->
+        <div class="countdown" id="countdown">
+            <div class="bloc-time days" data-init-value="365">
+                <span class="count-title">Days</span>
+                <div class="figure days days-1">
+                    <span class="top">0</span>
+                    <span class="top-back">
+                        <span>0</span>
+                    </span>
+                    <span class="bottom">0</span>
+                    <span class="bottom-back">
+                        <span>0</span>
+                    </span>
+                </div>
+                <div class="figure days days-2">
+                    <span class="top">0</span>
+                    <span class="top-back">
+                        <span>0</span>
+                    </span>
+                    <span class="bottom">0</span>
+                    <span class="bottom-back">
+                        <span>0</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="bloc-time hours" data-init-value="24">
+                <span class="count-title">Hours</span>
+                 <div class="figure hours hours-1">
+                    <span class="top">0</span>
+                    <span class="top-back">
+                        <span>0</span>
+                    </span>
+                    <span class="bottom">0</span>
+                    <span class="bottom-back">
+                        <span>0</span>
+                    </span>
+                </div>
+                <div class="figure hours hours-2">
+                    <span class="top">0</span>
+                    <span class="top-back">
+                        <span>0</span>
+                    </span>
+                    <span class="bottom">0</span>
+                    <span class="bottom-back">
+                        <span>0</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="bloc-time minutes" data-init-value="60">
+                <span class="count-title">Minutes</span>
+                <div class="figure minutes minutes-1">
+                    <span class="top">0</span>
+                    <span class="top-back">
+                        <span>0</span>
+                    </span>
+                    <span class="bottom">0</span>
+                    <span class="bottom-back">
+                        <span>0</span>
+                    </span>
+                </div>
+                <div class="figure minutes minutes-2">
+                    <span class="top">0</span>
+                    <span class="top-back">
+                        <span>0</span>
+                    </span>
+                    <span class="bottom">0</span>
+                    <span class="bottom-back">
+                        <span>0</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="bloc-time seconds" data-init-value="60">
+                <span class="count-title">Seconds</span>
+                <div class="figure seconds seconds-1">
+                    <span class="top">0</span>
+                    <span class="top-back">
+                        <span>0</span>
+                    </span>
+                    <span class="bottom">0</span>
+                    <span class="bottom-back">
+                        <span>0</span>
+                    </span>
+                </div>
+                <div class="figure seconds seconds-2">
+                    <span class="top">0</span>
+                    <span class="top-back">
+                        <span>0</span>
+                    </span>
+                    <span class="bottom">0</span>
+                    <span class="bottom-back">
+                        <span>0</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- The message to show on New Year -->
+        <h1 class="message" id="message">HAPPY NEW YEAR!</h1>
+    </div>
+
+    <!-- The City Skyline -->
+    <div class="city-skyline"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+    // --- 1. Countdown Logic ---
+    const countdownEl = document.getElementById('countdown');
+    const messageEl = document.getElementById('message');
+
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const currentYear = new Date().getFullYear();
+        const newYear = new Date(`January 01, ${currentYear + 1} 00:00:00`).getTime();
+
+        const distance = newYear - now;
+
+        if (distance < 0) {
+            // If it's already past New Year, show the message and stop the countdown
+            countdownEl.style.display = 'none';
+            messageEl.style.display = 'block';
+            // Trigger a massive firework display
+            for(let i=0; i< 5; i++) {
+                setTimeout(() => createFirework(Math.random() * window.innerWidth, window.innerHeight * 0.5), i * 200);
+            }
+            return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Update the DOM
+        document.querySelector('.days-1 .top').innerText = Math.floor(days / 10);
+        document.querySelector('.days-1 .bottom').innerText = Math.floor(days / 10);
+        document.querySelector('.days-2 .top').innerText = days % 10;
+        document.querySelector('.days-2 .bottom').innerText = days % 10;
+
+        document.querySelector('.hours-1 .top').innerText = Math.floor(hours / 10);
+        document.querySelector('.hours-1 .bottom').innerText = Math.floor(hours / 10);
+        document.querySelector('.hours-2 .top').innerText = hours % 10;
+        document.querySelector('.hours-2 .bottom').innerText = hours % 10;
+
+        document.querySelector('.minutes-1 .top').innerText = Math.floor(minutes / 10);
+        document.querySelector('.minutes-1 .bottom').innerText = Math.floor(minutes / 10);
+        document.querySelector('.minutes-2 .top').innerText = minutes % 10;
+        document.querySelector('.minutes-2 .bottom').innerText = minutes % 10;
+
+        document.querySelector('.seconds-1 .top').innerText = Math.floor(seconds / 10);
+        document.querySelector('.seconds-1 .bottom').innerText = Math.floor(seconds / 10);
+        document.querySelector('.seconds-2 .top').innerText = seconds % 10;
+        document.querySelector('.seconds-2 .bottom').innerText = seconds % 10;
+    }
+
+    // Initial call and then set the interval
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+
+    // --- 2. Fireworks Logic ---
+    const sky = document.getElementById('sky');
+    const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#f0e68c'];
+
+    function createFirework(x, y) {
+        // Create the launching firework
+        const firework = document.createElement('div');
+        firework.classList.add('firework');
+        firework.style.left = `${x}px`;
+        firework.style.bottom = '0px';
+        firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        
+        // Calculate launch height based on click position
+        const launchHeight = y + (Math.random() * 100);
+        firework.style.setProperty('--launch-height', `-${launchHeight}px`);
+
+        sky.appendChild(firework);
+
+        // When the launch animation is almost done, create the explosion
+        setTimeout(() => {
+            createExplosion(x, y - launchHeight);
+            firework.remove(); // Remove the launch element
+        }, 900);
+    }
+
+    function createExplosion(x, y) {
+        const particleCount = 30;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('firework-particle');
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+            particle.style.backgroundColor = color;
+            particle.style.boxShadow = `0 0 6px 2px ${color}`;
+
+            const angle = (Math.PI * 2 * i) / particleCount;
+            const velocity = 50 + Math.random() * 50;
+            const xMove = Math.cos(angle) * velocity;
+            const yMove = Math.sin(angle) * velocity;
+
+            particle.style.setProperty('--x', `${xMove}px`);
+            particle.style.setProperty('--y', `${yMove}px`);
+
+            sky.appendChild(particle);
+
+            // Remove particle after animation
+            setTimeout(() => particle.remove(), 1500);
+        }
+    }
+
+    // --- 3. Event Listeners ---
+    // Launch a firework on click
+    sky.addEventListener('click', (e) => {
+        // Don't launch if clicking on the countdown timer
+        if (e.target.closest('.countdown')) return;
+        createFirework(e.clientX, e.clientY);
+    });
+
+    // Launch random fireworks periodically
+    setInterval(() => {
+        const randomX = Math.random() * window.innerWidth;
+        const randomY = window.innerHeight * 0.2 + Math.random() * window.innerHeight * 0.3;
+        createFirework(randomX, randomY);
+    }, 2000);
+});
+    </script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern UI Project Gallery</title>
+    <!-- Google Fonts for a modern look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Global Styles & Variables --- */
+:root {
+    --bg-color: #0f0f1e;
+    --card-bg: #1a1a2e;
+    --text-primary: #ffffff;
+    --text-secondary: #b4b4b4;
+    --accent-color: #7c3aed; /* A vibrant purple */
+    --accent-hover: #6d28d9;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* --- Modern Glassmorphism Header --- */
+.glass-header {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px); /* The key to glassmorphism */
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 2rem 1rem;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    animation: slideDown 0.6s ease-out;
+}
+
+.glass-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, var(--accent-color), #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* --- Main Content --- */
+main {
+    padding: 2rem 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* --- Filter Buttons --- */
+.filter-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: var(--card-bg);
+    color: var(--text-secondary);
+    border: 1px solid var(--glass-border);
+    padding: 0.7rem 1.5rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.filter-btn:hover {
+    background: var(--accent-color);
+    color: var(--text-primary);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(124, 58, 237, 0.4);
+}
+
+.filter-btn.active {
+    background: var(--accent-color);
+    color: var(--text-primary);
+}
+
+/* --- Responsive CSS Grid for Project Cards --- */
+.projects-grid {
+    display: grid;
+    /* This is the magic for a responsive grid */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    animation: fadeIn 1s ease-out;
+}
+
+/* --- Project Card Styling --- */
+.project-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.project-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.card-image {
+    width: 100%;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.3s ease;
+}
+
+.project-card:hover .card-image {
+    transform: scale(1.1);
+}
+
+.card-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Ensures content area grows */
+}
+
+.card-content h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.card-content p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* --- Animations --- */
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Responsive Design for smaller screens --- */
+@media (max-width: 600px) {
+    .glass-header h1 {
+        font-size: 2rem;
+    }
+    .projects-grid {
+        grid-template-columns: 1fr; /* Single column on very small screens */
+    }
+}
+    </style>
+</head>
+<body>
+
+    <header class="glass-header">
+        <h1>My Project Gallery</h1>
+        <p>A showcase of modern web development and design.</p>
+    </header>
+
+    <main>
+        <section class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="ui-ux">UI/UX</button>
+            <button class="filter-btn" data-filter="web-dev">Web Dev</button>
+            <button class="filter-btn" data-filter="app-dev">App Dev</button>
+        </section>
+
+        <section class="projects-grid">
+            <!-- Project Card 1 -->
+            <div class="project-card" data-category="ui-ux">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80');"></div>
+                <div class="card-content">
+                    <h3>Saas Dashboard Design</h3>
+                    <p>A clean and modern dashboard for a data analytics platform.</p>
+                </div>
+            </div>
+
+            <!-- Project Card 2 -->
+            <div class="project-card" data-category="web-dev">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80');"></div>
+                <div class="card-content">
+                    <h3>E-Commerce Website</h3>
+                    <p>A full-stack online store with payment integration.</p>
+                </div>
+            </div>
+
+            <!-- Project Card 3 -->
+            <div class="project-card" data-category="app-dev">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80');"></div>
+                <div class="card-content">
+                    <h3>Fitness Tracker App</h3>
+                    <p>A cross-platform mobile app for tracking workouts and nutrition.</p>
+                </div>
+            </div>
+
+            <!-- Project Card 4 -->
+            <div class="project-card" data-category="web-dev">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80');"></div>
+                <div class="card-content">
+                    <h3>Real-Time Chat App</h3>
+                    <p>A WebSocket-based chat application with rooms and DMs.</p>
+                </div>
+            </div>
+            
+            <!-- Project Card 5 -->
+            <div class="project-card" data-category="ui-ux">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1620321023374-1a2b56149a6d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80');"></div>
+                <div class="card-content">
+                    <h3>Banking App Concept</h3>
+                    <p>A user-friendly interface for a modern digital banking experience.</p>
+                </div>
+            </div>
+
+            <!-- Project Card 6 -->
+            <div class="project-card" data-category="app-dev">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80');"></div>
+                <div class="card-content">
+                    <h3>AR Game</h3>
+                    <p>An augmented reality game that blends the virtual world with reality.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+    // Get all the necessary elements from the DOM
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+
+    // Add a click event listener to each filter button
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // 1. Remove the 'active' class from all buttons
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            // 2. Add the 'active' class to the clicked button
+            button.classList.add('active');
+
+            // 3. Get the filter value from the button's data-filter attribute
+            const filterValue = button.getAttribute('data-filter');
+
+            // 4. Loop through all project cards
+            projectCards.forEach(card => {
+                // Get the category of the current card
+                const cardCategory = card.getAttribute('data-category');
+
+                // 5. Show or hide the card based on the filter
+                if (filterValue === 'all' || cardCategory === filterValue) {
+                    // Use a smooth animation for showing/hiding
+                    card.style.display = 'flex'; // Or 'block', 'grid'
+                    card.style.animation = 'fadeIn 0.5s ease-out';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+
+});
+    </script>
+</body>
+</html>

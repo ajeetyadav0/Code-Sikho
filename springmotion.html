@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Profile Card - Toggle Settings</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated background shapes */
+        .bg-shapes {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.3;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            bottom: -100px;
+            right: -100px;
+            animation-delay: 5s;
+        }
+
+        .shape:nth-child(3) {
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(135deg, #fa709a, #fee140);
+            top: 50%;
+            left: 60%;
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translate(0, 0) scale(1);
+            }
+            33% { 
+                transform: translate(30px, -30px) scale(1.1);
+            }
+            66% { 
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Profile card */
+        .profile-card {
+            position: relative;
+            width: 400px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.15),
+                0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform-origin: center bottom;
+        }
+
+        .profile-card.spring-active {
+            animation: springBounce 0.8s ease-out;
+        }
+
+        @keyframes springBounce {
+            0% { transform: scale(1) rotate(0deg); }
+            30% { transform: scale(0.95) rotate(-2deg); }
+            50% { transform: scale(1.05) rotate(1deg); }
+            70% { transform: scale(0.98) rotate(-0.5deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        /* Profile header */
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .avatar {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .avatar.spring {
+            animation: avatarSpring 0.6s ease-out;
+        }
+
+        @keyframes avatarSpring {
+            0% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(0.9) rotate(-5deg); }
+            50% { transform: scale(1.1) rotate(3deg); }
+            75% { transform: scale(0.95) rotate(-1deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        .online-indicator {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background: #4ade80;
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(74, 222, 128, 0.6);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .profile-title {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        /* Profile stats */
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 15px 10px;
+            background: rgba(102, 126, 234, 0.08);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .stat:hover {
+            background: rgba(102, 126, 234, 0.12);
+            transform: translateY(-3px);
+        }
+
+        .stat.spring {
+            animation: statSpring 0.4s ease-out;
+        }
+
+        @keyframes statSpring {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Toggle switch container */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 12px;
+        }
+
+        .toggle-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        /* Toggle switch */
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #e5e7eb;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(30px);
+        }
+
+        /* Settings panel */
+        .settings-panel {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 0 0 24px 24px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.15),
+                0 10px 30px rgba(0, 0, 0, 0.1);
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .settings-panel.active {
+            max-height: 400px;
+            opacity: 1;
+            margin-top: 10px;
+        }
+
+        /* Settings content */
+        .settings-content {
+            padding: 30px 40px;
+        }
+
+        .settings-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        /* Setting items */
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideInUp 0.5s forwards;
+        }
+
+        .setting-item:nth-child(1) { animation-delay: 0.1s; }
+        .setting-item:nth-child(2) { animation-delay: 0.2s; }
+        .setting-item:nth-child(3) { animation-delay: 0.3s; }
+        .setting-item:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes slideInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .setting-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .setting-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .setting-desc {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .setting-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Mini toggles */
+        .mini-toggle {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: #e5e7eb;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mini-toggle.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .mini-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .mini-toggle.active .mini-slider {
+            transform: translateX(20px);
+        }
+
+        /* Slider input */
+        .slider {
+            width: 120px;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border: none;
+        }
+
+        /* Save button */
+        .save-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideInUp 0.5s 0.5s forwards;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Success notification */
+        .notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 100;
+        }
+
+        .notification.show {
+            top: 30px;
+        }
+
+        .notification-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .notification-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .profile-card {
+                width: 90%;
+                padding: 30px 20px;
+            }
+
+            .profile-stats {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .settings-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background shapes -->
+    <div class="bg-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <!-- Main container -->
+    <div class="container">
+        <!-- Profile card -->
+        <div class="profile-card" id="profileCard">
+            <div class="profile-header">
+                <div class="avatar" id="avatar">MK</div>
+                <div class="online-indicator"></div>
+            </div>
+            
+            <h2 class="profile-name">Maria Kim</h2>
+            <p class="profile-title">Creative Director</p>
+            
+            <div class="profile-stats">
+                <div class="stat">
+                    <div class="stat-value">342</div>
+                    <div class="stat-label">Projects</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">28.5K</div>
+                    <div class="stat-label">Followers</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">99%</div>
+                    <div class="stat-label">Success</div>
+                </div>
+            </div>
+            
+            <!-- Toggle switch -->
+            <div class="toggle-container">
+                <span class="toggle-label">Settings</span>
+                <div class="toggle-switch" id="mainToggle">
+                    <div class="toggle-slider"></div>
+                </div>
+            </div>
+
+            <!-- Settings panel -->
+            <div class="settings-panel" id="settingsPanel">
+                <div class="settings-content">
+                    <div class="settings-title">
+                        <div class="settings-icon">⚙</div>
+                        <span>Settings</span>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-name">Notifications</span>
+                            <span class="setting-desc">Receive email updates</span>
+                        </div>
+                        <div class="setting-control">
+                            <div class="mini-toggle active" data-setting="notifications">
+                                <div class="mini-slider"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-name">Dark Mode</span>
+                            <span class="setting-desc">Use dark theme</span>
+                        </div>
+                        <div class="setting-control">
+                            <div class="mini-toggle" data-setting="darkmode">
+                                <div class="mini-slider"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-name">Privacy</span>
+                            <span class="setting-desc">Profile visibility</span>
+                        </div>
+                        <div class="setting-control">
+                            <div class="mini-toggle active" data-setting="privacy">
+                                <div class="mini-slider"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-name">Volume</span>
+                            <span class="setting-desc">Sound level</span>
+                        </div>
+                        <div class="setting-control">
+                            <input type="range" class="slider" min="0" max="100" value="70" data-setting="volume">
+                        </div>
+                    </div>
+                    
+                    <button class="save-btn" id="saveBtn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success notification -->
+    <div class="notification" id="notification">
+        <div class="notification-icon">✓</div>
+        <span class="notification-text">Settings saved successfully!</span>
+    </div>
+
+    <script>
+        // Get elements
+        const profileCard = document.getElementById('profileCard');
+        const avatar = document.getElementById('avatar');
+        const mainToggle = document.getElementById('mainToggle');
+        const settingsPanel = document.getElementById('settingsPanel');
+        const saveBtn = document.getElementById('saveBtn');
+        const notification = document.getElementById('notification');
+        const notificationText = document.querySelector('.notification-text');
+
+        let isSettingsOpen = false;
+
+        // Show notification
+        function showNotification(message) {
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Spring animation function
+        function addSpringAnimation(element) {
+            element.classList.add('spring-active');
+            setTimeout(() => {
+                element.classList.remove('spring-active');
+            }, 800);
+        }
+
+        // Main toggle switch
+        mainToggle.addEventListener('click', function() {
+            isSettingsOpen = !isSettingsOpen;
+            this.classList.toggle('active');
+            
+            if (isSettingsOpen) {
+                settingsPanel.classList.add('active');
+                addSpringAnimation(profileCard);
+                showNotification('Settings opened');
+                
+                // Add spring animation to stats
+                document.querySelectorAll('.stat').forEach((stat, index) => {
+                    setTimeout(() => {
+                        stat.classList.add('spring');
+                        setTimeout(() => {
+                            stat.classList.remove('spring');
+                        }, 400);
+                    }, index * 100);
+                });
+            } else {
+                settingsPanel.classList.remove('active');
+                addSpringAnimation(profileCard);
+                showNotification('Settings closed');
+            }
+        });
+
+        // Mini toggles
+        document.querySelectorAll('.mini-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const setting = this.dataset.setting;
+                showNotification(`${setting} ${this.classList.contains('active') ? 'enabled' : 'disabled'}`);
+            });
+        });
+
+        // Volume slider
+        const volumeSlider = document.querySelector('.slider');
+        volumeSlider.addEventListener('input', function() {
+            showNotification(`Volume: ${this.value}%`);
+        });
+
+        // Save button
+        saveBtn.addEventListener('click', function() {
+            // Add spring animation to avatar
+            avatar.classList.add('spring');
+            setTimeout(() => {
+                avatar.classList.remove('spring');
+            }, 600);
+            
+            showNotification('Settings saved successfully!');
+            
+            // Close settings after save
+            setTimeout(() => {
+                mainToggle.click();
+            }, 1500);
+        });
+
+        // Add hover effects to stats
+        document.querySelectorAll('.stat').forEach(stat => {
+            stat.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.05)';
+            });
+            
+            stat.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        });
+
+        // Add entrance animation
+        window.addEventListener('load', function() {
+            profileCard.style.animation = 'cardEntrance 1s ease-out';
+        });
+
+        // Add entrance animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes cardEntrance {
+                from {
+                    transform: translateY(-50px) scale(0.8);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0) scale(1);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Keyboard support
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && isSettingsOpen) {
+                mainToggle.click();
+            }
+            if (e.key === 's' && e.ctrlKey) {
+                e.preventDefault();
+                mainToggle.click();
+            }
+        });
+
+        // Add periodic spring effect to avatar
+        setInterval(() => {
+            if (Math.random() > 0.95 && !isSettingsOpen) {
+                avatar.classList.add('spring');
+                setTimeout(() => {
+                    avatar.classList.remove('spring');
+                }, 600);
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design a Cool Magic Navigation Tab Menu Using HTML & CSS.</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for a magical feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Lato&display=swap" rel="stylesheet">
+<style>
+    /* --- Global Styles & Variables --- */
+:root {
+    --bg-color: #0c0c1e;
+    --text-color: #e0e0e0;
+    --accent-color: #9d4edd; /* A mystical purple */
+    --glow-color: #c77dff;
+    --panel-bg: rgba(20, 20, 40, 0.7);
+    --font-heading: 'Cinzel', serif;
+    --font-body: 'Lato', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(157, 78, 221, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(199, 125, 255, 0.1) 0%, transparent 50%);
+}
+
+/* --- Main Container --- */
+.magic-container {
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+}
+
+/* --- Hide the Radio Buttons --- */
+input[type="radio"] {
+    display: none;
+}
+
+/* --- Tab Navigation --- */
+.tab-nav {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+/* --- Tab Labels (The Clickable Tabs) --- */
+.tab-label {
+    cursor: pointer;
+    padding: 0.8rem 1.5rem;
+    border: 2px solid var(--accent-color);
+    border-radius: 50px;
+    background: transparent;
+    color: var(--text-color);
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    position: relative;
+    overflow: hidden; /* Crucial for containing the sparkle */
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* --- The Magic Sparkle Effect --- */
+.sparkle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    transition: transform 0.6s ease-out, opacity 0.3s ease-out;
+}
+
+.tab-label:hover .sparkle {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+    transition: transform 0.6s ease-out, opacity 0s;
+}
+
+/* --- Active Tab Styling --- */
+input[type="radio"]:checked + .tab-label {
+    background: var(--accent-color);
+    color: #fff;
+    box-shadow: 0 0 20px var(--glow-color), inset 0 0 10px rgba(255,255,255,0.3);
+    animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+    0% { box-shadow: 0 0 20px var(--glow-color), inset 0 0 10px rgba(255,255,255,0.3); }
+    50% { box-shadow: 0 0 30px var(--glow-color), inset 0 0 15px rgba(255,255,255,0.4); }
+    100% { box-shadow: 0 0 20px var(--glow-color), inset 0 0 10px rgba(255,255,255,0.3); }
+}
+
+/* --- Content Panels --- */
+.tab-content {
+    position: relative;
+    height: 200px;
+}
+
+.content-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 2rem;
+    background: var(--panel-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 0.5s ease-in-out;
+    pointer-events: none; /* Prevent interaction when hidden */
+}
+
+/* --- Show Active Content Panel --- */
+/* The magic selector: When a radio is checked, find the corresponding content panel */
+#tab-1:checked ~ .tab-content #content-1,
+#tab-2:checked ~ .tab-content #content-2,
+#tab-3:checked ~ .tab-content #content-3 {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto; /* Allow interaction when visible */
+    box-shadow: 0 0 25px rgba(157, 78, 221, 0.3);
+}
+
+.content-panel h2 {
+    font-family: var(--font-heading);
+    color: var(--glow-color);
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+.content-panel p {
+    line-height: 1.6;
+}
+</style>
+</head>
+<body>
+
+    <div class="magic-container">
+        <!-- The Tab Navigation -->
+        <nav class="tab-nav">
+            <!-- Tab 1 -->
+            <input type="radio" id="tab-1" name="tab-group" checked>
+            <label for="tab-1" class="tab-label">
+                <span>Enchantments</span>
+                <div class="sparkle"></div>
+            </label>
+
+            <!-- Tab 2 -->
+            <input type="radio" id="tab-2" name="tab-group">
+            <label for="tab-2" class="tab-label">
+                <span>Potions</span>
+                <div class="sparkle"></div>
+            </label>
+
+            <!-- Tab 3 -->
+            <input type="radio" id="tab-3" name="tab-group">
+            <label for="tab-3" class="tab-label">
+                <span>Artifacts</span>
+                <div class="sparkle"></div>
+            </label>
+        </nav>
+
+        <!-- The Content Panels -->
+        <div class="tab-content">
+            <!-- Content for Tab 1 -->
+            <div class="content-panel" id="content-1">
+                <h2>Enchantments</h2>
+                <p>Discover ancient words of power that imbue weapons and armor with mystical properties. From fiery blades to shields of ice, the right enchantment can turn the tide of any battle.</p>
+            </div>
+
+            <!-- Content for Tab 2 -->
+            <div class="content-panel" id="content-2">
+                <h2>Potions</h2>
+                <p>Brew powerful concoctions using rare herbs and magical essences. Whether you need to heal your wounds, gain superhuman strength, or become invisible, a well-made potion is your key.</p>
+            </div>
+
+            <!-- Content for Tab 3 -->
+            <div class="content-panel" id="content-3">
+                <h2>Artifacts</h2>
+                <p>Uncover legendary items of immense power, forged in the dawn of time. These artifacts hold the fate of kingdoms and grant their wielder abilities beyond mortal comprehension.</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

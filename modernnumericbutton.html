@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Neumorphic Button</title>
+    <style>
+        /* --- Neumorphic Scene --- */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    /* The background color is CRITICAL for the neumorphic effect */
+    background-color: #e0e5ec;
+    font-family: 'Poppins', sans-serif;
+}
+
+.neumorphic-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    padding: 60px;
+    background-color: #e0e5ec;
+    border-radius: 20px;
+    /* This subtle shadow makes the container feel like it's sunken into the page */
+    box-shadow: inset 8px 8px 16px #c3c9d2,
+                inset -8px -8px 16px #fdffff;
+}
+
+/* --- The Neumorphic Button --- */
+.neumorphic-button {
+    width: 200px;
+    height: 80px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #6d727c;
+    background-color: #e0e5ec;
+    /* No border! The magic is in the shadow. */
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    
+    /* The CORE of the neumorphic effect: a light and a dark shadow */
+    box-shadow: 8px 8px 16px #c3c9d2,
+                -8px -8px 16px #fdffff;
+
+    /* Smooth transition for all interactive changes */
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+/* --- Hover Effect: A subtle glow and lift --- */
+.neumorphic-button:hover {
+    /* A colored glow to show interactivity */
+    box-shadow: 8px 8px 16px #c3c9d2,
+                -8px -8px 16px #fdffff,
+                0 0 20px rgba(104, 104, 240, 0.3);
+}
+
+/* --- Active (Pressed) Effect: The magic moment! --- */
+.neumorphic-button:active {
+    /* We INVERT the shadows to make it look pressed in */
+    box-shadow: inset 6px 6px 12px #c3c9d2,
+                inset -6px -6px 12px #fdffff;
+    
+    /* A tiny scale makes the press feel more physical */
+    transform: scale(0.98);
+}
+
+/* --- The Click Display --- */
+.display {
+    padding: 15px 30px;
+    background-color: #e0e5ec;
+    border-radius: 15px;
+    color: #6d727c;
+    font-weight: 500;
+    /* A "sunken" neumorphic style */
+    box-shadow: inset 5px 5px 10px #c3c9d2,
+                inset -5px -5px 10px #fdffff;
+}
+
+#click-count {
+    font-weight: 700;
+    color: #4a4e58;
+}
+    </style>
+</head>
+<body>
+
+    <div class="neumorphic-container">
+        <button id="neumorphic-btn" class="neumorphic-button">
+            Press Me
+        </button>
+        <div class="display">
+            Clicks: <span id="click-count">0</span>
+        </div>
+    </div>
+
+    <script>
+        // Get the button and the count display element from the DOM
+const button = document.getElementById('neumorphic-btn');
+const countDisplay = document.getElementById('click-count');
+
+// Initialize the click count
+let clickCount = 0;
+
+// Add a click event listener to the button
+button.addEventListener('click', () => {
+    // Increment the count
+    clickCount++;
+    
+    // Update the text in the display
+    countDisplay.textContent = clickCount;
+
+    // Optional: Add a quick pulse animation to the display on update
+    countDisplay.style.transform = 'scale(1.2)';
+    setTimeout(() => {
+        countDisplay.style.transform = 'scale(1)';
+    }, 150);
+});
+    </script>
+</body>
+</html>

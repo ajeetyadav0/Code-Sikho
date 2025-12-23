@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Eye of Providence - Login</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Crimson+Text:ital,wght@0,400;1,600&display=swap" rel="stylesheet">
+<style>
+    /* --- Basic Reset & Body Styling --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Crimson Text', serif;
+    background: radial-gradient(ellipse at center, #1b2735 0%, #090a0f 100%);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #e0e0e0;
+    overflow: hidden; /* Prevents scrollbars from appearing */
+}
+
+/* --- Main Login Container --- */
+.login-container {
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Eye Styling --- */
+.eye-container {
+    margin-bottom: 30px;
+}
+
+svg {
+    filter: drop-shadow(0 0 10px rgba(255, 223, 128, 0.5));
+}
+
+.eye-shape {
+    fill: none;
+    stroke: #d4af37; /* Gold color */
+    stroke-width: 2;
+}
+
+.iris {
+    fill: #2a2a2a;
+    stroke: #d4af37;
+    stroke-width: 1.5;
+}
+
+#pupil {
+    fill: #000;
+}
+
+.inner-glow {
+    fill: #d4af37;
+    opacity: 0.6;
+}
+
+/* --- Form Styling --- */
+.login-form h1 {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 2.5em;
+    margin-bottom: 25px;
+    color: #d4af37;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1.2em;
+    font-style: italic;
+    color: #b0b0b0;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1em;
+    font-family: 'Crimson Text', serif;
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #d4af37;
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.login-form button {
+    width: 100%;
+    padding: 12px;
+    background-color: #8b0000; /* Dark Red */
+    border: 1px solid #d4af37;
+    border-radius: 5px;
+    color: #fff;
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.login-form button:hover {
+    background-color: #a52a2a;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+    transform: translateY(-2px);
+}
+</style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="eye-container">
+            <!-- SVG for the eye -->
+            <svg width="200" height="200" viewBox="0 0 100 100">
+                <!-- Outer Eye Shape -->
+                <path class="eye-shape" d="M10,50 Q50,10 90,50 Q50,90 10,50" />
+                <!-- Iris -->
+                <circle class="iris" cx="50" cy="50" r="25" />
+                <!-- Pupil (This will be moved by JavaScript) -->
+                <circle id="pupil" cx="50" cy="50" r="12" />
+                <!-- Inner Glow -->
+                <circle class="inner-glow" cx="50" cy="50" r="8" />
+            </svg>
+        </div>
+
+        <form id="login-form" class="login-form">
+            <h1>Unveil the Secrets</h1>
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Enter</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+    const pupil = document.getElementById('pupil');
+    const loginForm = document.getElementById('login-form');
+
+    // --- Eye Tracking Logic ---
+    document.addEventListener('mousemove', (event) => {
+        // Get the mouse position
+        const mouseX = event.clientX;
+        const mouseY = event.clientY;
+
+        // Get the center of the eye (the SVG is 200x200, so its center is at 100, 100)
+        const eyeCenterX = 100;
+        const eyeCenterY = 100;
+
+        // Calculate the angle from the eye center to the mouse
+        const angle = Math.atan2(mouseY - eyeCenterY, mouseX - eyeCenterX);
+
+        // Calculate the distance. We limit this so the pupil doesn't leave the iris.
+        // The max distance is the radius of the iris (25) minus the radius of the pupil (12).
+        const maxDistance = 25 - 12; 
+        // You can make the movement more subtle by reducing this number, e.g., `const maxDistance = 10;`
+
+        // Calculate the new position for the pupil
+        const pupilX = eyeCenterX + Math.cos(angle) * maxDistance;
+        const pupilY = eyeCenterY + Math.sin(angle) * maxDistance;
+
+        // Apply the new position to the pupil element
+        // Note: SVG's cx and cy attributes are used for circles
+        pupil.setAttribute('cx', pupilX);
+        pupil.setAttribute('cy', pupilY);
+    });
+
+    // --- Form Submission Logic ---
+    loginForm.addEventListener('submit', (event) => {
+        // Prevent the form from actually submitting and reloading the page
+        event.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // In a real application, you would send this data to a server for validation.
+        // For this example, we'll just show an alert.
+        if (username && password) {
+            alert(`Login attempt:\nUsername: ${username}\nPassword: [HIDDEN]`);
+            // You could redirect the user or show a success message here.
+            // window.location.href = '/dashboard';
+        } else {
+            alert('Please enter both username and password.');
+        }
+    });
+
+});
+    </script>
+</body>
+</html>

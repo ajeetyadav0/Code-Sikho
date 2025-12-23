@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberpunk Terminal - Access Granted</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0a0a0a;
+            font-family: 'Orbitron', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated background grid */
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 0, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 10s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Digital rain effect */
+        .digital-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.1;
+        }
+
+        .rain-column {
+            position: absolute;
+            top: -100%;
+            font-family: monospace;
+            font-size: 14px;
+            color: #0f0;
+            animation: rainFall linear infinite;
+        }
+
+        @keyframes rainFall {
+            to { transform: translateY(200vh); }
+        }
+
+        /* Main container */
+        .main-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 50px;
+        }
+
+        /* Glitch button */
+        .glitch-button {
+            position: relative;
+            padding: 25px 60px;
+            background: transparent;
+            border: 2px solid #ff00ff;
+            color: #ff00ff;
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .glitch-button::before,
+        .glitch-button::after {
+            content: 'INITIALIZE';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: 2px solid;
+        }
+
+        .glitch-button::before {
+            border-color: #00ffff;
+            color: #00ffff;
+            animation: glitch-1 0.5s infinite;
+        }
+
+        .glitch-button::after {
+            border-color: #ffff00;
+            color: #ffff00;
+            animation: glitch-2 0.5s infinite;
+        }
+
+        @keyframes glitch-1 {
+            0%, 100% { 
+                clip-path: inset(0 0 0 0);
+                transform: translate(0);
+            }
+            20% { 
+                clip-path: inset(20% 0 30% 0);
+                transform: translate(-2px, 2px);
+            }
+            40% { 
+                clip-path: inset(50% 0 20% 0);
+                transform: translate(2px, -2px);
+            }
+            60% { 
+                clip-path: inset(10% 0 60% 0);
+                transform: translate(-1px, 1px);
+            }
+            80% { 
+                clip-path: inset(80% 0 5% 0);
+                transform: translate(1px, -1px);
+            }
+        }
+
+        @keyframes glitch-2 {
+            0%, 100% { 
+                clip-path: inset(0 0 0 0);
+                transform: translate(0);
+            }
+            20% { 
+                clip-path: inset(60% 0 10% 0);
+                transform: translate(2px, -1px);
+            }
+            40% { 
+                clip-path: inset(20% 0 40% 0);
+                transform: translate(-2px, 1px);
+            }
+            60% { 
+                clip-path: inset(30% 0 30% 0);
+                transform: translate(1px, 2px);
+            }
+            80% { 
+                clip-path: inset(5% 0 80% 0);
+                transform: translate(-1px, -2px);
+            }
+        }
+
+        .glitch-button:hover {
+            background: rgba(255, 0, 255, 0.1);
+            box-shadow: 
+                0 0 20px #ff00ff,
+                inset 0 0 20px rgba(255, 0, 255, 0.2);
+            text-shadow: 0 0 10px #ff00ff;
+        }
+
+        .glitch-button.clicked {
+            animation: buttonPulse 0.5s;
+        }
+
+        @keyframes buttonPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Login form container */
+        .login-form {
+            position: relative;
+            width: 400px;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #ff00ff;
+            border-radius: 5px;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.8) rotateX(90deg);
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 
+                0 0 50px rgba(255, 0, 255, 0.5),
+                inset 0 0 20px rgba(0, 255, 255, 0.1);
+        }
+
+        .login-form.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) rotateX(0);
+        }
+
+        /* Scanning line effect */
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ffff, transparent);
+            animation: scan 3s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        /* Form title */
+        .form-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #00ffff;
+            font-size: 28px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            position: relative;
+            animation: flicker 2s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+            51% { opacity: 1; }
+            52% { opacity: 0.9; }
+            53% { opacity: 1; }
+        }
+
+        .form-title::before {
+            content: 'ACCESS TERMINAL';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            color: #ff00ff;
+            animation: glitchText 0.3s infinite;
+        }
+
+        @keyframes glitchText {
+            0%, 100% { clip-path: inset(0 0 0 0); }
+            25% { clip-path: inset(20% 0 60% 0); }
+            50% { clip-path: inset(50% 0 10% 0); }
+            75% { clip-path: inset(10% 0 70% 0); }
+        }
+
+        /* Form groups */
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #ffff00;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: labelFlicker 3s infinite;
+        }
+
+        @keyframes labelFlicker {
+            0%, 100% { opacity: 1; }
+            92% { opacity: 1; }
+            93% { opacity: 0.8; }
+            94% { opacity: 1; }
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ffff;
+            color: #fff;
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #ff00ff;
+            background: rgba(255, 0, 255, 0.05);
+            box-shadow: 
+                0 0 20px rgba(255, 0, 255, 0.5),
+                inset 0 0 10px rgba(0, 255, 255, 0.2);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Submit button */
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            border: none;
+            color: #000;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 0, 255, 0.5);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Options */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 12px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            color: #00ffff;
+        }
+
+        .remember-me input {
+            margin-right: 8px;
+            width: auto;
+            accent-color: #ff00ff;
+        }
+
+        .forgot-link {
+            color: #ff00ff;
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .forgot-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #ff00ff;
+            transition: width 0.3s;
+        }
+
+        .forgot-link:hover::after {
+            width: 100%;
+        }
+
+        /* Close button */
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            background: transparent;
+            border: 1px solid #ff00ff;
+            color: #ff00ff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            font-size: 18px;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 0, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        /* Status message */
+        .status-message {
+            position: fixed;
+            top: 30px;
+            right: -400px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 15px 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: right 0.5s;
+            z-index: 1000;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        .status-message.show {
+            right: 30px;
+        }
+
+        .status-message.error {
+            border-color: #ff0000;
+            color: #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        }
+
+        /* Noise overlay */
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.02;
+            z-index: 100;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgbnVtT2N0YXZlcz0iMTAiLz48ZmVDb2xvck1hdHJpeCB2YWx1ZXM9IjAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDEgMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iMSIvPjwvc3ZnPg==');
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-form {
+                width: 90%;
+                padding: 30px 20px;
+            }
+
+            .glitch-button {
+                padding: 20px 40px;
+                font-size: 16px;
+            }
+
+            .form-title {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background effects -->
+    <div class="cyber-grid"></div>
+    <div class="digital-rain" id="digitalRain"></div>
+    <div class="noise"></div>
+
+    <!-- Main container -->
+    <div class="main-container">
+        <!-- Glitch button -->
+        <button class="glitch-button" id="glitchBtn">INITIALIZE</button>
+
+        <!-- Login form -->
+        <div class="login-form" id="loginForm">
+            <div class="scan-line"></div>
+            <button class="close-btn" id="closeBtn">×</button>
+            
+            <h2 class="form-title">ACCESS TERMINAL</h2>
+            
+            <form id="accessForm">
+                <div class="form-group">
+                    <label for="username">USER_ID</label>
+                    <input type="text" id="username" placeholder="ENTER_CREDENTIALS" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">PASS_KEY</label>
+                    <input type="password" id="password" placeholder="DECRYPT_ACCESS" required>
+                </div>
+                
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox"> REMEMBER_SESSION
+                    </label>
+                    <a href="#" class="forgot-link">RESET_KEY</a>
+                </div>
+                
+                <button type="submit" class="submit-btn">GRANT_ACCESS</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Status message -->
+    <div class="status-message" id="statusMessage">SYSTEM_READY</div>
+
+    <script>
+        // Create digital rain effect
+        const digitalRain = document.getElementById('digitalRain');
+        const columns = Math.floor(window.innerWidth / 20);
+        
+        for (let i = 0; i < columns; i++) {
+            const column = document.createElement('div');
+            column.className = 'rain-column';
+            column.style.left = i * 20 + 'px';
+            column.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            column.style.animationDelay = Math.random() * 5 + 's';
+            
+            const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let text = '';
+            for (let j = 0; j < 30; j++) {
+                text += chars[Math.floor(Math.random() * chars.length)] + '<br>';
+            }
+            column.innerHTML = text;
+            
+            digitalRain.appendChild(column);
+        }
+
+        // Get elements
+        const glitchBtn = document.getElementById('glitchBtn');
+        const loginForm = document.getElementById('loginForm');
+        const closeBtn = document.getElementById('closeBtn');
+        const accessForm = document.getElementById('accessForm');
+        const statusMessage = document.getElementById('statusMessage');
+        const forgotLink = document.querySelector('.forgot-link');
+
+        let isFormVisible = false;
+
+        // Show status message
+        function showStatus(message, isError = false) {
+            statusMessage.textContent = message;
+            statusMessage.classList.toggle('error', isError);
+            statusMessage.classList.add('show');
+            
+            setTimeout(() => {
+                statusMessage.classList.remove('show');
+            }, 3000);
+        }
+
+        // Glitch effect on button
+        function addGlitchEffect() {
+            glitchBtn.style.animation = 'none';
+            setTimeout(() => {
+                glitchBtn.style.animation = '';
+            }, 10);
+        }
+
+        // Button click handler
+        glitchBtn.addEventListener('click', function() {
+            if (!isFormVisible) {
+                isFormVisible = true;
+                this.classList.add('clicked');
+                
+                // Add intense glitch effect
+                for (let i = 0; i < 5; i++) {
+                    setTimeout(() => addGlitchEffect(), i * 100);
+                }
+                
+                // Show form with glitch effect
+                setTimeout(() => {
+                    loginForm.classList.add('active');
+                    showStatus('TERMINAL_ONLINE');
+                    
+                    // Add flicker to form
+                    let flickers = 0;
+                    const flickerInterval = setInterval(() => {
+                        loginForm.style.opacity = Math.random() > 0.5 ? '1' : '0.8';
+                        flickers++;
+                        if (flickers > 10) {
+                            clearInterval(flickerInterval);
+                            loginForm.style.opacity = '1';
+                        }
+                    }, 100);
+                }, 500);
+                
+                setTimeout(() => {
+                    this.classList.remove('clicked');
+                }, 500);
+            }
+        });
+
+        // Close button handler
+        closeBtn.addEventListener('click', function() {
+            isFormVisible = false;
+            loginForm.classList.remove('active');
+            showStatus('TERMINAL_OFFLINE');
+            
+            // Add closing glitch effect
+            glitchBtn.style.animation = 'none';
+            setTimeout(() => {
+                glitchBtn.style.animation = '';
+            }, 100);
+        });
+
+        // Form submission
+        accessForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Simulate processing
+            showStatus('AUTHENTICATING...');
+            
+            setTimeout(() => {
+                if (username && password) {
+                    showStatus('ACCESS_GRANTED');
+                    this.reset();
+                    
+                    // Close form after success
+                    setTimeout(() => {
+                        closeBtn.click();
+                    }, 2000);
+                } else {
+                    showStatus('ACCESS_DENIED', true);
+                }
+            }, 1500);
+        });
+
+        // Forgot password handler
+        forgotLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            showStatus('KEY_RESET_SENT_TO_NEURAL_LINK');
+        });
+
+        // Add random glitches to the button
+        setInterval(() => {
+            if (!isFormVisible && Math.random() > 0.95) {
+                addGlitchEffect();
+            }
+        }, 3000);
+
+        // Add hover sound effect simulation (visual feedback)
+        glitchBtn.addEventListener('mouseenter', function() {
+            this.style.textShadow = '0 0 20px currentColor';
+        });
+
+        glitchBtn.addEventListener('mouseleave', function() {
+            this.style.textShadow = '';
+        });
+
+        // Input field glitch effects
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.animation = 'flicker 0.5s';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.animation = '';
+            });
+        });
+
+        // Add typing effect to placeholders
+        document.querySelectorAll('input[placeholder]').forEach(input => {
+            const originalPlaceholder = input.placeholder;
+            let charIndex = 0;
+            
+            input.addEventListener('focus', function() {
+                this.placeholder = '';
+            });
+            
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                    typePlaceholder(this, originalPlaceholder);
+                }
+            });
+        });
+
+        function typePlaceholder(element, text) {
+            element.placeholder = '';
+            let index = 0;
+            
+            const typeInterval = setInterval(() => {
+                if (index < text.length) {
+                    element.placeholder += text[index];
+                    index++;
+                } else {
+                    clearInterval(typeInterval);
+                }
+            }, 50);
+        }
+
+        // Initial typing effect
+        setTimeout(() => {
+            const usernameInput = document.getElementById('username');
+            typePlaceholder(usernameInput, 'ENTER_CREDENTIALS');
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Book of Access - Sign Up</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e8ba3 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Crimson Text', serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Ambient background elements */
+        .ambient-particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Main container */
+        .library-container {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            perspective: 2000px;
+        }
+
+        /* Book container */
+        .book {
+            position: relative;
+            width: 300px;
+            height: 400px;
+            margin: 0 auto;
+            transform-style: preserve-3d;
+            transition: transform 1.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+            cursor: pointer;
+        }
+
+        .book.open {
+            transform: rotateY(-30deg);
+        }
+
+        /* Book cover */
+        .book-cover {
+            position: absolute;
+            width: 300px;
+            height: 400px;
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            border-radius: 0 15px 15px 0;
+            box-shadow: 
+                inset 0 0 30px rgba(0, 0, 0, 0.5),
+                0 10px 40px rgba(0, 0, 0, 0.4);
+            transform-origin: left center;
+            transition: transform 1.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+            z-index: 10;
+        }
+
+        .book.open .book-cover {
+            transform: rotateY(-160deg);
+        }
+
+        /* Cover design */
+        .cover-title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #FFD700;
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            width: 80%;
+        }
+
+        .cover-subtitle {
+            display: block;
+            font-size: 14px;
+            margin-top: 10px;
+            color: #FFF;
+            font-weight: 400;
+        }
+
+        /* Book spine */
+        .book-spine {
+            position: absolute;
+            width: 40px;
+            height: 400px;
+            background: linear-gradient(to right, #654321, #8B4513);
+            left: -20px;
+            transform: rotateY(-90deg) translateZ(20px);
+            border-radius: 3px 0 0 3px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Book pages */
+        .book-pages {
+            position: absolute;
+            width: 280px;
+            height: 380px;
+            top: 10px;
+            left: 10px;
+            transform-style: preserve-3d;
+            z-index: 5;
+        }
+
+        .page {
+            position: absolute;
+            width: 280px;
+            height: 380px;
+            background: linear-gradient(to right, #f8f6f0, #fefefe);
+            border-radius: 0 10px 10px 0;
+            box-shadow: 
+                inset 0 0 20px rgba(0, 0, 0, 0.1),
+                0 2px 5px rgba(0, 0, 0, 0.2);
+            transform-origin: left center;
+            opacity: 0;
+            transition: all 1.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+
+        .book.open .page {
+            opacity: 1;
+        }
+
+        .page-left {
+            left: 0;
+            border-radius: 10px 0 0 10px;
+            background: linear-gradient(to left, #f8f6f0, #fefefe);
+        }
+
+        .page-right {
+            left: 0;
+        }
+
+        /* Page content */
+        .page-content {
+            padding: 30px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity 1s ease 0.5s;
+        }
+
+        .book.open .page-content {
+            opacity: 1;
+        }
+
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        /* Form styling */
+        .signup-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            color: #555;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            font-family: 'Crimson Text', serif;
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #8B4513;
+            box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.2);
+            background: white;
+        }
+
+        .form-group input::placeholder {
+            color: #aaa;
+            font-style: italic;
+        }
+
+        /* Submit button */
+        .submit-btn {
+            margin-top: 20px;
+            padding: 14px;
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Playfair Display', serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #A0522D, #8B4513);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+        }
+
+        /* Decorative elements */
+        .page-decoration {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            opacity: 0.1;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="80" fill="%23000">✦</text></svg>') no-repeat center;
+            background-size: contain;
+        }
+
+        /* Instructions */
+        .instructions {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 18px;
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            animation: fadeInOut 3s ease-in-out infinite;
+            transition: opacity 0.5s;
+        }
+
+        .instructions.hidden {
+            opacity: 0;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Success message */
+        .bookmark {
+            position: fixed;
+            top: -100px;
+            right: 30px;
+            width: 200px;
+            padding: 20px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #2c3e50;
+            border-radius: 5px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            text-align: center;
+            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+        }
+
+        .bookmark.show {
+            top: 30px;
+        }
+
+        .bookmark::before {
+            content: '📖';
+            display: block;
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        /* Close button */
+        .close-book {
+            position: absolute;
+            top: 20px;
+            right: -50px;
+            width: 40px;
+            height: 40px;
+            background: rgba(139, 69, 19, 0.9);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+        }
+
+        .book.open ~ .close-book {
+            opacity: 1;
+            visibility: visible;
+            right: -60px;
+        }
+
+        .close-book:hover {
+            background: rgba(160, 82, 45, 0.9);
+            transform: rotate(90deg);
+        }
+
+        /* Page flip animation */
+        @keyframes pageFlip {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(-180deg); }
+        }
+
+        .flipping {
+            animation: pageFlip 0.8s ease-in-out;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .library-container {
+                width: 100%;
+                padding: 20px;
+            }
+
+            .book {
+                width: 250px;
+                height: 350px;
+            }
+
+            .book-cover {
+                width: 250px;
+                height: 350px;
+            }
+
+            .book-pages {
+                width: 230px;
+                height: 330px;
+            }
+
+            .page {
+                width: 230px;
+                height: 330px;
+            }
+
+            .cover-title {
+                font-size: 22px;
+            }
+
+            .page-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Ambient particles -->
+    <div class="ambient-particles" id="particles"></div>
+
+    <!-- Library container -->
+    <div class="library-container">
+        <!-- Book -->
+        <div class="book" id="book">
+            <!-- Book cover -->
+            <div class="book-cover">
+                <div class="cover-title">
+                    The Book of Access
+                    <span class="cover-subtitle">Begin Your Journey</span>
+                </div>
+            </div>
+
+            <!-- Book spine -->
+            <div class="book-spine"></div>
+
+            <!-- Book pages -->
+            <div class="book-pages">
+                <!-- Left page -->
+                <div class="page page-left">
+                    <div class="page-content">
+                        <h3 class="page-title">Create Your Legend</h3>
+                        <p class="page-subtitle">Every great story begins with a single step</p>
+                        
+                        <form class="signup-form" id="signupForm">
+                            <div class="form-group">
+                                <label for="fullName">Full Name</label>
+                                <input type="text" id="fullName" placeholder="Enter your name" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" placeholder="your@email.com" required>
+                            </div>
+                        </form>
+                        
+                        <div class="page-decoration"></div>
+                    </div>
+                </div>
+
+                <!-- Right page -->
+                <div class="page page-right">
+                    <div class="page-content">
+                        <form class="signup-form" id="signupForm2">
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" id="password" placeholder="Create a strong password" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirm Password</label>
+                                <input type="password" id="confirmPassword" placeholder="Re-enter your password" required>
+                            </div>
+                            
+                            <button type="submit" class="submit-btn">Begin Your Story</button>
+                        </form>
+                        
+                        <div class="page-decoration"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Close button -->
+        <button class="close-book" id="closeBook">✕</button>
+
+        <!-- Instructions -->
+        <div class="instructions" id="instructions">
+            Click the book to open and begin your journey
+        </div>
+    </div>
+
+    <!-- Success bookmark -->
+    <div class="bookmark" id="bookmark">
+        Welcome to the Library!
+    </div>
+
+    <script>
+        // Generate ambient particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Get elements
+        const book = document.getElementById('book');
+        const closeBook = document.getElementById('closeBook');
+        const instructions = document.getElementById('instructions');
+        const bookmark = document.getElementById('bookmark');
+        const signupForm = document.getElementById('signupForm');
+        const signupForm2 = document.getElementById('signupForm2');
+
+        let isBookOpen = false;
+
+        // Show bookmark notification
+        function showBookmark(message) {
+            bookmark.textContent = message;
+            bookmark.classList.add('show');
+            setTimeout(() => {
+                bookmark.classList.remove('show');
+            }, 3000);
+        }
+
+        // Open book animation
+        book.addEventListener('click', function(e) {
+            if (!isBookOpen && !e.target.closest('form') && !e.target.closest('button')) {
+                isBookOpen = true;
+                book.classList.add('open');
+                instructions.classList.add('hidden');
+                
+                // Add page flip sound effect simulation
+                const pages = document.querySelectorAll('.page');
+                pages.forEach((page, index) => {
+                    setTimeout(() => {
+                        page.classList.add('flipping');
+                        setTimeout(() => {
+                            page.classList.remove('flipping');
+                        }, 800);
+                    }, index * 200);
+                });
+
+                showBookmark('Chapter 1: Registration');
+            }
+        });
+
+        // Close book
+        closeBook.addEventListener('click', function() {
+            isBookOpen = false;
+            book.classList.remove('open');
+            instructions.classList.remove('hidden');
+            
+            // Reset forms
+            signupForm.reset();
+            signupForm2.reset();
+        });
+
+        // Handle form submissions
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Validate all fields
+            if (!fullName || !email || !password || !confirmPassword) {
+                showBookmark('Please complete all fields');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showBookmark('Passwords do not match');
+                return;
+            }
+
+            if (password.length < 6) {
+                showBookmark('Password must be at least 6 characters');
+                return;
+            }
+
+            // Success
+            showBookmark(`Welcome, ${fullName.split(' ')[0]}!`);
+            
+            // Reset forms after delay
+            setTimeout(() => {
+                signupForm.reset();
+                signupForm2.reset();
+                closeBook.click();
+            }, 2000);
+        }
+
+        // Add submit handlers to both forms
+        signupForm.addEventListener('submit', handleFormSubmit);
+        signupForm2.addEventListener('submit', handleFormSubmit);
+
+        // Add hover effects to book
+        book.addEventListener('mouseenter', function() {
+            if (!isBookOpen) {
+                this.style.transform = 'scale(1.02)';
+            }
+        });
+
+        book.addEventListener('mouseleave', function() {
+            if (!isBookOpen) {
+                this.style.transform = 'scale(1)';
+            }
+        });
+
+        // Add focus effects to form inputs
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateX(5px)';
+            });
+
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateX(0)';
+            });
+        });
+
+        // Add typing effect to placeholders
+        document.querySelectorAll('input[placeholder]').forEach(input => {
+            const originalPlaceholder = input.placeholder;
+            input.placeholder = '';
+            
+            input.addEventListener('focus', function() {
+                this.placeholder = originalPlaceholder;
+            });
+            
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                    this.placeholder = '';
+                }
+            });
+        });
+
+        // Add page curl effect on hover
+        document.querySelectorAll('.page').forEach(page => {
+            page.addEventListener('mouseenter', function() {
+                if (isBookOpen) {
+                    this.style.boxShadow = 'inset 0 0 30px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.3)';
+                }
+            });
+
+            page.addEventListener('mouseleave', function() {
+                this.style.boxShadow = 'inset 0 0 20px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.2)';
+            });
+        });
+
+        // Add initial entrance animation
+        window.addEventListener('load', function() {
+            book.style.animation = 'bookEntrance 1.5s ease-out';
+        });
+
+        // Add entrance animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes bookEntrance {
+                from {
+                    transform: translateY(-50px) rotateX(20deg);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0) rotateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
