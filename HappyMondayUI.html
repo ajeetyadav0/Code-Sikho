@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Monday</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+        
+        .container {
+            text-align: center;
+            position: relative;
+        }
+        
+        .monday-text {
+            font-size: 5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        .happy-text {
+            font-size: 2.5rem;
+            color: #6c5ce7;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .emoji-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .emoji {
+            font-size: 2.5rem;
+            animation: bounce 1.5s infinite;
+            animation-delay: calc(var(--i) * 0.1s);
+        }
+        
+        .coffee-cup {
+            width: 100px;
+            height: 120px;
+            margin: 0 auto;
+            position: relative;
+            animation: steam 3s infinite;
+        }
+        
+        .cup {
+            width: 100px;
+            height: 80px;
+            background-color: #8b4513;
+            border-radius: 0 0 40px 40px;
+            position: relative;
+        }
+        
+        .cup:before {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 40px;
+            border: 8px solid #8b4513;
+            border-radius: 20px;
+            right: -25px;
+            top: 10px;
+        }
+        
+        .steam {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0;
+            top: -20px;
+            left: 40px;
+        }
+        
+        .steam:before, .steam:after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+        }
+        
+        .steam:before {
+            left: -15px;
+            animation: steam-move 2s infinite;
+        }
+        
+        .steam:after {
+            left: 15px;
+            animation: steam-move 2s infinite 0.5s;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes steam {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+        
+        @keyframes steam-move {
+            0% { 
+                opacity: 0;
+                transform: translateY(0) scale(0.5);
+            }
+            50% { 
+                opacity: 0.8;
+                transform: translateY(-20px) scale(1);
+            }
+            100% { 
+                opacity: 0;
+                transform: translateY(-40px) scale(0.5);
+            }
+        }
+        
+        .quote {
+            font-size: 1.2rem;
+            color: #636e72;
+            max-width: 500px;
+            margin: 30px auto;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="happy-text">Happy</h1>
+        <h2 class="monday-text">MONDAY</h2>
+        
+        <div class="coffee-cup">
+            <div class="cup"></div>
+            <div class="steam"></div>
+        </div>
+        
+        <p class="quote" id="quote">"New week, new opportunities, new beginnings!"</p>
+        
+        <div class="emoji-container">
+            <div class="emoji" style="--i: 1">☀️</div>
+            <div class="emoji" style="--i: 2">💪</div>
+            <div class="emoji" style="--i: 3">🚀</div>
+            <div class="emoji" style="--i: 4">💼</div>
+            <div class="emoji" style="--i: 5">🌟</div>
+        </div>
+    </div>
+
+    <script>
+        const quotes = [
+            "New week, new opportunities, new beginnings!",
+            "Make it a great week or not, the choice is yours!",
+            "Monday is a fresh start. It's never too late to dig in and begin a new journey of success.",
+            "The secret of getting ahead is getting started.",
+            "Your future is created by what you do today, not tomorrow."
+        ];
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const quoteElement = document.getElementById('quote');
+            
+            setInterval(() => {
+                const randomIndex = Math.floor(Math.random() * quotes.length);
+                quoteElement.style.opacity = '0';
+                
+                setTimeout(() => {
+                    quoteElement.textContent = `"${quotes[randomIndex]}"`;
+                    quoteElement.style.opacity = '1';
+                }, 500);
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glassmorphism Card</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        
+        .background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+        }
+        
+        .circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            background-color: rgba(255, 0, 150, 0.3);
+            top: -100px;
+            right: -100px;
+        }
+        
+        .circle:nth-child(2) {
+            width: 400px;
+            height: 400px;
+            background-color: rgba(0, 255, 255, 0.3);
+            bottom: -150px;
+            left: -150px;
+        }
+        
+        .glass-card {
+            width: 350px;
+            padding: 30px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            color: white;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .glass-card h2 {
+            margin-top: 0;
+            font-size: 24px;
+        }
+        
+        .glass-card p {
+            line-height: 1.6;
+        }
+        
+        .glass-card button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .glass-card button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="background">
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+    
+    <div class="glass-card">
+        <div class="avatar">A</div>
+        <h2>Glassmorphism Design</h2>
+        <p>This is a beautiful glassmorphism card with a blurred background effect. The design uses backdrop-filter and transparency to create a modern, frosted glass appearance.</p>
+        <button>Learn More</button>
+    </div>
+</body>
+</html>

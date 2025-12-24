@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glowing Loading Dots</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap" rel="stylesheet">
+<style>
+    /* --- Global Styles & Variables --- */
+:root {
+    --bg-color: #0a0a0a;
+    --text-color: #f0f0f0;
+    --primary-glow: #00d4ff;
+    --secondary-glow: #ff00ff;
+    --tertiary-glow: #ffff00;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+}
+
+header {
+    margin-bottom: 3rem;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* --- Demo Container --- */
+.demo-container {
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.02);
+    margin-bottom: 4rem;
+}
+
+/* --- Main Loader (Style 1: Pulsing Wave) --- */
+.loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    height: 80px;
+    margin: 2rem 0;
+}
+
+.dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: var(--primary-glow);
+    /* The magic glow effect */
+    box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-glow), 0 0 30px var(--primary-glow);
+    opacity: 0;
+    transform: scale(0.5);
+}
+
+/* The animation is only active when the .active class is present */
+.loader.active .dot {
+    animation: pulse-wave 1.5s ease-in-out infinite;
+}
+
+/* Stagger the animation for each dot */
+.loader.active .dot:nth-child(1) { animation-delay: 0s; }
+.loader.active .dot:nth-child(2) { animation-delay: 0.2s; }
+.loader.active .dot:nth-child(3) { animation-delay: 0.4s; }
+.loader.active .dot:nth-child(4) { animation-delay: 0.6s; }
+
+@keyframes pulse-wave {
+    0%, 60%, 100% {
+        transform: scale(0.5);
+        opacity: 0.5;
+    }
+    30% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* --- Toggle Button --- */
+#toggle-btn {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--bg-color);
+    background: var(--primary-glow);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px var(--primary-glow);
+}
+
+#toggle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px var(--primary-glow);
+}
+
+/* --- Variations Section --- */
+.variations-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    max-width: 900px;
+}
+
+.variation {
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    width: 250px;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.variation h3 {
+    margin-bottom: 1rem;
+    color: var(--secondary-glow);
+}
+
+/* --- Variation 2: Morphing Glow --- */
+.morph-shape {
+    width: 60px;
+    height: 60px;
+    background: var(--secondary-glow);
+    box-shadow: 0 0 20px var(--secondary-glow);
+    animation: morph 2s ease-in-out infinite;
+}
+
+@keyframes morph {
+    0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: rotate(0deg); }
+    50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: rotate(180deg); }
+}
+
+/* --- Variation 3: Orbital Glow --- */
+.loader-3 {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.orbit-center {
+    width: 15px;
+    height: 15px;
+    background: var(--tertiary-glow);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 15px var(--tertiary-glow);
+}
+
+.orbit-dot {
+    width: 15px;
+    height: 15px;
+    background: var(--tertiary-glow);
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 10px var(--tertiary-glow);
+    animation: orbit 2s linear infinite;
+}
+
+@keyframes orbit {
+    from { transform: rotate(0deg) translateX(35px) rotate(0deg); }
+    to { transform: rotate(360deg) translateX(35px) rotate(-360deg); }
+}
+
+/* --- Variation 4: Neon Bars --- */
+.loader-4 {
+    gap: 5px;
+}
+
+.bar {
+    width: 5px;
+    height: 40px;
+    background: var(--primary-glow);
+    box-shadow: 0 0 10px var(--primary-glow);
+    animation: bar-stretch 1.2s ease-in-out infinite;
+}
+
+.loader-4 .bar:nth-child(1) { animation-delay: -1.1s; }
+.loader-4 .bar:nth-child(2) { animation-delay: -1.0s; }
+.loader-4 .bar:nth-child(3) { animation-delay: -0.9s; }
+.loader-4 .bar:nth-child(4) { animation-delay: -0.8s; }
+.loader-4 .bar:nth-child(5) { animation-delay: -0.7s; }
+
+@keyframes bar-stretch {
+    0%, 40%, 100% { transform: scaleY(0.4); }
+    20% { transform: scaleY(1); }
+}
+</style>
+</head>
+<body>
+
+    <header>
+        <h1>Glowing Loading Animations</h1>
+        <p>Interactive demos built with HTML, CSS, and JavaScript.</p>
+    </header>
+
+    <main>
+        <!-- Main Interactive Demo -->
+        <section class="demo-container">
+            <h2>Style 1: Pulsing Wave</h2>
+            <div id="loader-1" class="loader">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <button id="toggle-btn">Start Loading</button>
+        </section>
+
+        <!-- More Variations -->
+        <section class="variations-container">
+            <h2>More Variations</h2>
+            
+            <div class="variation">
+                <h3>Morphing Glow</h3>
+                <div class="loader loader-2">
+                    <div class="morph-shape"></div>
+                </div>
+            </div>
+
+            <div class="variation">
+                <h3>Orbital Glow</h3>
+                <div class="loader loader-3">
+                    <div class="orbit-center"></div>
+                    <div class="orbit-dot"></div>
+                </div>
+            </div>
+
+            <div class="variation">
+                <h3>Neon Bars</h3>
+                <div class="loader loader-4">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+    const toggleBtn = document.getElementById('toggle-btn');
+    const loader = document.getElementById('loader-1');
+    let isLoading = false;
+
+    toggleBtn.addEventListener('click', () => {
+        // Toggle the loading state
+        isLoading = !isLoading;
+
+        if (isLoading) {
+            loader.classList.add('active');
+            toggleBtn.textContent = 'Stop Loading';
+        } else {
+            loader.classList.remove('active');
+            toggleBtn.textContent = 'Start Loading';
+        }
+    });
+
+});
+    </script>
+</body>
+</html>
