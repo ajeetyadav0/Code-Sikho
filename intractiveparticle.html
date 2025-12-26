@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Particle Button</title>
+    <style>
+        /* --- Global Styles & Variables --- */
+        /* Basic body styling for a nice presentation */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #1a1a2e;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden; /* Hide particles that go off-screen */
+}
+
+.wrapper {
+    position: relative; /* Crucial for positioning the particles container */
+}
+
+/* The main button styling */
+.btn {
+    position: relative;
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(45deg, #f093fb, #f5576c);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    outline: none;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    z-index: 1; /* Ensure button is on top of particles initially */
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(245, 87, 108, 0.4);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+/* Container for the particles */
+.particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Allows clicking through the container to the button */
+}
+
+/* The individual particle element */
+.particle {
+    position: absolute;
+    /* We will set the top/left in JS */
+    width: 10px;
+    height: 10px;
+    background: #f5576c; /* Default color, will be overridden by JS */
+    border-radius: 50%;
+    pointer-events: none;
+    
+    /* The animation! */
+    animation: explode 1s ease-out forwards;
+}
+
+/* The keyframes for the explosion effect */
+@keyframes explode {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        /* --x and --y are set by JavaScript */
+        transform: translate(var(--x), var(--y)) scale(0);
+        opacity: 0;
+    }
+}
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- The button we will click -->
+        <button id="particle-btn" class="btn">Click Me!</button>
+
+        <!-- This div will hold all the particle elements -->
+        <div id="particles-container" class="particles-container"></div>
+    </div>
+
+    <script>
+        // Get the button and the particles container from the DOM
+const button = document.getElementById('particle-btn');
+const particlesContainer = document.getElementById('particles-container');
+
+// Function to create a single particle
+function createParticle(x, y) {
+    const particle = document.createElement('span');
+    particle.classList.add('particle');
+
+    // --- Randomization ---
+    // Random size for the particle
+    const size = Math.random() * 15 + 5; // between 5px and 20px
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+
+    // Random final destination for the particle
+    const destinationX = (Math.random() - 0.5) * 200; // -100px to 100px
+    const destinationY = (Math.random() - 0.5) * 200; // -100px to 100px
+    
+    // Set CSS custom properties for the animation
+    particle.style.setProperty('--x', `${destinationX}px`);
+    particle.style.setProperty('--y', `${destinationY}px`);
+
+    // Random color from a predefined palette
+    const colors = ['#f093fb', '#f5576c', '#4facfe', '#43e97b', '#fa709a', '#fee140'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    particle.style.background = color;
+    
+    // Position the particle at the click coordinates
+    // We need to subtract half the size to center it on the click
+    particle.style.left = `${x - size / 2}px`;
+    particle.style.top = `${y - size / 2}px`;
+
+    return particle;
+}
+
+// Add a click event listener to the button
+button.addEventListener('click', (event) => {
+    // Get the coordinates of the click relative to the button
+    const x = event.clientX - button.offsetLeft;
+    const y = event.clientY - button.offsetTop;
+
+    // Create a bunch of particles
+    const particleCount = 30; // Number of particles to create
+    for (let i = 0; i < particleCount; i++) {
+        const particle = createParticle(x, y);
+        particlesContainer.appendChild(particle);
+    }
+
+    // Clean up the particles after the animation is done
+    // The animation duration is 1s, so we wait a bit longer than that
+    setTimeout(() => {
+        particlesContainer.innerHTML = '';
+    }, 1100); 
+});
+    </script>
+</body>
+</html>

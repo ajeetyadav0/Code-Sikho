@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading Animation</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+        
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 50px;
+        }
+        
+        .loader {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+        
+        .loader-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 8px solid transparent;
+        }
+        
+        .loader-circle:nth-child(1) {
+            border-top-color: #ff6b6b;
+            animation: rotate 1.5s linear infinite;
+        }
+        
+        .loader-circle:nth-child(2) {
+            border-right-color: #4ecdc4;
+            animation: rotate 2s linear infinite reverse;
+        }
+        
+        .loader-circle:nth-child(3) {
+            border-bottom-color: #45b7d1;
+            animation: rotate 2.5s linear infinite;
+        }
+        
+        .dots-loader {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: #6c5ce7;
+            animation: bounce 1.5s infinite ease-in-out;
+        }
+        
+        .dot:nth-child(1) {
+            animation-delay: -0.32s;
+            background-color: #ff6b6b;
+        }
+        
+        .dot:nth-child(2) {
+            animation-delay: -0.16s;
+            background-color: #4ecdc4;
+        }
+        
+        .dot:nth-child(3) {
+            animation-delay: 0;
+            background-color: #45b7d1;
+        }
+        
+        .pulse-loader {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .pulse-bar {
+            width: 10px;
+            height: 40px;
+            background-color: #6c5ce7;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        
+        .pulse-bar:nth-child(1) {
+            animation-delay: -0.4s;
+            background-color: #ff6b6b;
+        }
+        
+        .pulse-bar:nth-child(2) {
+            animation-delay: -0.2s;
+            background-color: #4ecdc4;
+        }
+        
+        .pulse-bar:nth-child(3) {
+            animation-delay: 0;
+            background-color: #45b7d1;
+        }
+        
+        .square-loader {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+        
+        .square {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: #6c5ce7;
+            animation: square-rotate 2s infinite ease-in-out;
+        }
+        
+        .square:nth-child(1) {
+            top: 0;
+            left: 0;
+            animation-delay: -0.4s;
+            background-color: #ff6b6b;
+        }
+        
+        .square:nth-child(2) {
+            top: 0;
+            right: 0;
+            animation-delay: -0.3s;
+            background-color: #4ecdc4;
+        }
+        
+        .square:nth-child(3) {
+            bottom: 0;
+            right: 0;
+            animation-delay: -0.2s;
+            background-color: #45b7d1;
+        }
+        
+        .square:nth-child(4) {
+            bottom: 0;
+            left: 0;
+            animation-delay: -0.1s;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes bounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+            }
+            40% {
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scaleY(0.5);
+            }
+            50% {
+                transform: scaleY(1);
+            }
+        }
+        
+        @keyframes square-rotate {
+            0%, 100% {
+                transform: rotate(0deg) scale(1);
+            }
+            50% {
+                transform: rotate(90deg) scale(0.7);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loader-container">
+        <div class="loader">
+            <div class="loader-circle"></div>
+            <div class="loader-circle"></div>
+            <div class="loader-circle"></div>
+        </div>
+        
+        <div class="dots-loader">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+        
+        <div class="pulse-loader">
+            <div class="pulse-bar"></div>
+            <div class="pulse-bar"></div>
+            <div class="pulse-bar"></div>
+        </div>
+        
+        <div class="square-loader">
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+        </div>
+    </div>
+</body>
+</html>

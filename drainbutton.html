@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liquid Drain Button</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+<style>
+    /* --- Global Styles & Variables --- */
+:root {
+    --bg-color: #0f0f1e;
+    --text-color: #e0e0e0;
+    --btn-color: #3498db;
+    --btn-hover: #2980b9;
+    --success-color: #2ecc71;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+}
+
+.container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.container p {
+    color: #b0b0b0;
+    margin-bottom: 3rem;
+}
+
+.button-wrapper {
+    position: relative;
+    width: 200px;
+    height: 60px;
+}
+
+/* --- The Liquid Button --- */
+.liquid-btn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--btn-color);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    overflow: hidden; /* Contains the shine effect */
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+}
+
+.liquid-btn span {
+    position: relative;
+    z-index: 2;
+    transition: opacity 0.3s ease;
+}
+
+/* --- The Liquid Shine Effect --- */
+.liquid-shine {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(30deg);
+    transition: all 0.5s ease;
+}
+
+/* --- Hover State --- */
+.liquid-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.6);
+}
+
+.liquid-btn:hover .liquid-shine {
+    top: -150%;
+    left: -150%;
+}
+
+/* --- The Drain Animation (Triggered by JS) --- */
+.liquid-btn.is-draining {
+    animation: drain 1.2s ease-in forwards;
+    pointer-events: none; /* Prevent clicking during animation */
+}
+
+.liquid-btn.is-draining span {
+    opacity: 0;
+}
+
+@keyframes drain {
+    0% {
+        transform: scale(1, 1);
+        border-radius: 50px;
+    }
+    40% {
+        transform: scale(1, 1.2);
+        border-radius: 50px;
+    }
+    100% {
+        transform: scale(0.1, 1.5);
+        border-radius: 50%;
+        opacity: 0;
+    }
+}
+
+/* --- Success Icon --- */
+.success-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: var(--success-color);
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.success-icon.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* --- Reset Button --- */
+.reset-btn {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.reset-btn.hidden {
+    display: none;
+}
+
+.reset-btn.show {
+    opacity: 1;
+}
+
+.reset-btn:hover {
+    background: var(--text-color);
+    color: var(--bg-color);
+}
+</style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Liquid Drain Button</h1>
+        <p>Click the button to see the animation.</p>
+        
+        <div class="button-wrapper">
+            <button id="liquid-btn" class="liquid-btn">
+                <span>Download Now</span>
+                <div class="liquid-shine"></div>
+            </button>
+            <div id="success-icon" class="success-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <button id="reset-btn" class="reset-btn hidden">Reset</button>
+        </div>
+    </div>
+
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const liquidBtn = document.getElementById('liquid-btn');
+    const successIcon = document.getElementById('success-icon');
+    const resetBtn = document.getElementById('reset-btn');
+
+    liquidBtn.addEventListener('click', () => {
+        // 1. Start the drain animation
+        liquidBtn.classList.add('is-draining');
+
+        // 2. Show the success icon after the drain animation finishes
+        setTimeout(() => {
+            successIcon.classList.add('show');
+            resetBtn.classList.remove('hidden');
+            resetBtn.classList.add('show');
+        }, 1200); // Match the CSS animation duration
+    });
+
+    resetBtn.addEventListener('click', () => {
+        // 3. Reset everything to its original state
+        liquidBtn.classList.remove('is-draining');
+        successIcon.classList.remove('show');
+        resetBtn.classList.remove('show');
+        
+        // Use a tiny timeout to allow CSS to re-render before hiding the button again
+        setTimeout(() => {
+            resetBtn.classList.add('hidden');
+        }, 50);
+    });
+});
+    </script>
+</body>
+</html>

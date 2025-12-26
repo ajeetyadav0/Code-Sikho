@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Scratch Card</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Lobster&display=swap" rel="stylesheet">
+<style>
+    /* --- Global Styles & Variables --- */
+:root {
+    --bg-color: #2c3e50;
+    --text-color: #ecf0f1;
+    --card-bg: #bdc3c7;
+    --card-border: #95a5a6;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.page-container p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+/* --- The Scratch Card Container --- */
+.scratch-container {
+    position: relative;
+    width: 400px;
+    height: 250px;
+    border-radius: 15px;
+    overflow: hidden; /* This is crucial! It clips the canvas to the card's shape */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    cursor: crosshair;
+    user-select: none; /* Prevents text selection while scratching */
+}
+
+/* --- The Hidden Content Layer --- */
+.scratch-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #f39c12, #e74c3c);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.scratch-content h2 {
+    font-family: 'Lobster', cursive;
+    font-size: 2.5rem;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.scratch-content p {
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+/* --- The Canvas Scratch Surface --- */
+.scratch-surface {
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* The canvas size is set by JavaScript */
+}
+
+/* --- Reset Button --- */
+.reset-btn {
+    margin-top: 2rem;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.reset-btn:hover {
+    background: #2980b9;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 500px) {
+    .scratch-container {
+        width: 90vw;
+        height: 40vw;
+    }
+    .scratch-content h2 { font-size: 1.8rem; }
+}
+</style>
+</head>
+<body>
+
+    <div class="page-container">
+        <h1>Scratch to Win!</h1>
+        <p>Use your mouse to scratch the card and reveal your prize.</p>
+
+        <div class="scratch-container" id="scratch-container">
+            <!-- This is the content that will be revealed -->
+            <div class="scratch-content">
+                <h2>🎉 JACKPOT! 🎉</h2>
+                <p>You've Subscribed Code Sikho</p>
+            </div>
+            <!-- This is the canvas we will draw on and "scratch off" -->
+            <canvas id="scratch-surface" class="scratch-surface"></canvas>
+        </div>
+
+        <button id="reset-btn" class="reset-btn">Reset Card</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const canvas = document.getElementById('scratch-surface');
+    const ctx = canvas.getContext('2d');
+    const container = document.getElementById('scratch-container');
+    const resetBtn = document.getElementById('reset-btn');
+
+    // Set canvas size to match its container
+    function resizeCanvas() {
+        canvas.width = container.offsetWidth;
+        canvas.height = container.offsetHeight;
+        initScratchSurface();
+    }
+
+    // Initialize the scratch-off surface
+    function initScratchSurface() {
+        // Create a gradient for the scratch-off layer
+        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        gradient.addColorStop(0, '#C0C0C0'); // Silver
+        gradient.addColorStop(1, '#808080'); // Grey
+
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Add text on top of the scratch-off layer
+        ctx.fillStyle = '#333';
+        ctx.font = 'bold 24px Roboto';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('SCRATCH HERE', canvas.width / 2, canvas.height / 2);
+    }
+    
+    let isScratching = false;
+
+    // Function to handle scratching
+    function scratch(x, y) {
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.beginPath();
+        ctx.arc(x, y, 20, 0, Math.PI * 2); // "Brush" size is 20
+        ctx.fill();
+    }
+
+    // --- Mouse Events ---
+    canvas.addEventListener('mousedown', (e) => {
+        isScratching = true;
+        const rect = canvas.getBoundingClientRect();
+        scratch(e.clientX - rect.left, e.clientY - rect.top);
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+        if (!isScratching) return;
+        const rect = canvas.getBoundingClientRect();
+        scratch(e.clientX - rect.left, e.clientY - rect.top);
+    });
+
+    canvas.addEventListener('mouseup', () => {
+        isScratching = false;
+        checkScratchPercentage();
+    });
+    
+    canvas.addEventListener('mouseleave', () => {
+        isScratching = false;
+    });
+
+    // --- Touch Events for Mobile ---
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        isScratching = true;
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        scratch(touch.clientX - rect.left, touch.clientY - rect.top);
+    });
+
+    canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (!isScratching) return;
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        scratch(touch.clientX - rect.left, touch.clientY - rect.top);
+    });
+
+    canvas.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        isScratching = false;
+        checkScratchPercentage();
+    });
+
+    // --- Logic to check scratch percentage ---
+    function checkScratchPercentage() {
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const pixels = imageData.data;
+        let transparentPixels = 0;
+        for (let i = 3; i < pixels.length; i += 4) {
+            if (pixels[i] < 128) { // Alpha channel is less than 50%
+                transparentPixels++;
+            }
+        }
+        const percentage = (transparentPixels / (pixels.length / 4)) * 100;
+        
+        // If more than 50% is scratched, reveal all
+        if (percentage > 50) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    }
+
+    // --- Reset Button Logic ---
+    resetBtn.addEventListener('click', () => {
+        initScratchSurface();
+    });
+
+    // --- Initial Setup ---
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+});
+    </script>
+</body>
+</html>

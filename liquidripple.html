@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liquid Ripple Button</title>
+    <style>
+        /* --- Basic Body Styling --- */
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #282c34;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden; /* Hide ripples that go off-screen */
+}
+
+/* --- The Liquid Button --- */
+.liquid-button {
+    position: relative; /* Crucial for positioning the ripple */
+    padding: 20px 60px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: #0056b3; /* Fallback for browsers that don't support gradients */
+    background-image: linear-gradient(45deg, #0056b3, #007bff);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    outline: none;
+    overflow: hidden; /* Keeps the ripple and shine contained */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+}
+
+/* --- Hover Effects --- */
+.liquid-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 20px rgba(0, 123, 255, 0.6);
+}
+
+/* The Shine Effect */
+.liquid-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%; /* Start off-screen to the left */
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.3), 
+        transparent
+    );
+    transition: left 0.5s;
+}
+
+.liquid-button:hover::before {
+    left: 100%; /* Move to the right on hover */
+}
+
+
+/* --- Active (Click) Effect --- */
+.liquid-button:active {
+    transform: translateY(-1px) scale(0.98); /* Depress the button slightly */
+    box-shadow: 0 3px 10px rgba(0, 123, 255, 0.5);
+}
+
+/* --- The Ripple Effect (created by JS) --- */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.6);
+    transform: scale(0);
+    animation: ripple-animation 0.6s ease-out;
+    pointer-events: none; /* Allows clicking through the ripple */
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+    </style>
+</head>
+<body>
+
+    <h1>Liquid Ripple Button</h1>
+    <p>Click anywhere on the button to see the effect.</p>
+
+    <button class="liquid-button">
+        <span>Click Me</span>
+    </button>
+
+    <script>
+        // Get the button element from the DOM
+const button = document.querySelector('.liquid-button');
+
+// Add a click event listener to the button
+button.addEventListener('click', function(event) {
+    // Create a new span element for the ripple
+    const ripple = document.createElement('span');
+    
+    // Add the 'ripple' class to the new element
+    ripple.classList.add('ripple');
+
+    // --- Calculate the position of the ripple ---
+    // Get the click coordinates relative to the viewport
+    const clickX = event.clientX;
+    const clickY = event.clientY;
+
+    // Get the button's position and dimensions relative to the viewport
+    const buttonRect = button.getBoundingClientRect();
+    const buttonLeft = buttonRect.left;
+    const buttonTop = buttonRect.top;
+
+    // Calculate the coordinates of the click relative to the button's top-left corner
+    const rippleX = clickX - buttonLeft;
+    const rippleY = clickY - buttonTop;
+
+    // Set the top and left style properties for the ripple
+    // We subtract half the size of the ripple to center it on the click point
+    ripple.style.left = `${rippleX}px`;
+    ripple.style.top = `${rippleY}px`;
+
+    // --- Add the ripple to the button and clean up ---
+    // Append the ripple to the button
+    this.appendChild(ripple);
+
+    // Use a setTimeout to remove the ripple from the DOM after the animation finishes
+    // The animation duration is 0.6s, so we wait 600ms
+    setTimeout(() => {
+        ripple.remove();
+    }, 600);
+});
+    </script>
+</body>
+</html>

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Illuminated Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background particles for ambiance */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Light bulb container */
+        .bulb-container {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            z-index: 10;
+            transition: transform 0.3s ease;
+        }
+
+        .bulb-container:hover {
+            transform: translateX(-50%) scale(1.05);
+        }
+
+        /* Cord */
+        .cord {
+            width: 2px;
+            height: 150px;
+            background: linear-gradient(to bottom, #333, #666);
+            margin: 0 auto;
+            position: relative;
+            transform-origin: top center;
+            animation: swing 4s ease-in-out infinite;
+        }
+
+        @keyframes swing {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(2deg); }
+            75% { transform: rotate(-2deg); }
+        }
+
+        /* Bulb SVG styles */
+        .bulb {
+            width: 80px;
+            height: 100px;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0));
+            transition: all 0.5s ease;
+        }
+
+        .bulb.on {
+            filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.9))
+                    drop-shadow(0 0 60px rgba(255, 255, 255, 0.7))
+                    drop-shadow(0 0 80px rgba(255, 255, 255, 0.5));
+        }
+
+        .bulb-glow {
+            fill: #ffd700;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .bulb.on .bulb-glow {
+            opacity: 1;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        .bulb-base {
+            fill: #444;
+        }
+
+        .bulb-glass {
+            fill: rgba(255, 255, 255, 0.1);
+            stroke: #666;
+            stroke-width: 0.5;
+        }
+
+        /* Light beam effect */
+        .light-beam {
+            position: absolute;
+            top: 250px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            background: radial-gradient(ellipse at center top, 
+                        rgba(255, 255, 255, 0) 0%,
+                        rgba(255, 255, 255, 0) 40%,
+                        rgba(255, 255, 255, 0.1) 70%,
+                        rgba(255, 255, 255, 0.3) 100%);
+            transition: all 0.8s ease;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .light-beam.active {
+            width: 600px;
+            height: 600px;
+            opacity: 1;
+        }
+
+        /* Login form container */
+        .login-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 400px;
+            max-width: 90%;
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.8s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            z-index: 8;
+        }
+
+        .login-container.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .login-container h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        .remember-forgot label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .remember-forgot input[type="checkbox"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .remember-forgot a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .remember-forgot a:hover {
+            color: #fff;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            color: rgba(255, 255, 255, 0.5);
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .divider::before {
+            left: 0;
+        }
+
+        .divider::after {
+            right: 0;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Instructions */
+        .instructions {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            text-align: center;
+            animation: fadeInOut 3s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .instructions.hidden {
+            display: none;
+        }
+
+        /* Success message */
+        .success-message {
+            position: fixed;
+            top: 20px;
+            right: -300px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: right 0.5s ease;
+            z-index: 100;
+        }
+
+        .success-message.show {
+            right: 20px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+
+            .bulb {
+                width: 60px;
+                height: 75px;
+            }
+
+            .cord {
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Light bulb -->
+    <div class="bulb-container" id="bulbContainer">
+        <div class="cord"></div>
+        <svg class="bulb" id="bulb" viewBox="0 0 80 100">
+            <!-- Bulb base -->
+            <rect class="bulb-base" x="30" y="70" width="20" height="15" rx="2"/>
+            <line class="bulb-base" x1="35" y1="75" x2="45" y2="75" stroke="#333" stroke-width="1"/>
+            <line class="bulb-base" x1="35" y1="78" x2="45" y2="78" stroke="#333" stroke-width="1"/>
+            <line class="bulb-base" x1="35" y1="81" x2="45" y2="81" stroke="#333" stroke-width="1"/>
+            
+            <!-- Bulb glass -->
+            <path class="bulb-glass" d="M 40 20 C 25 20, 15 35, 15 50 C 15 65, 25 70, 30 70 L 50 70 C 55 70, 65 65, 65 50 C 65 35, 55 20, 40 20 Z"/>
+            
+            <!-- Glow effect -->
+            <ellipse class="bulb-glow" cx="40" cy="45" rx="25" ry="30"/>
+            
+            <!-- Highlight -->
+            <ellipse cx="35" cy="35" rx="8" ry="12" fill="rgba(255, 255, 255, 0.3)"/>
+        </svg>
+    </div>
+
+    <!-- Light beam effect -->
+    <div class="light-beam" id="lightBeam"></div>
+
+    <!-- Login form -->
+    <div class="login-container" id="loginContainer">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <div class="remember-forgot">
+                <label>
+                    <input type="checkbox" name="remember"> Remember me
+                </label>
+                <a href="#">Forgot password?</a>
+            </div>
+            <button type="submit" class="login-btn">Sign In</button>
+        </form>
+        
+        <div class="divider">OR</div>
+        
+        <div class="social-login">
+            <a href="#" class="social-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Google
+            </a>
+            <a href="#" class="social-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                GitHub
+            </a>
+        </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="instructions" id="instructions">
+        Click the light bulb to illuminate your login form
+    </div>
+
+    <!-- Success message -->
+    <div class="success-message" id="successMessage">
+        Login successful! Welcome back.
+    </div>
+
+    <script>
+        // Generate particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Get elements
+        const bulb = document.getElementById('bulb');
+        const bulbContainer = document.getElementById('bulbContainer');
+        const loginContainer = document.getElementById('loginContainer');
+        const lightBeam = document.getElementById('lightBeam');
+        const instructions = document.getElementById('instructions');
+        const loginForm = document.getElementById('loginForm');
+        const successMessage = document.getElementById('successMessage');
+
+        // State
+        let isLightOn = false;
+
+        // Toggle light and form
+        bulbContainer.addEventListener('click', function() {
+            isLightOn = !isLightOn;
+            
+            if (isLightOn) {
+                // Turn on the light
+                bulb.classList.add('on');
+                lightBeam.classList.add('active');
+                loginContainer.classList.add('active');
+                instructions.classList.add('hidden');
+                
+                // Add a subtle shake to the bulb
+                bulbContainer.style.animation = 'shake 0.5s ease';
+                setTimeout(() => {
+                    bulbContainer.style.animation = '';
+                }, 500);
+            } else {
+                // Turn off the light
+                bulb.classList.remove('on');
+                lightBeam.classList.remove('active');
+                loginContainer.classList.remove('active');
+                instructions.classList.remove('hidden');
+            }
+        });
+
+        // Add shake animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(-50%) rotate(0deg); }
+                25% { transform: translateX(-50%) rotate(-5deg); }
+                75% { transform: translateX(-50%) rotate(5deg); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Handle form submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Simple validation (in real app, this would be server-side)
+            if (email && password) {
+                // Show success message
+                successMessage.classList.add('show');
+                
+                // Hide message after 3 seconds
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                }, 3000);
+                
+                // Reset form
+                loginForm.reset();
+            }
+        });
+
+        // Social login handlers
+        document.querySelectorAll('.social-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const provider = this.textContent.trim();
+                successMessage.textContent = `Connecting with ${provider}...`;
+                successMessage.classList.add('show');
+                
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                    successMessage.textContent = 'Login successful! Welcome back.';
+                }, 2000);
+            });
+        });
+
+        // Add hover sound effect simulation (visual feedback)
+        bulbContainer.addEventListener('mouseenter', function() {
+            if (!isLightOn) {
+                this.style.filter = 'brightness(1.2)';
+            }
+        });
+
+        bulbContainer.addEventListener('mouseleave', function() {
+            if (!isLightOn) {
+                this.style.filter = 'brightness(1)';
+            }
+        });
+
+        // Forgot password handler
+        document.querySelector('.remember-forgot a').addEventListener('click', function(e) {
+            e.preventDefault();
+            successMessage.textContent = 'Password reset link sent to your email!';
+            successMessage.classList.add('show');
+            
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+                successMessage.textContent = 'Login successful! Welcome back.';
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

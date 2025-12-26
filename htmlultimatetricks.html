@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Ultimate HTML Details Trick</title>
+    <style>
+        /* (Same CSS as the "Level Up" section above) */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f7f6; color: #333; max-width: 700px; margin: 40px auto; padding: 20px; }
+        h1 { text-align: center; color: #2c3e50; }
+        details { background: #ffffff; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; transition: box-shadow 0.3s ease; }
+        details:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        summary { padding: 1.5rem; font-size: 1.2rem; font-weight: 600; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.3s ease; }
+        summary::-webkit-details-marker { display: none; }
+        summary:hover { background-color: #f0f4f8; }
+        summary::after { content: '+'; font-size: 1.5rem; font-weight: 400; color: #3498db; transition: transform 0.3s ease; }
+        details[open] summary::after { transform: rotate(45deg); }
+        .content { padding: 0 1.5rem 1.5rem; border-top: 1px solid #e0e0e0; max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s ease; }
+        details[open] .content { max-height: 500px; padding: 1rem 1.5rem 1.5rem; transition: max-height 0.4s ease-in, padding 0.4s ease; }
+    </style>
+</head>
+<body>
+
+    <h1>One-Open Accordion</h1>
+
+    <details>
+        <summary>First Item</summary>
+        <div class="content">
+            <p>This is the content for the first item. If you open another item, this one will close automatically.</p>
+        </div>
+    </details>
+
+    <details>
+        <summary>Second Item</summary>
+        <div class="content">
+            <p>This is the content for the second item. It's the only one that can be open at a time.</p>
+        </div>
+    </details>
+
+    <details>
+        <summary>Third Item</summary>
+        <div class="content">
+            <p>And here's the third. Notice how the first one is now closed. All of this is powered by a tiny bit of JavaScript and the magic of the native `<details>` element.</p>
+        </div>
+    </details>
+
+    <script>
+        // The REAL Trick: The One-Open Accordion Logic
+        document.querySelectorAll('details').forEach(details => {
+          details.addEventListener('toggle', event => {
+            if (event.target.open) {
+              document.querySelectorAll('details').forEach(otherDetails => {
+                if (otherDetails !== event.target) {
+                  otherDetails.open = false;
+                }
+              });
+            }
+          });
+        });
+    </script>
+</body>
+</html>

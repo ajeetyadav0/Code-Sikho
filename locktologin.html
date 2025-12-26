@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Lock - Pattern to Login</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background particles */
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Lock container */
+        .lock-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .lock-container.unlocked {
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        /* Lock SVG */
+        .lock-icon {
+            width: 200px;
+            height: 200px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+        }
+
+        .lock-icon:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.4));
+        }
+
+        .lock-icon.unlocking {
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px) rotate(-5deg); }
+            75% { transform: translateX(10px) rotate(5deg); }
+        }
+
+        /* Pattern lock overlay */
+        .pattern-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .pattern-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Pattern lock container */
+        .pattern-lock {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+
+        .pattern-dots {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .pattern-dot {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pattern-dot::before {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .pattern-dot.active::before {
+            background: #4CAF50;
+            box-shadow: 0 0 20px #4CAF50;
+        }
+
+        .pattern-dot:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* Pattern lines */
+        .pattern-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .pattern-line {
+            stroke: #4CAF50;
+            stroke-width: 4;
+            fill: none;
+            stroke-linecap: round;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            filter: drop-shadow(0 0 10px #4CAF50);
+        }
+
+        /* Close pattern button */
+        .close-pattern {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-pattern:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        /* Pattern hint */
+        .pattern-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* Login form container */
+        .login-container {
+            position: absolute;
+            width: 400px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.8) rotateY(90deg);
+            transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 10;
+        }
+
+        .login-container.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) rotateY(0);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h2 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Form groups */
+        .form-group {
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s forwards;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.2s; }
+        .form-group:nth-child(2) { animation-delay: 0.4s; }
+        .form-group:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Form options */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            opacity: 0;
+            animation: fadeInUp 0.6s 0.8s forwards;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            color: #666;
+        }
+
+        .remember-me input {
+            margin-right: 8px;
+            width: auto;
+        }
+
+        .forgot-link {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .forgot-link:hover {
+            color: #764ba2;
+        }
+
+        /* Submit button */
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            opacity: 0;
+            animation: fadeInUp 0.6s 1s forwards;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Success message */
+        .success-toast {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 20px 40px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 2000;
+        }
+
+        .success-toast.show {
+            top: 30px;
+        }
+
+        .success-icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        /* Instructions */
+        .instructions {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 16px;
+            text-align: center;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        /* Lock animation */
+        @keyframes lockOpen {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(-20deg); }
+        }
+
+        .lock-shackle {
+            transition: transform 0.5s ease;
+            transform-origin: 50% 30%;
+        }
+
+        .lock-shackle.open {
+            animation: lockOpen 0.5s ease forwards;
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .login-container {
+                width: 90%;
+                padding: 30px 20px;
+            }
+
+            .lock-icon {
+                width: 150px;
+                height: 150px;
+            }
+
+            .pattern-lock {
+                width: 250px;
+                height: 250px;
+            }
+
+            .pattern-dot {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Lock container -->
+    <div class="lock-container" id="lockContainer">
+        <svg class="lock-icon" id="lockIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="5" y="11" width="14" height="11" rx="2" stroke="white" stroke-width="2"/>
+            <path class="lock-shackle" d="M7 11V7C7 4.23858 9.23858 2 12 2C14.7614 2 17 4.23858 17 7V11" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="12" cy="16" r="1" fill="white"/>
+            <path d="M12 16V18" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <div class="instructions" id="instructions">Click to unlock or draw pattern (L-shape)</div>
+    </div>
+
+    <!-- Login form -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-header">
+            <h2>Welcome Back</h2>
+            <p>Please enter your credentials to continue</p>
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter your username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+            
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox"> Remember me
+                </label>
+                <a href="#" class="forgot-link">Forgot password?</a>
+            </div>
+            
+            <button type="submit" class="submit-btn">Sign In</button>
+        </form>
+    </div>
+
+    <!-- Pattern lock overlay -->
+    <div class="pattern-overlay" id="patternOverlay">
+        <button class="close-pattern" id="closePattern">✕</button>
+        
+        <div class="pattern-lock">
+            <div class="pattern-dots" id="patternDots">
+                <!-- Dots will be generated by JavaScript -->
+            </div>
+            <svg class="pattern-lines" id="patternLines">
+                <!-- Lines will be drawn by JavaScript -->
+            </svg>
+        </div>
+        
+        <div class="pattern-hint">Draw an L-shape pattern (1→2→3→5→8)</div>
+    </div>
+
+    <!-- Success toast -->
+    <div class="success-toast" id="successToast">
+        <div class="success-icon">✓</div>
+        <span id="toastMessage">Success!</span>
+    </div>
+
+    <script>
+        // Generate particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Get elements
+        const lockContainer = document.getElementById('lockContainer');
+        const lockIcon = document.getElementById('lockIcon');
+        const loginContainer = document.getElementById('loginContainer');
+        const instructions = document.getElementById('instructions');
+        const patternOverlay = document.getElementById('patternOverlay');
+        const closePattern = document.getElementById('closePattern');
+        const patternDots = document.getElementById('patternDots');
+        const patternLines = document.getElementById('patternLines');
+        const loginForm = document.getElementById('loginForm');
+        const successToast = document.getElementById('successToast');
+        const toastMessage = document.getElementById('toastMessage');
+
+        let isUnlocked = false;
+        let patternSequence = [];
+        let isDrawingPattern = false;
+        const correctPattern = [1, 2, 3, 5, 8]; // L-shape pattern
+
+        // Create pattern dots
+        function createPatternDots() {
+            for (let i = 0; i < 9; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'pattern-dot';
+                dot.dataset.index = i;
+                
+                const row = Math.floor(i / 3);
+                const col = i % 3;
+                dot.style.left = col * 100 + 20 + 'px';
+                dot.style.top = row * 100 + 20 + 'px';
+                
+                patternDots.appendChild(dot);
+            }
+        }
+
+        // Show toast message
+        function showToast(message) {
+            toastMessage.textContent = message;
+            successToast.classList.add('show');
+            setTimeout(() => {
+                successToast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Unlock animation
+        function unlock() {
+            if (isUnlocked) return;
+            
+            isUnlocked = true;
+            lockIcon.classList.add('unlocking');
+            
+            // Open lock shackle
+            const shackle = lockIcon.querySelector('.lock-shackle');
+            shackle.classList.add('open');
+            
+            // Hide lock and show form
+            setTimeout(() => {
+                lockContainer.classList.add('unlocked');
+                instructions.style.opacity = '0';
+                
+                setTimeout(() => {
+                    loginContainer.classList.add('active');
+                }, 500);
+            }, 500);
+            
+            showToast('Lock unlocked! Please login to continue.');
+        }
+
+        // Lock click handler (quick unlock)
+        lockIcon.addEventListener('click', function() {
+            if (!isUnlocked) {
+                unlock();
+            }
+        });
+
+        // Long press to show pattern lock
+        let pressTimer;
+        lockIcon.addEventListener('mousedown', function(e) {
+            if (!isUnlocked) {
+                e.preventDefault();
+                pressTimer = setTimeout(() => {
+                    patternOverlay.classList.add('active');
+                }, 500);
+            }
+        });
+
+        lockIcon.addEventListener('mouseup', function() {
+            clearTimeout(pressTimer);
+        });
+
+        lockIcon.addEventListener('mouseleave', function() {
+            clearTimeout(pressTimer);
+        });
+
+        // Touch events for mobile
+        lockIcon.addEventListener('touchstart', function(e) {
+            if (!isUnlocked) {
+                e.preventDefault();
+                pressTimer = setTimeout(() => {
+                    patternOverlay.classList.add('active');
+                }, 500);
+            }
+        });
+
+        lockIcon.addEventListener('touchend', function() {
+            clearTimeout(pressTimer);
+        });
+
+        // Pattern lock functionality
+        let currentPath = '';
+        let selectedDots = new Set();
+
+        function handlePatternStart(e) {
+            isDrawingPattern = true;
+            patternSequence = [];
+            selectedDots.clear();
+            currentPath = '';
+            patternLines.innerHTML = '';
+            
+            document.querySelectorAll('.pattern-dot').forEach(dot => {
+                dot.classList.remove('active');
+            });
+        }
+
+        function handlePatternMove(e) {
+            if (!isDrawingPattern) return;
+            
+            const touch = e.touches ? e.touches[0] : e;
+            const element = document.elementFromPoint(touch.clientX, touch.clientY);
+            
+            if (element && element.classList.contains('pattern-dot')) {
+                const index = parseInt(element.dataset.index);
+                
+                if (!selectedDots.has(index)) {
+                    selectedDots.add(index);
+                    patternSequence.push(index);
+                    element.classList.add('active');
+                    
+                    // Draw line
+                    if (currentPath) {
+                        const rect = element.getBoundingClientRect();
+                        const parentRect = patternDots.getBoundingClientRect();
+                        const x = rect.left + rect.width / 2 - parentRect.left;
+                        const y = rect.top + rect.height / 2 - parentRect.top;
+                        currentPath += ` L ${x} ${y}`;
+                        
+                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        line.setAttribute('d', currentPath);
+                        line.setAttribute('class', 'pattern-line');
+                        line.style.opacity = '1';
+                        patternLines.appendChild(line);
+                    } else {
+                        const rect = element.getBoundingClientRect();
+                        const parentRect = patternDots.getBoundingClientRect();
+                        const x = rect.left + rect.width / 2 - parentRect.left;
+                        const y = rect.top + rect.height / 2 - parentRect.top;
+                        currentPath = `M ${x} ${y}`;
+                    }
+                }
+            }
+        }
+
+        function handlePatternEnd() {
+            if (!isDrawingPattern) return;
+            
+            isDrawingPattern = false;
+            
+            // Check pattern
+            if (JSON.stringify(patternSequence) === JSON.stringify(correctPattern)) {
+                showToast('Pattern correct! Unlocking...');
+                setTimeout(() => {
+                    patternOverlay.classList.remove('active');
+                    unlock();
+                }, 1000);
+            } else if (patternSequence.length > 0) {
+                showToast('Incorrect pattern. Try again!');
+                setTimeout(() => {
+                    document.querySelectorAll('.pattern-dot').forEach(dot => {
+                        dot.classList.remove('active');
+                    });
+                    patternLines.innerHTML = '';
+                }, 1000);
+            }
+        }
+
+        // Add pattern event listeners
+        patternDots.addEventListener('mousedown', handlePatternStart);
+        document.addEventListener('mousemove', handlePatternMove);
+        document.addEventListener('mouseup', handlePatternEnd);
+
+        patternDots.addEventListener('touchstart', handlePatternStart);
+        document.addEventListener('touchmove', handlePatternMove);
+        document.addEventListener('touchend', handlePatternEnd);
+
+        // Close pattern overlay
+        closePattern.addEventListener('click', function() {
+            patternOverlay.classList.remove('active');
+            patternSequence = [];
+            selectedDots.clear();
+            document.querySelectorAll('.pattern-dot').forEach(dot => {
+                dot.classList.remove('active');
+            });
+            patternLines.innerHTML = '';
+        });
+
+        // Form submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username && password) {
+                showToast(`Welcome back, ${username}!`);
+                this.reset();
+                
+                // Reset after success
+                setTimeout(() => {
+                    loginContainer.classList.remove('active');
+                    lockContainer.classList.remove('unlocked');
+                    isUnlocked = false;
+                    const shackle = lockIcon.querySelector('.lock-shackle');
+                    shackle.classList.remove('open');
+                    instructions.style.opacity = '1';
+                }, 3000);
+            }
+        });
+
+        // Forgot password link
+        document.querySelector('.forgot-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            showToast('Password reset link sent to your email!');
+        });
+
+        // Initialize pattern dots
+        createPatternDots();
+
+        // Add hover effect to lock
+        lockIcon.addEventListener('mouseenter', function() {
+            if (!isUnlocked) {
+                this.style.filter = 'drop-shadow(0 15px 40px rgba(102, 126, 234, 0.6))';
+            }
+        });
+
+        lockIcon.addEventListener('mouseleave', function() {
+            if (!isUnlocked) {
+                this.style.filter = 'drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3))';
+            }
+        });
+    </script>
+</body>
+</html>

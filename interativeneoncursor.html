@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Neon Cursor</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    /* --- Global Styles & Variables --- */
+:root {
+    --bg-color: #0a0a0a;
+    --text-color: #e0e0e0;
+    --neon-cyan: #00ffff;
+    --neon-pink: #ff00ff;
+    --neon-yellow: #ffff00;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow: hidden; /* Hide scrollbars */
+    /* Hide the default cursor */
+    cursor: none;
+}
+
+/* --- Page Content --- */
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    pointer-events: none; /* Allows mouse events to pass through to the cursor */
+}
+
+.content h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 10px var(--neon-cyan);
+}
+
+.content p {
+    font-size: 1.2rem;
+    color: #b0b0b0;
+}
+
+.content a, .content button {
+    pointer-events: auto; /* Re-enable pointer events for interactive elements */
+    margin: 1rem;
+    padding: 0.8rem 1.5rem;
+    background: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--neon-pink);
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.content a:hover, .content button:hover {
+    background: var(--neon-pink);
+    color: var(--bg-color);
+    box-shadow: 0 0 15px var(--neon-pink);
+}
+
+/* --- The Custom Neon Cursor --- */
+#neon-cursor {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    /* Center the cursor on the mouse coordinates */
+    transform: translate(-50%, -50%);
+    pointer-events: none; /* The cursor itself shouldn't be clickable */
+    z-index: 9999;
+    mix-blend-mode: screen; /* Creates a nice light-blending effect */
+}
+
+.cursor-dot {
+    width: 10px;
+    height: 10px;
+    background-color: var(--neon-cyan);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* The neon glow effect */
+    box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+    /* A subtle flicker animation */
+    animation: flicker 1.5s infinite alternate;
+}
+
+/* --- The Radial Menu --- */
+.cursor-menu {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 150px;
+    height: 150px;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.menu-item {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: 2px solid var(--neon-pink);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--neon-pink);
+    text-decoration: none;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+/* Position menu items in a circle */
+.menu-item:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }
+.menu-item:nth-child(2) { top: 50%; right: 0; transform: translateY(-50%); }
+.menu-item:nth-child(3) { bottom: 0; left: 50%; transform: translateX(-50%); }
+.menu-item:nth-child(4) { top: 50%; left: 0; transform: translateY(-50%); }
+
+.menu-item:hover {
+    background: var(--neon-pink);
+    color: var(--bg-color);
+    box-shadow: 0 0 15px var(--neon-pink);
+    transform: scale(1.2);
+}
+
+/* --- Active State (Menu is Open) --- */
+#neon-cursor.active .cursor-menu {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+#neon-cursor.active .cursor-dot {
+    opacity: 0;
+}
+
+/* --- Keyframe for Flicker Effect --- */
+@keyframes flicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+</style>
+</head>
+<body>
+
+    <div class="content">
+        <h1>Interactive Neon Cursor</h1>
+        <p>Click and hold anywhere to activate the radial menu.</p>
+        <a href="#">Home</a>
+        <button>Click Me</button>
+    </div>
+
+    <!-- The Custom Cursor -->
+    <div id="neon-cursor">
+        <div class="cursor-dot"></div>
+        
+        <!-- The Radial Menu (Hidden by default) -->
+        <div class="cursor-menu">
+            <a href="#" class="menu-item" data-tooltip="Settings">
+                <i class="fas fa-cog"></i>
+            </a>
+            <a href="#" class="menu-item" data-tooltip="User">
+                <i class="fas fa-user"></i>
+            </a>
+            <a href="#" class="menu-item" data-tooltip="Messages">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <a href="#" class="menu-item" data-tooltip="Downloads">
+                <i class="fas fa-download"></i>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const cursor = document.getElementById('neon-cursor');
+    const menuItems = document.querySelectorAll('.menu-item');
+
+    // --- Track Mouse Movement ---
+    document.addEventListener('mousemove', (e) => {
+        // Update the cursor's position
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+    });
+
+    // --- Show/Hide Menu on Click ---
+    document.addEventListener('mousedown', () => {
+        cursor.classList.add('active');
+    });
+
+    document.addEventListener('mouseup', () => {
+        cursor.classList.remove('active');
+    });
+
+    // --- Hide cursor when it leaves the window ---
+    document.addEventListener('mouseleave', () => {
+        cursor.style.display = 'none';
+    });
+
+    document.addEventListener('mouseenter', () => {
+        cursor.style.display = 'block';
+    });
+
+    // --- Prevent menu clicks from propagating ---
+    menuItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.stopPropagation(); // Stop the click from affecting elements underneath
+            console.log('Menu item clicked:', item.dataset.tooltip);
+            // You can add your logic here (e.g., navigate to a page)
+        });
+    });
+});
+    </script>
+</body>
+</html>

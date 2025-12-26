@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magnetic Particle Field</title>
+    <style>
+        /* --- Global Styles & Variables --- */
+:root {
+    --bg-color: #0a0a0a;
+    --text-color: #f0f0f0;
+    --particle-color: #00d4ff;
+    --particle-glow: rgba(0, 212, 255, 0.5);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow: hidden; /* Hide scrollbars */
+    position: relative;
+    height: 100vh;
+    cursor: none; /* Hide the default cursor for a more immersive feel */
+}
+
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 10; /* Ensure text is on top of particles */
+    pointer-events: none; /* Allow mouse events to pass through to the particles */
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 10px var(--particle-glow);
+}
+
+p {
+    font-size: 1.2rem;
+    color: #b0b0b0;
+}
+
+/* --- The Particle Field Container --- */
+#particle-field {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* --- Individual Particle Styling --- */
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background-color: var(--particle-color);
+    border-radius: 50%;
+    pointer-events: none; /* Particles don't block mouse events */
+    /* This is the magic for smooth movement! */
+    transition: transform 0.2s ease-out;
+    box-shadow: 0 0 10px var(--particle-glow);
+}
+
+/* Custom Cursor (Optional but adds to the effect) */
+.custom-cursor {
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--particle-color);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none; /* Important! */
+    z-index: 9999;
+    transition: transform 0.1s ease-out;
+    transform: translate(-50%, -50%);
+}
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Magnetic Particle Field</h1>
+        <p>Move your cursor around the screen to interact with the particles.</p>
+    </div>
+
+    <div id="particle-field"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+    const particleField = document.getElementById('particle-field');
+    const particles = [];
+    const particleCount = 150;
+    const mouse = { x: null, y: null, radius: 150 };
+
+    // --- 1. Create the Particles ---
+    function createParticles() {
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('span');
+            particle.classList.add('particle');
+
+            // Position particles in a grid
+            const x = (i % 15) * 50; // 15 columns
+            const y = Math.floor(i / 15) * 50; // Rows
+
+            // Store the original position
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+            
+            // Add custom properties for easy access in JS
+            particle.dataset.originalX = x;
+            particle.dataset.originalY = y;
+
+            particleField.appendChild(particle);
+            particles.push(particle);
+        }
+    }
+
+    // --- 2. Track Mouse Movement ---
+    window.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+    });
+
+    // --- 3. Animate Particles based on Mouse Position ---
+    function animateParticles() {
+        particles.forEach(particle => {
+            const originalX = parseFloat(particle.dataset.originalX);
+            const originalY = parseFloat(particle.dataset.originalY);
+            
+            // Calculate distance from mouse to particle
+            const deltaX = mouse.x - originalX;
+            const deltaY = mouse.y - originalY;
+            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            
+            // Check if the particle is within the mouse's magnetic field
+            if (distance < mouse.radius) {
+                // Calculate the force of attraction (stronger when closer)
+                const force = (mouse.radius - distance) / mouse.radius;
+                const directionX = deltaX / distance;
+                const directionY = deltaY / distance;
+                const moveX = directionX * force * 20; // 20 is the max push distance
+                const moveY = directionY * force * 20;
+
+                // Apply the transformation
+                particle.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.2)`;
+            } else {
+                // Return to original position if outside the field
+                particle.style.transform = 'translate(0px, 0px) scale(1)';
+            }
+        });
+
+        // This function calls itself on every frame for smooth animation
+        requestAnimationFrame(animateParticles);
+    }
+    
+    // --- Optional: Create a custom cursor ---
+    const cursor = document.createElement('div');
+    cursor.classList.add('custom-cursor');
+    document.body.appendChild(cursor);
+
+    window.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+    });
+
+    // --- Initialize ---
+    createParticles();
+    animateParticles();
+
+});
+    </script>
+</body>
+</html>

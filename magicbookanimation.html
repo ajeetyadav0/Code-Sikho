@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magical Book - Interactive Menu</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;600;1,400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Crimson Text', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 2000px;
+        }
+
+        /* Magical particles */
+        .magic-particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .magic-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, #ffd700, #ffed4e);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            animation: magicFloat 8s infinite ease-in-out;
+        }
+
+        @keyframes magicFloat {
+            0%, 100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Book container */
+        .book-container {
+            position: relative;
+            width: 400px;
+            height: 500px;
+            transform-style: preserve-3d;
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .book-container.open {
+            transform: rotateY(-35deg);
+        }
+
+        /* Book covers */
+        .book-cover {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            border-radius: 5px 15px 15px 5px;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.5),
+                inset 0 0 20px rgba(0, 0, 0, 0.3);
+            transform-origin: left center;
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .book-cover.open {
+            transform: rotateY(-160deg);
+        }
+
+        /* Book pages */
+        .book-pages {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, #f8f6f0, #fefefa);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        /* Page content */
+        .page-content {
+            padding: 40px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Book title */
+        .book-title {
+            font-family: 'Cinzel', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #8B4513;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease 0.5s forwards;
+        }
+
+        .book-container.open .book-title {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Menu items */
+        .menu-items {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease 0.8s forwards;
+        }
+
+        .book-container.open .menu-items {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: rgba(139, 69, 19, 0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .menu-item:nth-child(1) { transition-delay: 0.1s; }
+        .menu-item:nth-child(2) { transition-delay: 0.2s; }
+        .menu-item:nth-child(3) { transition-delay: 0.3s; }
+        .menu-item:nth-child(4) { transition-delay: 0.4s; }
+
+        .book-container.open .menu-item {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .menu-item:hover {
+            background: rgba(139, 69, 19, 0.2);
+            transform: translateX(10px);
+        }
+
+        .menu-icon {
+            width: 30px;
+            height: 30px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #8B4513;
+        }
+
+        .menu-text {
+            font-family: 'Crimson Text', serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: #4a4a4a;
+            font-style: italic;
+        }
+
+        /* Magical effects */
+        .magic-sparkle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, #ffd700, #ffed4e);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            pointer-events: none;
+            animation: sparkleAnim 1s ease-out forwards;
+        }
+
+        @keyframes sparkleAnim {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2) rotate(180deg) translateY(-50px);
+                opacity: 0;
+            }
+        }
+
+        /* Book spine */
+        .book-spine {
+            position: absolute;
+            width: 30px;
+            height: 100%;
+            background: linear-gradient(to right, #654321, #8B4513);
+            left: -15px;
+            transform: rotateY(-90deg) translateZ(15px);
+            border-radius: 3px 0 0 3px 0;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Book decorations */
+        .page-decoration {
+            position: absolute;
+            font-size: 48px;
+            color: rgba(139, 69, 19, 0.1);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .decoration-1 {
+            top: 20px;
+            left: 20px;
+            transform: rotate(-15deg);
+        }
+
+        .decoration-2 {
+            bottom: 20px;
+            right: 20px;
+            transform: rotate(15deg);
+        }
+
+        .book-container.open .page-decoration {
+            opacity: 0.3;
+        }
+
+        /* Instructions */
+        .instructions {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffd700;
+            font-family: 'Cinzel', serif;
+            font-size: 18px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: glowPulse 2s ease-in-out infinite;
+            transition: opacity 0.5s ease;
+        }
+
+        .instructions.hidden {
+            opacity: 0;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { 
+                text-shadow: 2px 2px 4px rgba(255, 215, 0, 0.5);
+            }
+            50% { 
+                text-shadow: 2px 2px 8px rgba(255, 215, 0, 0.8);
+            }
+        }
+
+        /* Success message */
+        .success-toast {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #8B4513;
+            padding: 20px 40px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(255, 215, 0, 0.3);
+            font-family: 'Cinzel', serif;
+            font-size: 18px;
+            font-weight: 600;
+            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 100;
+        }
+
+        .success-toast.show {
+            top: 30px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .book-container {
+                width: 320px;
+                height: 400px;
+            }
+
+            .page-content {
+                padding: 30px;
+            }
+
+            .book-title {
+                font-size: 22px;
+            }
+
+            .menu-item {
+                padding: 12px;
+                margin-bottom: 12px;
+            }
+
+            .menu-icon {
+                width: 25px;
+                height: 25px;
+                font-size: 14px;
+                margin-right: 10px;
+            }
+
+            .menu-text {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Magical particles -->
+    <div class="magic-particles" id="magicParticles"></div>
+
+    <!-- Main container -->
+    <div class="container">
+        <!-- Magical book -->
+        <div class="book-container" id="bookContainer">
+            <!-- Book cover -->
+            <div class="book-cover" id="bookCover">
+                <!-- Cover decoration -->
+                <div class="page-decoration decoration-1">✦</div>
+                <div class="page-decoration decoration-2">✧</div>
+            </div>
+
+            <!-- Book spine -->
+            <div class="book-spine"></div>
+
+            <!-- Book pages -->
+            <div class="book-pages">
+                <div class="page-content">
+                    <h1 class="book-title">The Book of Magic</h1>
+                    
+                    <div class="menu-items">
+                        <div class="menu-item" data-action="spells">
+                            <div class="menu-icon">🔮</div>
+                            <span class="menu-text">Magic Spells</span>
+                        </div>
+                        
+                        <div class="menu-item" data-action="potions">
+                            <div class="menu-icon">🧪</div>
+                            <span class="menu-text">Potions</span>
+                        </div>
+                        
+                        <div class="menu-item" data-action="creatures">
+                            <div class="menu-icon">🦄</div>
+                            <span class="menu-text">Creatures</span>
+                        </div>
+                        
+                        <div class="menu-item" data-action="artifacts">
+                            <div class="menu-icon">⚔️</div>
+                            <span class="menu-text">Artifacts</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="instructions" id="instructions">
+        Click the book to reveal its secrets
+    </div>
+
+    <!-- Success toast -->
+    <div class="success-toast" id="successToast">
+        ✨ Magic Activated! ✨
+    </div>
+
+    <script>
+        // Generate magical particles
+        const magicParticles = document.getElementById('magicParticles');
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'magic-particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 8 + 's';
+            particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+            magicParticles.appendChild(particle);
+        }
+
+        // Get elements
+        const bookContainer = document.getElementById('bookContainer');
+        const bookCover = document.getElementById('bookCover');
+        const instructions = document.getElementById('instructions');
+        const successToast = document.getElementById('successToast');
+
+        let isBookOpen = false;
+
+        // Create magic sparkles
+        function createSparkles(x, y) {
+            for (let i = 0; i < 8; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'magic-sparkle';
+                
+                const angle = (i / 8) * Math.PI * 2;
+                const distance = 30 + Math.random() * 50;
+                const px = Math.cos(angle) * distance;
+                const py = Math.sin(angle) * distance;
+                
+                sparkle.style.left = x + 'px';
+                sparkle.style.top = y + 'px';
+                
+                bookContainer.appendChild(sparkle);
+                
+                setTimeout(() => sparkle.remove(), 1000);
+            }
+        }
+
+        // Toggle book
+        function toggleBook() {
+            isBookOpen = !isBookOpen;
+            
+            if (isBookOpen) {
+                bookContainer.classList.add('open');
+                bookCover.classList.add('open');
+                instructions.classList.add('hidden');
+                
+                // Create sparkles at book position
+                const rect = bookContainer.getBoundingClientRect();
+                createSparkles(rect.left + 200, rect.top + 250);
+                
+                showSuccessToast();
+            } else {
+                bookContainer.classList.remove('open');
+                bookCover.classList.remove('open');
+                instructions.classList.remove('hidden');
+            }
+        }
+
+        // Book cover click
+        bookCover.addEventListener('click', toggleBook);
+
+        // Menu item clicks
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const action = this.dataset.action;
+                
+                // Create sparkles at click position
+                const rect = this.getBoundingClientRect();
+                const containerRect = bookContainer.getBoundingClientRect();
+                createSparkles(
+                    containerRect.left + rect.left + rect.width / 2,
+                    containerRect.top + rect.top + rect.height / 2
+                );
+                
+                // Show success message
+                const actionText = this.querySelector('.menu-text').textContent;
+                showSuccessToast(`Opening ${actionText}...`);
+                
+                // Add special effect
+                this.style.transform = 'scale(1.1)';
+                this.style.background = 'rgba(139, 69, 19, 0.3)';
+                
+                setTimeout(() => {
+                    this.style.transform = '';
+                    this.style.background = '';
+                }, 300);
+            });
+        });
+
+        // Show success toast
+        function showSuccessToast(customMessage = null) {
+            const message = customMessage || '✨ Magic Activated! ✨';
+            successToast.textContent = message;
+            successToast.classList.add('show');
+            
+            setTimeout(() => {
+                successToast.classList.remove('show');
+            }, 2000);
+        }
+
+        // Add hover effect to book
+        bookContainer.addEventListener('mouseenter', function() {
+            if (!isBookOpen) {
+                this.style.transform = 'scale(1.05) rotateX(5deg)';
+            }
+        });
+
+        bookContainer.addEventListener('mouseleave', function() {
+            if (!isBookOpen) {
+                this.style.transform = '';
+            }
+        });
+
+        // Add floating animation
+        bookContainer.addEventListener('click', function() {
+            if (!isBookOpen) {
+                this.style.animation = 'none';
+                setTimeout(() => {
+                    this.style.animation = 'bookFloat 0.6s ease';
+                    setTimeout(() => {
+                        this.style.animation = '';
+                    }, 600);
+                }, 100);
+            }
+        });
+
+        // Add entrance animation
+        window.addEventListener('load', function() {
+            bookContainer.style.animation = 'bookEntrance 1.5s ease-out';
+        });
+
+        // Add custom animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes bookEntrance {
+                from {
+                    transform: translateY(-50px) scale(0.8) rotateX(-10deg);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0) scale(1) rotateX(0deg);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes bookFloat {
+                0%, 100% { 
+                    transform: translateY(0) scale(1); 
+                }
+                50% { 
+                    transform: translateY(-10px) scale(1.02); 
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Keyboard support
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && isBookOpen) {
+                toggleBook();
+            }
+            if (e.key === 'b' && e.ctrlKey && !isBookOpen) {
+                e.preventDefault();
+                toggleBook();
+            }
+        });
+
+        // Add periodic magic effect
+        setInterval(() => {
+            if (isBookOpen && Math.random() > 0.9) {
+                bookCover.style.filter = 'brightness(1.2) hue-rotate(180deg)';
+                setTimeout(() => {
+                    bookCover.style.filter = '';
+                }, 200);
+            }
+        }, 3000);
+
+        // Add page flip sound effect simulation (visual)
+        bookContainer.addEventListener('click', function() {
+            if (!isBookOpen) {
+                // Visual feedback for page flip
+                this.style.boxShadow = '0 20px 60px rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(0, 0, 0, 0.4)';
+                setTimeout(() => {
+                    this.style.boxShadow = '';
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>

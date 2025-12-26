@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Flip Profile Card - Mechanical Interface</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 2000px;
+        }
+
+        /* Background particles */
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Card container */
+        .card-container {
+            position: relative;
+            width: 400px;
+            height: 500px;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-container.flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* Card faces */
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Front face - Profile */
+        .card-front {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Back face - Form */
+        .card-back {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            transform: rotateY(180deg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Profile header */
+        .profile-header {
+            position: relative;
+            padding: 40px 30px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+        }
+
+        /* Avatar */
+        .avatar {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+        }
+
+        /* Online indicator */
+        .online-indicator {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            background: #48bb78;
+            border: 4px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(72, 187, 120, 0.6);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(72, 187, 120, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(72, 187, 120, 0.8);
+            }
+        }
+
+        /* Profile info */
+        .profile-info {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .profile-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .profile-title {
+            color: #718096;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .stat:hover {
+            background: rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .stat-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Gear button */
+        .gear-button {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .gear-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+        }
+
+        .gear-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Gear icon */
+        .gear {
+            width: 30px;
+            height: 30px;
+            animation: rotate 4s linear infinite;
+            transition: animation-duration 0.3s ease;
+        }
+
+        .gear-button:hover .gear {
+            animation-duration: 1s;
+        }
+
+        .gear-button.spinning .gear {
+            animation-duration: 0.5s;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Form content */
+        .form-content {
+            padding: 40px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .form-subtitle {
+            color: #a0aec0;
+            font-size: 14px;
+        }
+
+        /* Form groups */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #e2e8f0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Form actions */
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: auto;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #e2e8f0;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Close button */
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        /* Success notification */
+        .notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+        }
+
+        .notification.show {
+            top: 30px;
+        }
+
+        .notification-icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .card-container {
+                width: 90%;
+                height: auto;
+                min-height: 500px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .form-content {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- 3D Card Container -->
+    <div class="card-container" id="cardContainer">
+        <!-- Front Face - Profile -->
+        <div class="card-face card-front">
+            <div class="profile-header">
+                <div class="avatar">
+                    JD
+                    <div class="online-indicator"></div>
+                </div>
+            </div>
+            
+            <div class="profile-info">
+                <h2 class="profile-name">John Doe</h2>
+                <p class="profile-title">Senior Developer</p>
+                
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">142</div>
+                        <div class="stat-label">Projects</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">8.2K</div>
+                        <div class="stat-label">Followers</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">98%</div>
+                        <div class="stat-label">Success</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gear Button -->
+            <button class="gear-button" id="gearBtn">
+                <svg class="gear" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5a3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97c0-.33-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.08-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.32-.07.64-.07.97c0 .33.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.39 1.06.73 1.69.98l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.25 1.17-.59 1.69-.98l2.49 1c.22.08.49 0 .61-.22l2-3.46c.13-.22.07-.49-.12-.64l-2.11-1.63Z" fill="white"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Back Face - Form -->
+        <div class="card-face card-back">
+            <div class="form-content">
+                <button class="close-btn" id="closeBtn">✕</button>
+                
+                <div class="form-header">
+                    <h2 class="form-title">Edit Profile</h2>
+                    <p class="form-subtitle">Update your information</p>
+                </div>
+                
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" placeholder="Enter your full name" value="John Doe">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="title">Job Title</label>
+                        <input type="text" id="title" placeholder="Enter your job title" value="Senior Developer">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="Enter your email" value="john.doe@example.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bio">Bio</label>
+                        <textarea id="bio" placeholder="Tell us about yourself">Passionate developer with 10+ years of experience in web technologies.</textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Notification -->
+    <div class="notification" id="notification">
+        <div class="notification-icon">✓</div>
+        <span id="notificationText">Profile updated successfully!</span>
+    </div>
+
+    <script>
+        // Generate particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Get elements
+        const cardContainer = document.getElementById('cardContainer');
+        const gearBtn = document.getElementById('gearBtn');
+        const closeBtn = document.getElementById('closeBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const profileForm = document.getElementById('profileForm');
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+        const profileName = document.querySelector('.profile-name');
+        const profileTitle = document.querySelector('.profile-title');
+        const avatar = document.querySelector('.avatar');
+
+        let isFlipped = false;
+
+        // Show notification
+        function showNotification(message) {
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Flip card
+        function flipCard() {
+            isFlipped = !isFlipped;
+            cardContainer.classList.toggle('flipped');
+            
+            if (isFlipped) {
+                gearBtn.classList.add('spinning');
+                showNotification('Edit mode activated');
+            } else {
+                gearBtn.classList.remove('spinning');
+                showNotification('View mode activated');
+            }
+        }
+
+        // Gear button click
+        gearBtn.addEventListener('click', flipCard);
+
+        // Close button click
+        closeBtn.addEventListener('click', flipCard);
+        cancelBtn.addEventListener('click', flipCard);
+
+        // Form submission
+        profileForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const title = document.getElementById('title').value;
+            const email = document.getElementById('email').value;
+            const bio = document.getElementById('bio').value;
+
+            if (name && title && email) {
+                // Update profile display
+                profileName.textContent = name;
+                profileTitle.textContent = title;
+                
+                // Update avatar initials
+                const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+                avatar.textContent = initials;
+                
+                showNotification('Profile updated successfully!');
+                
+                // Flip back after delay
+                setTimeout(() => {
+                    flipCard();
+                }, 1500);
+            }
+        });
+
+        // Add hover effect to stats
+        document.querySelectorAll('.stat').forEach(stat => {
+            stat.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.05)';
+            });
+            
+            stat.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        });
+
+        // Add keyboard support
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && isFlipped) {
+                flipCard();
+            }
+            if (e.key === 'Enter' && e.ctrlKey && !isFlipped) {
+                flipCard();
+            }
+        });
+
+        // Add 3D tilt effect on mouse move
+        cardContainer.addEventListener('mousemove', function(e) {
+            if (!isFlipped) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                
+                this.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            }
+        });
+
+        cardContainer.addEventListener('mouseleave', function() {
+            if (!isFlipped) {
+                this.style.transform = '';
+            }
+        });
+
+        // Add initial animation
+        window.addEventListener('load', function() {
+            cardContainer.style.animation = 'cardEntrance 1s ease-out';
+        });
+
+        // Add entrance animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes cardEntrance {
+                from {
+                    transform: translateY(-50px) scale(0.8) rotateY(-20deg);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0) scale(1) rotateY(0deg);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

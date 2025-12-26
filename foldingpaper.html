@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Folding Paper Profile Card</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background texture */
+        .bg-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px),
+                repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(0,0,0,.03) 35px, rgba(0,0,0,.03) 70px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 10;
+            perspective: 1500px;
+        }
+
+        /* Paper card */
+        .paper-card {
+            position: relative;
+            width: 400px;
+            background: linear-gradient(to bottom, #ffffff, #fafafa);
+            border-radius: 15px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.15),
+                0 10px 30px rgba(0, 0, 0, 0.1),
+                inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .paper-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.02) 2px,
+                    transparent 4px
+                );
+            border-radius: 15px;
+            pointer-events: none;
+        }
+
+        .paper-card.unfolded {
+            transform: rotateX(-60deg);
+        }
+
+        /* Paper crease lines */
+        .crease-line {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.1);
+            transform-origin: center;
+            transition: all 0.8s ease;
+        }
+
+        .crease-horizontal {
+            width: 100%;
+            height: 1px;
+            left: 0;
+        }
+
+        .crease-vertical {
+            width: 1px;
+            height: 100%;
+            top: 0;
+        }
+
+        .crease-top {
+            top: 33.33%;
+        }
+
+        .crease-middle {
+            top: 66.66%;
+        }
+
+        .crease-left {
+            left: 50%;
+        }
+
+        .crease-right {
+            right: 50%;
+        }
+
+        /* Profile content */
+        .profile-content {
+            padding: 40px;
+            position: relative;
+            z-index: 2;
+            transition: all 0.8s ease;
+        }
+
+        .profile-content.hidden {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        /* Profile header */
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .avatar {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .profile-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .profile-title {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        /* Profile stats */
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 15px 10px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .stat:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Unfold button */
+        .unfold-btn {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .unfold-btn:hover {
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .unfold-btn:active {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .unfold-btn.hidden {
+            opacity: 0;
+            transform: translateX(-50%) translateY(20px);
+            pointer-events: none;
+        }
+
+        /* Contact form */
+        .contact-form {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #fafafa, #ffffff);
+            border-radius: 15px;
+            padding: 40px;
+            opacity: 0;
+            visibility: hidden;
+            transform: rotateX(90deg);
+            transform-origin: top center;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 3;
+        }
+
+        .contact-form.active {
+            opacity: 1;
+            visibility: visible;
+            transform: rotateX(0deg);
+        }
+
+        /* Form header */
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .form-subtitle {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        /* Form groups */
+        .form-group {
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.6s forwards;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(102, 126, 234, 0.05);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 8px;
+            font-size: 15px;
+            color: #2d3748;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #a0aec0;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Form actions */
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.6s 0.5s forwards;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Close button */
+        .close-form {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 35px;
+            height: 35px;
+            background: rgba(0, 0, 0, 0.05);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: slideUp 0.6s 0.6s forwards;
+        }
+
+        .close-form:hover {
+            background: rgba(0, 0, 0, 0.1);
+            transform: rotate(90deg);
+        }
+
+        /* Success notification */
+        .notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 100;
+        }
+
+        .notification.show {
+            top: 30px;
+        }
+
+        .notification-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .notification-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #2d3748;
+        }
+
+        /* Paper fold effect */
+        .paper-fold {
+            position: absolute;
+            background: linear-gradient(to bottom, #fafafa, #f0f0f0);
+            box-shadow: 
+                0 5px 15px rgba(0, 0, 0, 0.1),
+                inset 0 -2px 5px rgba(0, 0, 0, 0.05);
+            transition: all 0.8s ease;
+        }
+
+        .fold-top {
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            transform-origin: top center;
+        }
+
+        .paper-card.unfolded .fold-top {
+            transform: rotateX(-180deg);
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .paper-card {
+                width: 90%;
+                padding: 30px 20px;
+            }
+
+            .profile-stats {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .contact-form {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background texture -->
+    <div class="bg-texture"></div>
+
+    <!-- Main container -->
+    <div class="container">
+        <!-- Paper card -->
+        <div class="paper-card" id="paperCard">
+            <!-- Crease lines -->
+            <div class="crease-line crease-horizontal crease-top"></div>
+            <div class="crease-line crease-horizontal crease-middle"></div>
+            <div class="crease-line crease-vertical crease-left"></div>
+            <div class="crease-line crease-vertical crease-right"></div>
+            
+            <!-- Paper fold effect -->
+            <div class="paper-fold fold-top"></div>
+
+            <!-- Profile content -->
+            <div class="profile-content" id="profileContent">
+                <div class="profile-header">
+                    <div class="avatar">JD</div>
+                    <h2 class="profile-name">Jane Doe</h2>
+                    <p class="profile-title">Creative Designer</p>
+                </div>
+                
+                <div class="profile-stats">
+                    <div class="stat">
+                        <div class="stat-value">142</div>
+                        <div class="stat-label">Projects</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">8.2K</div>
+                        <div class="stat-label">Followers</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">96%</div>
+                        <div class="stat-label">Success</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Unfold button -->
+            <button class="unfold-btn" id="unfoldBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8l-6-6z"/>
+                    <path d="M14 2v6l-6 6"/>
+                </svg>
+                <span>Unfold Message</span>
+            </button>
+
+            <!-- Contact form -->
+            <div class="contact-form" id="contactForm">
+                <button class="close-form" id="closeForm">✕</button>
+                
+                <div class="form-header">
+                    <h3 class="form-title">Get in Touch</h3>
+                    <p class="form-subtitle">Send me a message</p>
+                </div>
+                
+                <form id="messageForm">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" placeholder="Enter your name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="your@email.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" placeholder="What's this about?" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" placeholder="Your message here..." required></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success notification -->
+    <div class="notification" id="notification">
+        <div class="notification-icon">✓</div>
+        <span class="notification-text">Message sent successfully!</span>
+    </div>
+
+    <script>
+        // Get elements
+        const paperCard = document.getElementById('paperCard');
+        const profileContent = document.getElementById('profileContent');
+        const unfoldBtn = document.getElementById('unfoldBtn');
+        const contactForm = document.getElementById('contactForm');
+        const closeForm = document.getElementById('closeForm');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const messageForm = document.getElementById('messageForm');
+        const notification = document.getElementById('notification');
+        const notificationText = document.querySelector('.notification-text');
+
+        let isFormOpen = false;
+
+        // Show notification
+        function showNotification(message) {
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Toggle form
+        function toggleForm() {
+            isFormOpen = !isFormOpen;
+            
+            if (isFormOpen) {
+                // Unfold paper
+                paperCard.classList.add('unfolded');
+                profileContent.classList.add('hidden');
+                unfoldBtn.classList.add('hidden');
+                
+                // Show contact form after fold animation
+                setTimeout(() => {
+                    contactForm.classList.add('active');
+                    showNotification('Message form unfolded');
+                }, 400);
+            } else {
+                // Hide contact form
+                contactForm.classList.remove('active');
+                
+                // Refold paper
+                setTimeout(() => {
+                    paperCard.classList.remove('unfolded');
+                    profileContent.classList.remove('hidden');
+                    unfoldBtn.classList.remove('hidden');
+                    showNotification('Form folded');
+                }, 400);
+            }
+        }
+
+        // Event listeners
+        unfoldBtn.addEventListener('click', toggleForm);
+        closeForm.addEventListener('click', toggleForm);
+        cancelBtn.addEventListener('click', toggleForm);
+
+        // Form submission
+        messageForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+
+            if (name && email && subject && message) {
+                showNotification('Message sent successfully!');
+                
+                // Add paper animation
+                paperCard.style.animation = 'paperShake 0.5s ease';
+                
+                // Reset form and close after delay
+                setTimeout(() => {
+                    this.reset();
+                    toggleForm();
+                    paperCard.style.animation = '';
+                }, 2000);
+            }
+        });
+
+        // Add hover effects to stats
+        document.querySelectorAll('.stat').forEach(stat => {
+            stat.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px) scale(1.05)';
+            });
+            
+            stat.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        });
+
+        // Add hover effect to avatar
+        const avatar = document.querySelector('.avatar');
+        avatar.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.1) rotate(5deg)';
+        });
+        
+        avatar.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+        });
+
+        // Keyboard support
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && isFormOpen) {
+                toggleForm();
+            }
+            if (e.key === 'u' && e.ctrlKey && !isFormOpen) {
+                e.preventDefault();
+                toggleForm();
+            }
+        });
+
+        // Add entrance animation
+        window.addEventListener('load', function() {
+            paperCard.style.animation = 'paperEntrance 1s ease-out';
+        });
+
+        // Add custom animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes paperEntrance {
+                from {
+                    transform: translateY(-30px) scale(0.9);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0) scale(1);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes paperShake {
+                0%, 100% { transform: rotate(0deg); }
+                25% { transform: rotate(-2deg); }
+                75% { transform: rotate(2deg); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Add subtle paper texture animation
+        setInterval(() => {
+            if (!isFormOpen && Math.random() > 0.95) {
+                paperCard.style.filter = 'brightness(1.05)';
+                setTimeout(() => {
+                    paperCard.style.filter = '';
+                }, 200);
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

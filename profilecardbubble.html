@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Card - Bubble Animation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background bubbles */
+        .bg-bubbles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .bg-bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: floatUp 15s infinite linear;
+        }
+
+        @keyframes floatUp {
+            from {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.4;
+            }
+            90% {
+                opacity: 0.4;
+            }
+            to {
+                transform: translateY(-100vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Profile card */
+        .profile-card {
+            position: relative;
+            width: 380px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.15),
+                0 8px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: visible;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            border-radius: 24px;
+            pointer-events: none;
+        }
+
+        /* Profile header */
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .avatar {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .profile-title {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        /* Profile stats */
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 15px 10px;
+            background: rgba(102, 126, 234, 0.08);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .stat:hover {
+            background: rgba(102, 126, 234, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Star button */
+        .star-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 20px rgba(251, 191, 36, 0.4);
+            transition: all 0.3s ease;
+            z-index: 20;
+        }
+
+        .star-button:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 8px 30px rgba(251, 191, 36, 0.5);
+        }
+
+        .star-button:active {
+            transform: scale(0.95);
+        }
+
+        .star-button svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+            transition: transform 0.3s ease;
+        }
+
+        .star-button:hover svg {
+            transform: scale(1.2);
+        }
+
+        /* Expanding bubble */
+        .bubble-container {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            pointer-events: none;
+            z-index: 15;
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9));
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .bubble.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Options menu */
+        .options-menu {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.15),
+                0 8px 30px rgba(0, 0, 0, 0.1);
+            padding: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.8) translateY(-10px);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 25;
+            min-width: 200px;
+        }
+
+        .options-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) translateY(0);
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideIn 0.4s forwards;
+        }
+
+        .option-item:nth-child(1) { animation-delay: 0.1s; }
+        .option-item:nth-child(2) { animation-delay: 0.2s; }
+        .option-item:nth-child(3) { animation-delay: 0.3s; }
+        .option-item:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .option-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+
+        .option-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #667eea;
+        }
+
+        .option-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        /* Mini bubbles animation */
+        .mini-bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.6), rgba(118, 75, 162, 0.6));
+            pointer-events: none;
+            animation: bubbleFloat 3s ease-out forwards;
+        }
+
+        @keyframes bubbleFloat {
+            0% {
+                transform: translate(0, 0) scale(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translate(var(--x), var(--y)) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Success notification */
+        .notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 100;
+        }
+
+        .notification.show {
+            top: 30px;
+        }
+
+        .notification-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .notification-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        /* Edit modal */
+        .edit-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 50;
+        }
+
+        .edit-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .edit-modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .modal-subtitle {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #374151;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(102, 126, 234, 0.05);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            font-size: 15px;
+            color: #1f2937;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .profile-card {
+                width: 90%;
+                padding: 30px 20px;
+            }
+
+            .profile-stats {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .options-menu {
+                right: 10px;
+                min-width: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background bubbles -->
+    <div class="bg-bubbles" id="bgBubbles"></div>
+
+    <!-- Main container -->
+    <div class="container">
+        <!-- Profile card -->
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="avatar">AS</div>
+                <h2 class="profile-name">Alex Smith</h2>
+                <p class="profile-title">Product Designer</p>
+            </div>
+            
+            <div class="profile-stats">
+                <div class="stat">
+                    <div class="stat-value">156</div>
+                    <div class="stat-label">Projects</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">8.4K</div>
+                    <div class="stat-label">Followers</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">94%</div>
+                    <div class="stat-label">Success</div>
+                </div>
+            </div>
+            
+            <!-- Star button -->
+            <button class="star-button" id="starBtn">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+            </button>
+
+            <!-- Expanding bubble -->
+            <div class="bubble-container" id="bubbleContainer">
+                <div class="bubble" id="mainBubble"></div>
+            </div>
+
+            <!-- Options menu -->
+            <div class="options-menu" id="optionsMenu">
+                <div class="option-item" data-action="edit">
+                    <div class="option-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7H4V6h7V4zm6 4v4h2l-3 3-3-3h2z"/>
+                        </svg>
+                    </div>
+                    <span class="option-text">Edit Profile</span>
+                </div>
+                <div class="option-item" data-action="share">
+                    <div class="option-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1c0 .24.04.47.09.7l-7.05 4.11c.54.5.88 1.21.88 2.01 0 1.48-1.21 2.69-2.69 2.69s-2.69-1.21-2.69-2.69c0-.8.34-1.51.88-2.01L8.04 9.81C8 9.57 7.96 9.34 7.96 9.1c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1c0 .24-.04.47-.09.7l7.05 4.11c-.54.5-.88 1.21-.88 2.01 0 1.48 1.21 2.69 2.69 2.69s2.69-1.21 2.69-2.69c0-.8-.34-1.51-.88-2.01l7.05-4.11c.05.23.09.46.09.7 0 1.71-1.39 3.1-3.1 3.1s-3.1-1.39-3.1-3.1c0-.24.04-.47.09-.7l-7.05-4.11z"/>
+                        </svg>
+                    </div>
+                    <span class="option-text">Share Profile</span>
+                </div>
+                <div class="option-item" data-action="settings">
+                    <div class="option-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-2.21-1.38-4.15-3.31-4.95l2.27-2.27c.44-.44.44-1.16 0-1.6l-2.83-2.83c-.44-.44-1.16-.44-1.6 0l-2.27 2.27c-.8-1.93-2.74-3.31-4.95-3.31-.33 0-.64.02-.94.06l-1.33-1.33c-.37-.37-.88-.37-1.25 0l-1.33 1.33c.04.3.06.61.06.94 0 2.21 1.38 4.15 3.31 4.95l-2.27 2.27c-.44.44-.44 1.16 0 1.6l2.83 2.83c.44.44 1.16.44 1.6 0l2.27-2.27c.8 1.93 2.74 3.31 4.95 3.31.33 0 .64-.02.94-.06l1.33 1.33c.37.37.88.37 1.25 0l1.33-1.33c-.04-.3-.06-.61-.06-.94 0-2.21-1.38-4.15-3.31-4.95z"/>
+                        </svg>
+                    </div>
+                    <span class="option-text">Settings</span>
+                </div>
+                <div class="option-item" data-action="logout">
+                    <div class="option-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5v8h2V7H4z"/>
+                        </svg>
+                    </div>
+                    <span class="option-text">Logout</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit modal -->
+    <div class="edit-modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Profile</h3>
+                <p class="modal-subtitle">Update your information</p>
+            </div>
+            
+            <form id="editForm">
+                <div class="form-group">
+                    <label for="editName">Full Name</label>
+                    <input type="text" id="editName" value="Alex Smith">
+                </div>
+                
+                <div class="form-group">
+                    <label for="editTitle">Job Title</label>
+                    <input type="text" id="editTitle" value="Product Designer">
+                </div>
+                
+                <div class="form-group">
+                    <label for="editEmail">Email</label>
+                    <input type="email" id="editEmail" value="alex.smith@example.com">
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" id="cancelEdit">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success notification -->
+    <div class="notification" id="notification">
+        <div class="notification-icon">✓</div>
+        <span class="notification-text">Action completed!</span>
+    </div>
+
+    <script>
+        // Generate background bubbles
+        const bgBubbles = document.getElementById('bgBubbles');
+        for (let i = 0; i < 15; i++) {
+            const bubble = document.createElement('div');
+            bubble.className = 'bg-bubble';
+            const size = Math.random() * 60 + 20;
+            bubble.style.width = size + 'px';
+            bubble.style.height = size + 'px';
+            bubble.style.left = Math.random() * 100 + '%';
+            bubble.style.animationDelay = Math.random() * 15 + 's';
+            bubble.style.animationDuration = (15 + Math.random() * 10) + 's';
+            bgBubbles.appendChild(bubble);
+        }
+
+        // Get elements
+        const starBtn = document.getElementById('starBtn');
+        const bubbleContainer = document.getElementById('bubbleContainer');
+        const mainBubble = document.getElementById('mainBubble');
+        const optionsMenu = document.getElementById('optionsMenu');
+        const editModal = document.getElementById('editModal');
+        const editForm = document.getElementById('editForm');
+        const cancelEdit = document.getElementById('cancelEdit');
+        const notification = document.getElementById('notification');
+        const notificationText = document.querySelector('.notification-text');
+        const profileName = document.querySelector('.profile-name');
+        const profileTitle = document.querySelector('.profile-title');
+        const avatar = document.querySelector('.avatar');
+
+        let isMenuOpen = false;
+
+        // Show notification
+        function showNotification(message) {
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Create mini bubbles
+        function createMiniBubbles() {
+            for (let i = 0; i < 8; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'mini-bubble';
+                const size = Math.random() * 15 + 5;
+                bubble.style.width = size + 'px';
+                bubble.style.height = size + 'px';
+                
+                const angle = (i / 8) * Math.PI * 2;
+                const distance = 60 + Math.random() * 40;
+                const x = Math.cos(angle) * distance;
+                const y = Math.sin(angle) * distance;
+                
+                bubble.style.setProperty('--x', x + 'px');
+                bubble.style.setProperty('--y', y + 'px');
+                
+                bubbleContainer.appendChild(bubble);
+                
+                setTimeout(() => bubble.remove(), 3000);
+            }
+        }
+
+        // Toggle menu
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            
+            if (isMenuOpen) {
+                // Expand main bubble
+                mainBubble.style.width = '200px';
+                mainBubble.style.height = '200px';
+                mainBubble.style.top = '-80px';
+                mainBubble.style.right = '-80px';
+                mainBubble.classList.add('active');
+                
+                // Create mini bubbles
+                createMiniBubbles();
+                
+                // Show menu after bubble expands
+                setTimeout(() => {
+                    optionsMenu.classList.add('active');
+                }, 300);
+                
+                showNotification('Menu opened');
+            } else {
+                // Close menu first
+                optionsMenu.classList.remove('active');
+                
+                // Collapse bubble
+                setTimeout(() => {
+                    mainBubble.style.width = '';
+                    mainBubble.style.height = '';
+                    mainBubble.style.top = '';
+                    mainBubble.style.right = '';
+                    mainBubble.classList.remove('active');
+                }, 200);
+                
+                showNotification('Menu closed');
+            }
+        }
+
+        // Star button click
+        starBtn.addEventListener('click', toggleMenu);
+
+        // Option items click
+        document.querySelectorAll('.option-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const action = this.dataset.action;
+                
+                switch(action) {
+                    case 'edit':
+                        editModal.classList.add('active');
+                        setTimeout(() => {
+                            editModal.querySelector('.modal-content').style.transform = 'scale(1)';
+                        }, 100);
+                        break;
+                    case 'share':
+                        showNotification('Profile link copied to clipboard!');
+                        // Simulate copy to clipboard
+                        navigator.clipboard.writeText(window.location.href);
+                        break;
+                    case 'settings':
+                        showNotification('Opening settings...');
+                        break;
+                    case 'logout':
+                        showNotification('Logging out...');
+                        setTimeout(() => {
+                            showNotification('Logged out successfully!');
+                        }, 1500);
+                        break;
+                }
+                
+                // Close menu
+                toggleMenu();
+            });
+        });
+
+        // Edit form submission
+        editForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('editName').value;
+            const title = document.getElementById('editTitle').value;
+            
+            // Update profile display
+            profileName.textContent = name;
+            profileTitle.textContent = title;
+            
+            // Update avatar initials
+            const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+            avatar.textContent = initials;
+            
+            showNotification('Profile updated successfully!');
+            
+            // Close modal
+            closeModal();
+        });
+
+        // Cancel edit
+        cancelEdit.addEventListener('click', closeModal);
+
+        function closeModal() {
+            editModal.querySelector('.modal-content').style.transform = 'scale(0.8)';
+            setTimeout(() => {
+                editModal.classList.remove('active');
+            }, 300);
+        }
+
+        // Close modal on outside click
+        editModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.bubble-container') && 
+                !e.target.closest('.star-button') && 
+                !e.target.closest('.options-menu') && 
+                isMenuOpen) {
+                toggleMenu();
+            }
+        });
+
+        // Keyboard support
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (isMenuOpen) {
+                    toggleMenu();
+                } else if (editModal.classList.contains('active')) {
+                    closeModal();
+                }
+            }
+        });
+
+        // Add hover effect to stats
+        document.querySelectorAll('.stat').forEach(stat => {
+            stat.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px) scale(1.05)';
+            });
+            
+            stat.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        });
+
+        // Add entrance animation
+        window.addEventListener('load', function() {
+            const card = document.querySelector('.profile-card');
+            card.style.animation = 'cardEntrance 1s ease-out';
+        });
+
+        // Add entrance animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes cardEntrance {
+                from {
+                    transform: translateY(-30px) scale(0.9);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0) scale(1);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

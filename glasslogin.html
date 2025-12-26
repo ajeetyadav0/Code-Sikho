@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cube Break Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            perspective: 1500px;
+        }
+
+        /* Scene container */
+        .scene {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            transform-style: preserve-3d;
+        }
+
+        /* 3D Cube Container */
+        .cube-container {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transform-style: preserve-3d;
+            animation: rotateCube 10s infinite linear;
+            cursor: pointer;
+            transition: opacity 0.5s;
+        }
+
+        .cube-container.breaking {
+            animation: none;
+        }
+
+        @keyframes rotateCube {
+            0% { transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg); }
+            100% { transform: translate(-50%, -50%) rotateX(360deg) rotateY(360deg); }
+        }
+
+        /* Cube faces */
+        .cube-face {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3));
+            border: 2px solid rgba(255,255,255,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+            transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .cube-face.front { transform: translateZ(100px); }
+        .cube-face.back { transform: rotateY(180deg) translateZ(100px); }
+        .cube-face.right { transform: rotateY(90deg) translateZ(100px); }
+        .cube-face.left { transform: rotateY(-90deg) translateZ(100px); }
+        .cube-face.top { transform: rotateX(90deg) translateZ(100px); }
+        .cube-face.bottom { transform: rotateX(-90deg) translateZ(100px); }
+
+        /* Cube pieces (smaller fragments for more dramatic effect) */
+        .cube-piece {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.4));
+            border: 1px solid rgba(255,255,255,0.6);
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            transform-style: preserve-3d;
+        }
+
+        /* Login Form Container */
+        .login-container {
+            position: absolute;
+            width: 350px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: scale(0) rotateX(90deg);
+            transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 10;
+        }
+
+        .login-container.active {
+            opacity: 1;
+            transform: scale(1) rotateX(0deg);
+        }
+
+        .login-container h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s forwards;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.2s; }
+        .form-group:nth-child(2) { animation-delay: 0.4s; }
+        .form-group:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            opacity: 0;
+            animation: fadeInUp 0.6s 0.8s forwards;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            color: #666;
+        }
+
+        .remember-me input {
+            margin-right: 8px;
+            width: auto;
+        }
+
+        .forgot-link {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .forgot-link:hover {
+            color: #764ba2;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            opacity: 0;
+            animation: fadeInUp 0.6s 1s forwards;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Close button */
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            background: rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            opacity: 0;
+        }
+
+        .login-container.active .close-btn {
+            opacity: 1;
+            animation: fadeInUp 0.6s 1.2s forwards;
+        }
+
+        .close-btn:hover {
+            background: rgba(0, 0, 0, 0.2);
+            transform: rotate(90deg);
+        }
+
+        /* Instructions */
+        .instructions {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 18px;
+            text-align: center;
+            animation: pulse 2s ease-in-out infinite;
+            transition: opacity 0.5s;
+        }
+
+        .instructions.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        /* Success message */
+        .success-toast {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 20px 40px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+        }
+
+        .success-toast.show {
+            top: 30px;
+        }
+
+        .success-icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        /* Particle effects */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-container {
+                width: 90%;
+                padding: 30px 20px;
+            }
+
+            .cube-container {
+                width: 150px;
+                height: 150px;
+            }
+
+            .cube-face {
+                width: 150px;
+                height: 150px;
+            }
+
+            .cube-face.front { transform: translateZ(75px); }
+            .cube-face.back { transform: rotateY(180deg) translateZ(75px); }
+            .cube-face.right { transform: rotateY(90deg) translateZ(75px); }
+            .cube-face.left { transform: rotateY(-90deg) translateZ(75px); }
+            .cube-face.top { transform: rotateX(90deg) translateZ(75px); }
+            .cube-face.bottom { transform: rotateX(-90deg) translateZ(75px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="scene">
+        <!-- 3D Cube -->
+        <div class="cube-container" id="cubeContainer">
+            <div class="cube-face front">LOGIN</div>
+            <div class="cube-face back">SECURE</div>
+            <div class="cube-face right">ACCESS</div>
+            <div class="cube-face left">ENTER</div>
+            <div class="cube-face top">WELCOME</div>
+            <div class="cube-face bottom">CLICK ME</div>
+        </div>
+
+        <!-- Login Form -->
+        <div class="login-container" id="loginContainer">
+            <button class="close-btn" id="closeBtn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            
+            <h2>Welcome Back</h2>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="you@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox"> Remember me
+                    </label>
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                </div>
+                
+                <button type="submit" class="login-btn">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="instructions" id="instructions">
+        Click the cube to unlock your login form
+    </div>
+
+    <!-- Success Toast -->
+    <div class="success-toast" id="successToast">
+        <div class="success-icon">✓</div>
+        <span id="toastMessage">Success!</span>
+    </div>
+
+    <script>
+        const cubeContainer = document.getElementById('cubeContainer');
+        const loginContainer = document.getElementById('loginContainer');
+        const closeBtn = document.getElementById('closeBtn');
+        const instructions = document.getElementById('instructions');
+        const loginForm = document.getElementById('loginForm');
+        const successToast = document.getElementById('successToast');
+        const toastMessage = document.getElementById('toastMessage');
+        const scene = document.querySelector('.scene');
+        
+        let isFormVisible = false;
+        let cubePieces = [];
+
+        // Show toast notification
+        function showToast(message) {
+            toastMessage.textContent = message;
+            successToast.classList.add('show');
+            setTimeout(() => {
+                successToast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Create particle effect
+        function createParticles(x, y, count = 20) {
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                
+                const angle = (Math.PI * 2 * i) / count;
+                const velocity = 100 + Math.random() * 100;
+                const lifetime = 1000 + Math.random() * 1000;
+                
+                scene.appendChild(particle);
+                
+                particle.animate([
+                    { 
+                        transform: 'translate(0, 0) scale(1)',
+                        opacity: 1
+                    },
+                    { 
+                        transform: `translate(${Math.cos(angle) * velocity}px, ${Math.sin(angle) * velocity}px) scale(0)`,
+                        opacity: 0
+                    }
+                ], {
+                    duration: lifetime,
+                    easing: 'cubic-bezier(0, .9, .57, 1)'
+                }).onfinish = () => particle.remove();
+            }
+        }
+
+        // Break cube animation
+        function breakCube() {
+            const faces = cubeContainer.querySelectorAll('.cube-face');
+            const rect = cubeContainer.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            // Create particle explosion
+            createParticles(centerX, centerY, 30);
+            
+            // Animate each face flying away
+            faces.forEach((face, index) => {
+                const angle = (Math.PI * 2 * index) / faces.length;
+                const distance = 300 + Math.random() * 200;
+                const rotation = Math.random() * 720 - 360;
+                
+                face.animate([
+                    { 
+                        transform: face.style.transform || '',
+                        opacity: 1
+                    },
+                    { 
+                        transform: `
+                            translateX(${Math.cos(angle) * distance}px) 
+                            translateY(${Math.sin(angle) * distance}px) 
+                            translateZ(${Math.random() * 200}px)
+                            rotateX(${rotation}deg) 
+                            rotateY(${rotation}deg)
+                            scale(0)
+                        `,
+                        opacity: 0
+                    }
+                ], {
+                    duration: 1500,
+                    easing: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+                    fill: 'forwards'
+                });
+            });
+            
+            // Hide cube container after animation
+            setTimeout(() => {
+                cubeContainer.style.opacity = '0';
+                cubeContainer.style.pointerEvents = 'none';
+            }, 1000);
+        }
+
+        // Rebuild cube animation
+        function rebuildCube() {
+            const faces = cubeContainer.querySelectorAll('.cube-face');
+            
+            // Reset faces
+            faces.forEach((face, index) => {
+                face.style.opacity = '0';
+                face.style.transform = face.className.includes('front') ? 'translateZ(100px)' :
+                                      face.className.includes('back') ? 'rotateY(180deg) translateZ(100px)' :
+                                      face.className.includes('right') ? 'rotateY(90deg) translateZ(100px)' :
+                                      face.className.includes('left') ? 'rotateY(-90deg) translateZ(100px)' :
+                                      face.className.includes('top') ? 'rotateX(90deg) translateZ(100px)' :
+                                      'rotateX(-90deg) translateZ(100px)';
+            });
+            
+            // Show cube container
+            cubeContainer.style.opacity = '1';
+            cubeContainer.style.pointerEvents = 'auto';
+            cubeContainer.classList.remove('breaking');
+            
+            // Animate faces coming back
+            setTimeout(() => {
+                faces.forEach((face, index) => {
+                    face.animate([
+                        { 
+                            opacity: 0,
+                            transform: face.style.transform + ' scale(0)'
+                        },
+                        { 
+                            opacity: 1,
+                            transform: face.style.transform + ' scale(1)'
+                        }
+                    ], {
+                        duration: 800,
+                        delay: index * 100,
+                        easing: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+                        fill: 'forwards'
+                    });
+                });
+            }, 100);
+        }
+
+        // Cube click handler
+        cubeContainer.addEventListener('click', function(e) {
+            if (!isFormVisible) {
+                isFormVisible = true;
+                cubeContainer.classList.add('breaking');
+                instructions.classList.add('hidden');
+                
+                // Break the cube
+                breakCube();
+                
+                // Show login form after cube breaks
+                setTimeout(() => {
+                    loginContainer.classList.add('active');
+                }, 800);
+            }
+        });
+
+        // Close button handler
+        closeBtn.addEventListener('click', function() {
+            isFormVisible = false;
+            loginContainer.classList.remove('active');
+            instructions.classList.remove('hidden');
+            
+            // Rebuild cube after form closes
+            setTimeout(() => {
+                rebuildCube();
+            }, 500);
+        });
+
+        // Form submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (email && password) {
+                showToast('Login successful! Welcome back.');
+                this.reset();
+                
+                // Close form after success
+                setTimeout(() => {
+                    closeBtn.click();
+                }, 2000);
+            }
+        });
+
+        // Forgot password link
+        document.querySelector('.forgot-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            showToast('Password reset link sent to your email!');
+        });
+
+        // Add hover effect to cube
+        cubeContainer.addEventListener('mouseenter', function() {
+            if (!isFormVisible) {
+                this.style.transform = 'translate(-50%, -50%) scale(1.1)';
+            }
+        });
+
+        cubeContainer.addEventListener('mouseleave', function() {
+            if (!isFormVisible) {
+                this.style.transform = 'translate(-50%, -50%) scale(1)';
+            }
+        });
+
+        // Add initial entrance animation
+        window.addEventListener('load', function() {
+            cubeContainer.animate([
+                { 
+                    transform: 'translate(-50%, -50%) scale(0) rotateX(0deg) rotateY(0deg)',
+                    opacity: 0
+                },
+                { 
+                    transform: 'translate(-50%, -50%) scale(1.2) rotateX(180deg) rotateY(180deg)',
+                    opacity: 1
+                },
+                { 
+                    transform: 'translate(-50%, -50%) scale(1) rotateX(360deg) rotateY(360deg)',
+                    opacity: 1
+                }
+            ], {
+                duration: 2000,
+                easing: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)'
+            });
+        });
+    </script>
+</body>
+</html>
