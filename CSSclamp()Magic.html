@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS clamp() Magic</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f5f7fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 40px;
+        }
+        
+        .demo {
+            margin-bottom: 50px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-title {
+            margin-bottom: 20px;
+            color: #6c5ce7;
+        }
+        
+        .code {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+        
+        .example {
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .responsive-text {
+            font-size: clamp(1rem, 4vw, 2.5rem);
+            margin-bottom: 20px;
+        }
+        
+        .responsive-width {
+            width: clamp(200px, 50%, 800px);
+            height: 100px;
+            background-color: #6c5ce7;
+            margin: 0 auto;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+        }
+        
+        .responsive-margin {
+            margin: clamp(10px, 5vw, 50px);
+            background-color: #4ecdc4;
+            height: 100px;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+        }
+        
+        .responsive-padding {
+            padding: clamp(10px, 5vw, 40px);
+            background-color: #ff6b6b;
+            color: white;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .responsive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(clamp(150px, 25%, 300px), 1fr));
+            gap: 20px;
+        }
+        
+        .grid-item {
+            background-color: #45b7d1;
+            height: 150px;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+        }
+        
+        .responsive-animation {
+            animation: pulse 2s infinite;
+            transform: scale(clamp(0.8, 1.2, 1.5));
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(clamp(0.8, 1.2, 1.5)); }
+            50% { transform: scale(clamp(1, 1.4, 1.7)); }
+            100% { transform: scale(clamp(0.8, 1.2, 1.5)); }
+        }
+        
+        .info-box {
+            background-color: #e8f4f8;
+            border-left: 4px solid #6c5ce7;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 5px 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSS clamp() Function Magic</h1>
+        
+        <div class="demo">
+            <h2 class="demo-title">Responsive Font Size</h2>
+            <div class="code">font-size: clamp(1rem, 4vw, 2.5rem);</div>
+            <div class="example">
+                <p class="responsive-text">This text scales between 1rem and 2.5rem based on viewport width!</p>
+            </div>
+            <div class="info-box">
+                <p>The clamp() function takes three values: minimum, preferred, and maximum. The font size will be 4vw of the viewport width, but won't go below 1rem or above 2.5rem.</p>
+            </div>
+        </div>
+        
+        <div class="demo">
+            <h2 class="demo-title">Responsive Width</h2>
+            <div class="code">width: clamp(200px, 50%, 800px);</div>
+            <div class="example">
+                <div class="responsive-width">Responsive Width Box</div>
+            </div>
+            <div class="info-box">
+                <p>This box has a width that's 50% of its container, but won't be narrower than 200px or wider than 800px.</p>
+            </div>
+        </div>
+        
+        <div class="demo">
+            <h2 class="demo-title">Responsive Margin</h2>
+            <div class="code">margin: clamp(10px, 5vw, 50px);</div>
+            <div class="example">
+                <div class="responsive-margin">Responsive Margin Box</div>
+            </div>
+            <div class="info-box">
+                <p>This box has a margin that scales with the viewport width, but stays between 10px and 50px.</p>
+            </div>
+        </div>
+        
+        <div class="demo">
+            <h2 class="demo-title">Responsive Grid</h2>
+            <div class="code">grid-template-columns: repeat(auto-fit, minmax(clamp(150px, 25%, 300px), 1fr));</div>
+            <div class="example">
+                <div class="responsive-grid">
+                    <div class="grid-item">Item 1</div>
+                    <div class="grid-item">Item 2</div>
+                    <div class="grid-item">Item 3</div>
+                    <div class="grid-item">Item 4</div>
+                </div>
+            </div>
+            <div class="info-box">
+                <p>This grid uses clamp() to ensure each column stays between 150px and 300px wide, while adapting to the available space.</p>
+            </div>
+        </div>
+        
+        <div class="demo">
+            <h2 class="demo-title">Responsive Animation</h2>
+            <div class="code">transform: scale(clamp(0.8, 1.2, 1.5));</div>
+            <div class="example">
+                <div class="responsive-animation">Responsive Animation</div>
+            </div>
+            <div class="info-box">
+                <p>This animation uses clamp() to ensure the scale stays between 0.8 and 1.5, while adapting to the viewport.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
