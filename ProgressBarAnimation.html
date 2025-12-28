@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Bar Animation</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f7fa;
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            width: 500px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .progress-container {
+            margin-bottom: 30px;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            width: 0;
+            transition: width 2s ease-in-out;
+        }
+        
+        .progress-fill-1 {
+            background: linear-gradient(90deg, #6c5ce7, #a29bfe);
+        }
+        
+        .progress-fill-2 {
+            background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+        }
+        
+        .progress-fill-3 {
+            background: linear-gradient(90deg, #4ecdc4, #44a3aa);
+        }
+        
+        .progress-fill-4 {
+            background: linear-gradient(90deg, #45b7d1, #2196f3);
+        }
+        
+        .progress-fill-5 {
+            background: linear-gradient(90deg, #f9ca24, #f0932b);
+        }
+        
+        .circular-progress {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 40px;
+        }
+        
+        .circular-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+        
+        .circular-bg {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+        }
+        
+        .circular-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            clip: rect(0px, 100px, 100px, 50px);
+        }
+        
+        .circular-fill-1 {
+            background-color: #6c5ce7;
+        }
+        
+        .circular-fill-2 {
+            background-color: #ff6b6b;
+        }
+        
+        .circular-fill-3 {
+            background-color: #4ecdc4;
+        }
+        
+        .circular-center {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            background-color: #6c5ce7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #5f4bd8;
+        }
+        
+        .animated-progress {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .animated-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6c5ce7, #a29bfe);
+            border-radius: 5px;
+            width: 0;
+            animation: progress-animation 3s infinite;
+        }
+        
+        @keyframes progress-animation {
+            0% { width: 0; }
+            50% { width: 100%; }
+            100% { width: 0; }
+        }
+        
+        .steps-progress {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            position: relative;
+        }
+        
+        .steps-progress::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: #e0e0e0;
+            z-index: 1;
+        }
+        
+        .step {
+            position: relative;
+            z-index: 2;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .step.active {
+            background-color: #6c5ce7;
+        }
+        
+        .step.completed {
+            background-color: #4ecdc4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Progress Bar Animations</h2>
+        
+        <div class="progress-container">
+            <div class="progress-label">
+                <span>HTML</span>
+                <span class="progress-percent-1">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill progress-fill-1" data-percent="90"></div>
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-label">
+                <span>CSS</span>
+                <span class="progress-percent-2">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill progress-fill-2" data-percent="75"></div>
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-label">
+                <span>JavaScript</span>
+                <span class="progress-percent-3">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill progress-fill-3" data-percent="60"></div>
+            </div>
+        </div>
+        
+        <div class="animated-progress">
+            <div class="animated-fill"></div>
+        </div>
+        
+        <div class="steps-progress">
+            <div class="step completed">✓</div>
+            <div class="step completed">✓</div>
+            <div class="step active">3</div>
+            <div class="step">4</div>
+            <div class="step">5</div>
+        </div>
+        
+        <div class="circular-progress">
+            <div class="circular-container">
+                <div class="circular-bg"></div>
+                <div class="circular-fill circular-fill-1" data-percent="75"></div>
+                <div class="circular-center">75%</div>
+            </div>
+            
+            <div class="circular-container">
+                <div class="circular-bg"></div>
+                <div class="circular-fill circular-fill-2" data-percent="60"></div>
+                <div class="circular-center">60%</div>
+            </div>
+            
+            <div class="circular-container">
+                <div class="circular-bg"></div>
+                <div class="circular-fill circular-fill-3" data-percent="90"></div>
+                <div class="circular-center">90%</div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button class="btn" id="animateBtn">Animate Progress</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const animateBtn = document.getElementById('animateBtn');
+            
+            function animateProgress() {
+                // Animate linear progress bars
+                const progressFills = document.querySelectorAll('.progress-fill');
+                progressFills.forEach(fill => {
+                    const percent = fill.getAttribute('data-percent');
+                    fill.style.width = percent + '%';
+                    
+                    // Update percentage text
+                    const percentClass = '.progress-percent-' + fill.className.split(' ')[1].split('-')[2];
+                    const percentText = document.querySelector(percentClass);
+                    if (percentText) {
+                        let currentPercent = 0;
+                        const increment = percent / 50;
+                        
+                        const interval = setInterval(() => {
+                            currentPercent += increment;
+                            if (currentPercent >= percent) {
+                                currentPercent = percent;
+                                clearInterval(interval);
+                            }
+                            percentText.textContent = Math.round(currentPercent) + '%';
+                        }, 40);
+                    }
+                });
+                
+                // Animate circular progress bars
+                const circularFills = document.querySelectorAll('.circular-fill');
+                circularFills.forEach(fill => {
+                    const percent = fill.getAttribute('data-percent');
+                    const angle = (percent / 100) * 360;
+                    
+                    if (angle <= 180) {
+                        fill.style.clip = `rect(0px, 100px, 100px, 50px)`;
+                        fill.style.transform = `rotate(${angle}deg)`;
+                    } else {
+                        fill.style.clip = `rect(0px, 100px, 100px, 0px)`;
+                        fill.style.transform = `rotate(${angle}deg)`;
+                    }
+                });
+                
+                // Animate steps
+                const steps = document.querySelectorAll('.step');
+                steps.forEach((step, index) => {
+                    setTimeout(() => {
+                        step.classList.add('completed');
+                        step.textContent = '✓';
+                    }, 500 * (index + 1));
+                });
+            }
+            
+            animateBtn.addEventListener('click', function() {
+                // Reset progress bars
+                const progressFills = document.querySelectorAll('.progress-fill');
+                progressFills.forEach(fill => {
+                    fill.style.width = '0';
+                });
+                
+                // Reset percentage text
+                const percentTexts = document.querySelectorAll('[class^="progress-percent-"]');
+                percentTexts.forEach(text => {
+                    text.textContent = '0%';
+                });
+                
+                // Reset circular progress
+                const circularFills = document.querySelectorAll('.circular-fill');
+                circularFills.forEach(fill => {
+                    fill.style.transform = 'rotate(0deg)';
+                });
+                
+                // Reset steps
+                const steps = document.querySelectorAll('.step');
+                steps.forEach((step, index) => {
+                    if (index < 2) {
+                        step.classList.add('completed');
+                        step.textContent = '✓';
+                    } else if (index === 2) {
+                        step.classList.add('active');
+                        step.classList.remove('completed');
+                        step.textContent = index + 1;
+                    } else {
+                        step.classList.remove('active', 'completed');
+                        step.textContent = index + 1;
+                    }
+                });
+                
+                // Animate after a short delay
+                setTimeout(animateProgress, 100);
+            });
+            
+            // Initial animation on page load
+            setTimeout(animateProgress, 500);
+        });
+    </script>
+</body>
+</html>
