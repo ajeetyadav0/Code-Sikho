@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS position: sticky Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .header {
+            background-color: #6c5ce7;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .intro {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .intro h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #6c5ce7;
+        }
+        
+        .intro p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .demo-section {
+            margin-bottom: 100px;
+        }
+        
+        .demo-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #6c5ce7;
+        }
+        
+        .demo-description {
+            font-size: 1rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .code {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+        
+        .sticky-nav {
+            display: flex;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 70px;
+            z-index: 90;
+            margin-bottom: 30px;
+        }
+        
+        .nav-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-item:hover {
+            background-color: #f5f7fa;
+        }
+        
+        .nav-item.active {
+            background-color: #6c5ce7;
+            color: white;
+        }
+        
+        .content-section {
+            margin-bottom: 100px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .section-content {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        .sticky-sidebar {
+            width: 250px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 120px;
+            height: fit-content;
+        }
+        
+        .sidebar-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #6c5ce7;
+        }
+        
+        .sidebar-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .sidebar-item:hover {
+            color: #6c5ce7;
+        }
+        
+        .two-column {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .main-content {
+            flex: 1;
+        }
+        
+        .sticky-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+            position: sticky;
+            top: 120px;
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #6c5ce7;
+        }
+        
+        .card-content {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        .highlight {
+            background-color: #ffecb3;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        .note {
+            background-color: #e8f4f8;
+            border-left: 4px solid #6c5ce7;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .spacer {
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>CSS position: sticky Demo</h1>
+        <p>Scroll down to see the sticky elements in action</p>
+    </div>
+    
+    <div class="container">
+        <div class="intro">
+            <h1>Understanding position: sticky</h1>
+            <p>The position: sticky property is a hybrid of position: relative and position: fixed. It allows an element to behave like a regular element until it reaches a specific scroll position, at which point it "sticks" to the viewport.</p>
+        </div>
+        
+        <div class="demo-section">
+            <h2 class="demo-title">Sticky Navigation Bar</h2>
+            <p class="demo-description">This navigation bar stays at the top of the viewport when you scroll past it.</p>
+            <div class="code">
+                .sticky-nav {<br>
+                &nbsp;&nbsp;position: sticky;<br>
+                &nbsp;&nbsp;top: 0;<br>
+                &nbsp;&nbsp;z-index: 100;<br>
+                }
+            </div>
+            
+            <div class="sticky-nav">
+                <div class="nav-item active">Home</div>
+                <div class="nav-item">About</div>
+                <div class="nav-item">Services</div>
+                <div class="nav-item">Portfolio</div>
+                <div class="nav-item">Contact</div>
+            </div>
+            
+            <div class="content-section">
+                <h3 class="section-title">Section 1</h3>
+                <p class="section-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl.</p>
+                <p class="section-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl.</p>
+            </div>
+            
+            <div class="content-section">
+                <h3 class="section-title">Section 2</h3>
+                <p class="section-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl.</p>
+                <p class="section-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl.</p>
+            </div>
+            
+            <div class="content-section">
+                <h3 class="section-title">Section 3</h3>
+                <p class="section-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl.</p>
+                <p class="section-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl.</p>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2 class="demo-title">Sticky Sidebar</h2>
+            <p class="demo-description">This sidebar stays visible as you scroll through the main content.</p>
+            <div class="code">
+                .sticky-sidebar {<br>
+                &nbsp;&nbsp;position: sticky;<br>
+                &nbsp;&nbsp;top: 20px;<br>
+                &nbsp;&nbsp;height: fit-content;<br>
+                }
+            </div>
+            
+            <div class="two-column">
+                <div class="main-content">
+                    <div class="content-section">
+                        <h3 class="section-title">Main Content</h3>
+                        <p class="section-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl.</p>
+                        <p class="section-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl.</p>
+                        <p class="section-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl.</p>
+                        <p class="section-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl.</p>
+                        <p class="section-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl.</p>
+                    </div>
+                </div>
+                
+                <div class="sticky-sidebar">
+                    <h3 class="sidebar-title">Quick Links</h3>
+                    <div class="sidebar-item">Introduction</div>
+                    <div class="sidebar-item">Getting Started</div>
+                    <div class="sidebar-item">Basic Usage</div>
+                    <div class="sidebar-item">Advanced Techniques</div>
+                    <div class="sidebar-item">Examples</div>
+                    <div class="sidebar-item">Browser Support</div>
+                    <div class="sidebar-item">FAQ</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2 class="demo-title">Sticky Cards</h2>
+            <p class="demo-description">These cards stick to the viewport as you scroll, creating an interesting visual effect.</p>
+            <div class="code">
+                .sticky-card {<br>
+                &nbsp;&nbsp;position: sticky;<br>
+                &nbsp;&nbsp;top: 100px;<br>
+                }
+            </div>
+            
+            <div class="two-column">
+                <div class="main-content">
+                    <div class="spacer"></div>
+                    <div class="sticky-card">
+                        <h3 class="card-title">Sticky Card 1</h3>
+                        <p class="card-content">This card will stick to the viewport as you scroll. The <span class="highlight">position: sticky</span> property is perfect for creating engaging user interfaces that keep important information visible.</p>
+                        <div class="note">
+                            <p>Note: The sticky element will only stick within its parent container. Once the parent's boundary is reached, the element will stop sticking.</p>
+                        </div>
+                    </div>
+                    <div class="spacer"></div>
+                    <div class="sticky-card">
+                        <h3 class="card-title">Sticky Card 2</h3>
+                        <p class="card-content">This is another sticky card with different content. You can use sticky positioning for various UI elements like headers, sidebars, call-to-action buttons, and more.</p>
+                        <div class="note">
+                            <p>Note: The <span class="highlight">top</span> property specifies the distance from the top of the viewport where the element should stick.</p>
+                        </div>
+                    </div>
+                    <div class="spacer"></div>
+                </div>
+                
+                <div class="main-content">
+                    <div class="spacer"></div>
+                    <div class="sticky-card">
+                        <h3 class="card-title">Sticky Card 3</h3>
+                        <p class="card-content">Sticky positioning is supported in all modern browsers, making it a reliable choice for your web projects. It's especially useful for long pages with lots of content.</p>
+                        <div class="note">
+                            <p>Note: You can also use the <span class="highlight">bottom</span> property to make an element stick to the bottom of the viewport.</p>
+                        </div>
+                    </div>
+                    <div class="spacer"></div>
+                    <div class="sticky-card">
+                        <h3 class="card-title">Sticky Card 4</h3>
+                        <p class="card-content">When using sticky positioning, make sure to test your design on different screen sizes to ensure the sticky elements behave as expected across devices.</p>
+                        <div class="note">
+                            <p>Note: The parent element must have a height greater than the sticky element for the sticky behavior to work properly.</p>
+                        </div>
+                    </div>
+                    <div class="spacer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
