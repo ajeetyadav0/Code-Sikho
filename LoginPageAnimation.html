@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page Animation</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        
+        .login-container {
+            width: 400px;
+            padding: 40px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            transform: translateY(0);
+            transition: transform 0.5s ease;
+        }
+        
+        .login-container:hover {
+            transform: translateY(-10px);
+        }
+        
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .login-container:hover::before {
+            left: 100%;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-header h2 {
+            color: #333;
+            margin: 0;
+            font-size: 28px;
+            animation: fadeInDown 0.5s ease;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-group::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #6c5ce7;
+            transition: width 0.3s ease;
+        }
+        
+        .form-group:focus-within::after {
+            width: 100%;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px 0;
+            border: none;
+            border-bottom: 2px solid #e0e0e0;
+            outline: none;
+            font-size: 16px;
+            background-color: transparent;
+            transition: border-color 0.3s;
+        }
+        
+        .form-input:focus {
+            border-bottom-color: transparent;
+        }
+        
+        .form-label {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            color: #999;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus + .form-label,
+        .form-input:not(:placeholder-shown) + .form-label {
+            top: -10px;
+            font-size: 12px;
+            color: #6c5ce7;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #6c5ce7;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 30px;
+        }
+        
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .login-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .login-btn:hover {
+            background-color: #5f4bd8;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3);
+        }
+        
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+        
+        .remember-me input {
+            margin-right: 5px;
+        }
+        
+        .forgot-password {
+            color: #6c5ce7;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .forgot-password:hover {
+            color: #5f4bd8;
+            text-decoration: underline;
+        }
+        
+        .social-login {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .social-login p {
+            color: #999;
+            margin-bottom: 15px;
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-5px);
+        }
+        
+        .facebook {
+            background-color: #3b5998;
+        }
+        
+        .google {
+            background-color: #db4437;
+        }
+        
+        .twitter {
+            background-color: #1da1f2;
+        }
+        
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #999;
+        }
+        
+        .signup-link a {
+            color: #6c5ce7;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        
+        .signup-link a:hover {
+            color: #5f4bd8;
+            text-decoration: underline;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+        
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+        }
+        
+        .shape-1 {
+            width: 80px;
+            height: 80px;
+            background-color: #6c5ce7;
+            border-radius: 50%;
+            top: 10%;
+            left: 10%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .shape-2 {
+            width: 60px;
+            height: 60px;
+            background-color: #a29bfe;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            bottom: 10%;
+            right: 10%;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .shape-3 {
+            width: 100px;
+            height: 100px;
+            background-color: #fd79a8;
+            border-radius: 50%;
+            top: 50%;
+            right: 20%;
+            animation: float 7s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+    
+    <div class="login-container">
+        <div class="login-header">
+            <h2>Welcome Back</h2>
+        </div>
+        
+        <form>
+            <div class="form-group">
+                <input type="text" class="form-input" id="username" placeholder=" " required>
+                <label for="username" class="form-label">Username</label>
+            </div>
+            
+            <div class="form-group">
+                <input type="password" class="form-input" id="password" placeholder=" " required>
+                <label for="password" class="form-label">Password</label>
+            </div>
+            
+            <div class="login-options">
+                <div class="remember-me">
+                    <input type="checkbox" id="remember">
+                    <label for="remember">Remember me</label>
+                </div>
+                <a href="#" class="forgot-password">Forgot password?</a>
+            </div>
+            
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+        
+        <div class="social-login">
+            <p>Or login with</p>
+            <div class="social-icons">
+                <div class="social-icon facebook">f</div>
+                <div class="social-icon google">G</div>
+                <div class="social-icon twitter">t</div>
+            </div>
+        </div>
+        
+        <div class="signup-link">
+            Don't have an account? <a href="#">Sign up</a>
+        </div>
+    </div>
+</body>
+</html>
