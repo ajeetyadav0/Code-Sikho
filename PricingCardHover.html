@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing Card Hover</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f7fa;
+            font-family: Arial, sans-serif;
+        }
+        
+        .pricing-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .pricing-card {
+            width: 300px;
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .pricing-card.featured {
+            transform: scale(1.05);
+        }
+        
+        .pricing-card.featured:hover {
+            transform: scale(1.05) translateY(-15px);
+        }
+        
+        .pricing-header {
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pricing-card.basic .pricing-header {
+            background-color: #6c5ce7;
+        }
+        
+        .pricing-card.standard .pricing-header {
+            background-color: #00b894;
+        }
+        
+        .pricing-card.premium .pricing-header {
+            background-color: #fdcb6e;
+        }
+        
+        .pricing-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .pricing-card:hover .pricing-header::before {
+            opacity: 1;
+        }
+        
+        .plan-name {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .plan-price {
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .plan-price span {
+            font-size: 18px;
+            font-weight: normal;
+        }
+        
+        .pricing-features {
+            padding: 30px 20px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .feature-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            color: #00b894;
+        }
+        
+        .pricing-footer {
+            padding: 0 20px 30px;
+            text-align: center;
+        }
+        
+        .pricing-button {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pricing-card.basic .pricing-button {
+            background-color: #6c5ce7;
+            color: white;
+        }
+        
+        .pricing-card.standard .pricing-button {
+            background-color: #00b894;
+            color: white;
+        }
+        
+        .pricing-card.premium .pricing-button {
+            background-color: #fdcb6e;
+            color: white;
+        }
+        
+        .pricing-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .pricing-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .pricing-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .badge {
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background-color: #e17055;
+            color: white;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .flip-card {
+            width: 300px;
+            height: 500px;
+            perspective: 1000px;
+        }
+        
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .flip-card-front {
+            background-color: white;
+        }
+        
+        .flip-card-back {
+            background-color: #6c5ce7;
+            color: white;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .flip-card-back h3 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        
+        .flip-card-back p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .flip-card-back .pricing-button {
+            background-color: white;
+            color: #6c5ce7;
+        }
+    </style>
+</head>
+<body>
+    <div class="pricing-container">
+        <!-- Basic Pricing Card -->
+        <div class="pricing-card basic">
+            <div class="pricing-header">
+                <h3 class="plan-name">Basic</h3>
+                <div class="plan-price">$9<span>/month</span></div>
+            </div>
+            <div class="pricing-features">
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span>5 Projects</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span>1 GB Storage</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span>Basic Support</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span>Analytics Dashboard</span>
+                </div>
+            </div>
+            <div class="pricing-footer">
+                <a href="#" class="pricing-button">Get Started</a>
+            </div>
+        </div>
+        
+        <!-- Standard Pricing Card -->
+        <div class="pricing-card standard featured">
+            <div class="badge">POPULAR</div>
+            <div class="pricing-header">
+                <h3 class="plan-name">Standard</h3>
+                <div class="plan-price">$19<span>/month</span></div>
+            </div>
+            <div class="pricing-features">
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span>20 Projects</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span>10 GB Storage</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span>Priority Support</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span>Advanced Analytics</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span>Custom Integrations</span>
+                </div>
+            </div>
+            <div class="pricing-footer">
+                <a href="#" class="pricing-button">Get Started</a>
+            </div>
+        </div>
+        
+        <!-- Premium Pricing Card -->
+        <div class="pricing-card premium">
+            <div class="pricing-header">
+                <h3 class="plan-name">Premium</h3>
+                <div class="plan-price">$39<span>/month</span></div>
+            </div>
+            <div class="pricing-features">
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span>Unlimited Projects</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span>100 GB Storage</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span>24/7 Support</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span>Custom Analytics</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span>API Access</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span>White Label Options</span>
+                </div>
+            </div>
+            <div class="pricing-footer">
+                <a href="#" class="pricing-button">Get Started</a>
+            </div>
+        </div>
+        
+        <!-- Flip Pricing Card -->
+        <div class="flip-card">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <div class="pricing-card">
+                        <div class="pricing-header" style="background-color: #e17055;">
+                            <h3 class="plan-name">Enterprise</h3>
+                            <div class="plan-price">$99<span>/month</span></div>
+                        </div>
+                        <div class="pricing-features">
+                            <div class="feature-item">
+                                <span class="feature-icon">✓</span>
+                                <span>Unlimited Everything</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">✓</span>
+                                <span>Unlimited Storage</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">✓</span>
+                                <span>Dedicated Support</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">✓</span>
+                                <span>Custom Solutions</span>
+                            </div>
+                        </div>
+                        <div class="pricing-footer">
+                            <a href="#" class="pricing-button" style="background-color: #e17055;">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card-back">
+                    <h3>Enterprise Plan</h3>
+                    <p>Our Enterprise plan is designed for large organizations with complex needs. Get unlimited access to all features, dedicated support, and custom solutions tailored to your business requirements.</p>
+                    <a href="#" class="pricing-button">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
