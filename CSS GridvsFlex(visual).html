@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Grid vs Flexbox</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #6c5ce7;
+            margin-bottom: 40px;
+        }
+        
+        .comparison {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .comparison-section {
+            flex: 1;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .grid-title {
+            color: #6c5ce7;
+        }
+        
+        .flex-title {
+            color: #00b894;
+        }
+        
+        .code {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+        
+        .demo {
+            margin-bottom: 20px;
+        }
+        
+        .demo-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        /* Grid Examples */
+        .grid-basic {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .grid-item {
+            background-color: #6c5ce7;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        
+        .grid-areas {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-areas:
+                "header header header"
+                "sidebar main main"
+                "footer footer footer";
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .grid-areas .header {
+            grid-area: header;
+            background-color: #6c5ce7;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        
+        .grid-areas .sidebar {
+            grid-area: sidebar;
+            background-color: #a29bfe;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        
+        .grid-areas .main {
+            grid-area: main;
+            background-color: #74b9ff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        
+        .grid-areas .footer {
+            grid-area: footer;
+            background-color: #5f3dc4;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        
+        .grid-auto {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        /* Flexbox Examples */
+        .flex-basic {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .flex-item {
+            background-color: #00b894;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+            flex: 1;
+        }
+        
+        .flex-direction {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .flex-direction .flex-item {
+            flex: none;
+        }
+        
+        .flex-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .flex-wrap .flex-item {
+            flex: 1 1 100px;
+        }
+        
+        .flex-align {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 150px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .flex-align .flex-item {
+            height: 50px;
+            flex: none;
+        }
+        
+        .pros-cons {
+            margin-top: 30px;
+        }
+        
+        .pros-cons h3 {
+            margin-bottom: 10px;
+        }
+        
+        .pros-cons ul {
+            padding-left: 20px;
+        }
+        
+        .pros-cons li {
+            margin-bottom: 5px;
+        }
+        
+        .use-cases {
+            margin-top: 30px;
+        }
+        
+        .use-cases h3 {
+            margin-bottom: 10px;
+        }
+        
+        .use-cases ul {
+            padding-left: 20px;
+        }
+        
+        .use-cases li {
+            margin-bottom: 5px;
+        }
+        
+        .visual-comparison {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .visual-example {
+            flex: 1;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .visual-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            grid-template-rows: 80px 1fr 60px;
+            grid-template-areas:
+                "header header"
+                "sidebar main"
+                "sidebar footer";
+            height: 400px;
+            gap: 10px;
+        }
+        
+        .grid-layout .header {
+            grid-area: header;
+            background-color: #6c5ce7;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        
+        .grid-layout .sidebar {
+            grid-area: sidebar;
+            background-color: #a29bfe;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        
+        .grid-layout .main {
+            grid-area: main;
+            background-color: #74b9ff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        
+        .grid-layout .footer {
+            grid-area: footer;
+            background-color: #5f3dc4;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        
+        .flex-layout {
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+        }
+        
+        .flex-layout .header {
+            background-color: #00b894;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .flex-layout .content {
+            display: flex;
+            flex: 1;
+            margin-bottom: 10px;
+        }
+        
+        .flex-layout .sidebar {
+            background-color: #55efc4;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+            width: 200px;
+            margin-right: 10px;
+        }
+        
+        .flex-layout .main {
+            background-color: #00cec9;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+            flex: 1;
+        }
+        
+        .flex-layout .footer {
+            background-color: #00b894;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSS Grid vs Flexbox: Visual Comparison</h1>
+        
+        <div class="comparison">
+            <div class="comparison-section">
+                <h2 class="section-title grid-title">CSS Grid</h2>
+                
+                <div class="demo">
+                    <div class="demo-title">Basic Grid Layout</div>
+                    <div class="code">
+                        display: grid;<br>
+                        grid-template-columns: repeat(3, 1fr);<br>
+                        gap: 10px;
+                    </div>
+                    <div class="grid-basic">
+                        <div class="grid-item">1</div>
+                        <div class="grid-item">2</div>
+                        <div class="grid-item">3</div>
+                        <div class="grid-item">4</div>
+                        <div class="grid-item">5</div>
+                        <div class="grid-item">6</div>
+                    </div>
+                </div>
+                
+                <div class="demo">
+                    <div class="demo-title">Grid with Named Areas</div>
+                    <div class="code">
+                        display: grid;<br>
+                        grid-template-columns: repeat(3, 1fr);<br>
+                        grid-template-areas:<br>
+                        &nbsp;&nbsp;"header header header"<br>
+                        &nbsp;&nbsp;"sidebar main main"<br>
+                        &nbsp;&nbsp;"footer footer footer";
+                    </div>
+                    <div class="grid-areas">
+                        <div class="header">Header</div>
+                        <div class="sidebar">Sidebar</div>
+                        <div class="main">Main Content</div>
+                        <div class="footer">Footer</div>
+                    </div>
+                </div>
+                
+                <div class="demo">
+                    <div class="demo-title">Responsive Grid with Auto-Fill</div>
+                    <div class="code">
+                        display: grid;<br>
+                        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));<br>
+                        gap: 10px;
+                    </div>
+                    <div class="grid-auto">
+                        <div class="grid-item">1</div>
+                        <div class="grid-item">2</div>
+                        <div class="grid-item">3</div>
+                        <div class="grid-item">4</div>
+                        <div class="grid-item">5</div>
+                        <div class="grid-item">6</div>
+                        <div class="grid-item">7</div>
+                        <div class="grid-item">8</div>
+                    </div>
+                </div>
+                
+                <div class="pros-cons">
+                    <h3>Pros:</h3>
+                    <ul>
+                        <li>Two-dimensional layout system</li>
+                        <li>Complex layouts with less code</li>
+                        <li>Gap property for spacing</li>
+                        <li>Grid areas for semantic layout</li>
+                        <li>Auto-fit and auto-fill for responsive design</li>
+                    </ul>
+                    
+                    <h3>Cons:</h3>
+                    <ul>
+                        <li>Less browser support than flexbox</li>
+                        <li>Not ideal for single-dimensional layouts</li>
+                    </ul>
+                </div>
+                
+                <div class="use-cases">
+                    <h3>Best Use Cases:</h3>
+                    <ul>
+                        <li>Overall page layout</li>
+                        <li>Complex dashboard designs</li>
+                        <li>Image galleries</li>
+                        <li>Card-based layouts</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="comparison-section">
+                <h2 class="section-title flex-title">Flexbox</h2>
+                
+                <div class="demo">
+                    <div class="demo-title">Basic Flexbox Layout</div>
+                    <div class="code">
+                        display: flex;<br>
+                        gap: 10px;
+                    </div>
+                    <div class="flex-basic">
+                        <div class="flex-item">1</div>
+                        <div class="flex-item">2</div>
+                        <div class="flex-item">3</div>
+                    </div>
+                </div>
+                
+                <div class="demo">
+                    <div class="demo-title">Flexbox with Column Direction</div>
+                    <div class="code">
+                        display: flex;<br>
+                        flex-direction: column;<br>
+                        gap: 10px;
+                    </div>
+                    <div class="flex-direction">
+                        <div class="flex-item">1</div>
+                        <div class="flex-item">2</div>
+                        <div class="flex-item">3</div>
+                    </div>
+                </div>
+                
+                <div class="demo">
+                    <div class="demo-title">Flexbox with Wrap</div>
+                    <div class="code">
+                        display: flex;<br>
+                        flex-wrap: wrap;<br>
+                        gap: 10px;
+                    </div>
+                    <div class="flex-wrap">
+                        <div class="flex-item">1</div>
+                        <div class="flex-item">2</div>
+                        <div class="flex-item">3</div>
+                        <div class="flex-item">4</div>
+                        <div class="flex-item">5</div>
+                        <div class="flex-item">6</div>
+                        <div class="flex-item">7</div>
+                        <div class="flex-item">8</div>
+                    </div>
+                </div>
+                
+                <div class="demo">
+                    <div class="demo-title">Flexbox Alignment</div>
+                    <div class="code">
+                        display: flex;<br>
+                        align-items: center;<br>
+                        justify-content: space-between;
+                    </div>
+                    <div class="flex-align">
+                        <div class="flex-item">1</div>
+                        <div class="flex-item">2</div>
+                        <div class="flex-item">3</div>
+                    </div>
+                </div>
+                
+                <div class="pros-cons">
+                    <h3>Pros:</h3>
+                    <ul>
+                        <li>One-dimensional layout system</li>
+                        <li>Excellent browser support</li>
+                        <li>Powerful alignment capabilities</li>
+                        <li>Great for component-level layouts</li>
+                        <li>Easy to center content</li>
+                    </ul>
+                    
+                    <h3>Cons:</h3>
+                    <ul>
+                        <li>Requires more markup for complex layouts</li>
+                        <li>Gap property has limited browser support</li>
+                    </ul>
+                </div>
+                
+                <div class="use-cases">
+                    <h3>Best Use Cases:</h3>
+                    <ul>
+                        <li>Navigation bars</li>
+                        <li>Form elements</li>
+                        <li>Centering content</li>
+                        <li>Card components</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="visual-comparison">
+            <div class="visual-example">
+                <h3 class="visual-title grid-title">Grid Layout</h3>
+                <div class="grid-layout">
+                    <div class="header">Header</div>
+                    <div class="sidebar">Sidebar</div>
+                    <div class="main">Main Content</div>
+                    <div class="footer">Footer</div>
+                </div>
+            </div>
+            
+            <div class="visual-example">
+                <h3 class="visual-title flex-title">Flexbox Layout</h3>
+                <div class="flex-layout">
+                    <div class="header">Header</div>
+                    <div class="content">
+                        <div class="sidebar">Sidebar</div>
+                        <div class="main">Main Content</div>
+                    </div>
+                    <div class="footer">Footer</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

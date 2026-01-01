@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Toggle Switch</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f7fa;
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            padding: 40px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .toggle-label {
+            font-size: 18px;
+            color: #333;
+        }
+        
+        /* Basic Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background-color: #ccc;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .toggle-switch input {
+            display: none;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        
+        .toggle-switch input:checked + .toggle-slider {
+            transform: translateX(30px);
+        }
+        
+        .toggle-switch input:checked ~ .toggle-switch {
+            background-color: #6c5ce7;
+        }
+        
+        /* Colored Toggle Switch */
+        .toggle-switch.colored {
+            background-color: #ff6b6b;
+        }
+        
+        .toggle-switch.colored input:checked ~ .toggle-switch {
+            background-color: #4ecdc4;
+        }
+        
+        /* Icon Toggle Switch */
+        .toggle-switch.icon {
+            width: 80px;
+            height: 40px;
+            background-color: #ccc;
+            border-radius: 20px;
+        }
+        
+        .toggle-switch.icon .toggle-slider {
+            width: 34px;
+            height: 34px;
+            top: 3px;
+            left: 3px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .toggle-switch.icon input:checked + .toggle-slider {
+            transform: translateX(40px);
+        }
+        
+        .toggle-switch.icon .toggle-slider::before {
+            content: '✕';
+            color: #ccc;
+            font-size: 20px;
+        }
+        
+        .toggle-switch.icon input:checked + .toggle-slider::before {
+            content: '✓';
+            color: #4ecdc4;
+        }
+        
+        /* Text Toggle Switch */
+        .toggle-switch.text {
+            width: 100px;
+            height: 40px;
+            background-color: #ccc;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .toggle-switch.text .toggle-slider {
+            width: 50px;
+            height: 40px;
+            top: 0;
+            left: 0;
+            border-radius: 20px;
+            background-color: #ff6b6b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .toggle-switch.text .toggle-slider::before {
+            content: 'OFF';
+        }
+        
+        .toggle-switch.text input:checked + .toggle-slider {
+            transform: translateX(50px);
+            background-color: #4ecdc4;
+        }
+        
+        .toggle-switch.text input:checked + .toggle-slider::before {
+            content: 'ON';
+        }
+        
+        /* Rounded Toggle Switch */
+        .toggle-switch.rounded {
+            width: 70px;
+            height: 35px;
+            background-color: #ccc;
+            border-radius: 35px;
+        }
+        
+        .toggle-switch.rounded .toggle-slider {
+            width: 29px;
+            height: 29px;
+            top: 3px;
+            left: 3px;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .toggle-switch.rounded input:checked + .toggle-slider {
+            transform: translateX(35px);
+        }
+        
+        /* Gradient Toggle Switch */
+        .toggle-switch.gradient {
+            width: 70px;
+            height: 35px;
+            background: linear-gradient(to right, #ff6b6b, #4ecdc4);
+            border-radius: 35px;
+        }
+        
+        .toggle-switch.gradient .toggle-slider {
+            width: 29px;
+            height: 29px;
+            top: 3px;
+            left: 3px;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .toggle-switch.gradient input:checked + .toggle-slider {
+            transform: translateX(35px);
+        }
+        
+        /* Pulse Toggle Switch */
+        .toggle-switch.pulse {
+            width: 70px;
+            height: 35px;
+            background-color: #ccc;
+            border-radius: 35px;
+            position: relative;
+        }
+        
+        .toggle-switch.pulse .toggle-slider {
+            width: 29px;
+            height: 29px;
+            top: 3px;
+            left: 3px;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .toggle-switch.pulse input:checked + .toggle-slider {
+            transform: translateX(35px);
+            background-color: #4ecdc4;
+        }
+        
+        .toggle-switch.pulse input:checked ~ .pulse-effect {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 29px;
+            height: 29px;
+            border-radius: 50%;
+            background-color: rgba(78, 205, 196, 0.5);
+            transform: translateX(35px);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: translateX(35px) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(35px) scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        /* Slide Toggle Switch */
+        .toggle-switch.slide {
+            width: 120px;
+            height: 40px;
+            background-color: #ccc;
+            border-radius: 20px;
+            position: relative;
+        }
+        
+        .toggle-switch.slide .toggle-slider {
+            width: 50px;
+            height: 40px;
+            top: 0;
+            left: 0;
+            border-radius: 20px;
+            background-color: #ff6b6b;
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .toggle-switch.slide input:checked + .toggle-slider {
+            transform: translateX(70px);
+            background-color: #4ecdc4;
+        }
+        
+        /* 3D Toggle Switch */
+        .toggle-switch.toggle-3d {
+            width: 70px;
+            height: 35px;
+            background-color: #ccc;
+            border-radius: 35px;
+            position: relative;
+            perspective: 100px;
+        }
+        
+        .toggle-switch.toggle-3d .toggle-slider {
+            width: 29px;
+            height: 29px;
+            top: 3px;
+            left: 3px;
+            border-radius: 50%;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transform-style: preserve-3d;
+            transition: transform 0.3s;
+        }
+        
+        .toggle-switch.toggle-3d input:checked + .toggle-slider {
+            transform: translateX(35px) rotateY(180deg);
+        }
+        
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .dark-mode-toggle .toggle-switch {
+            background-color: #ccc;
+        }
+        
+        .dark-mode-toggle input:checked ~ .toggle-switch {
+            background-color: #6c5ce7;
+        }
+        
+        .dark-mode {
+            background-color: #1a1a2e;
+            color: white;
+        }
+        
+        .dark-mode .container {
+            background-color: #16213e;
+            color: white;
+        }
+        
+        .dark-mode .toggle-label {
+            color: white;
+        }
+        
+        .dark-mode .dark-mode-toggle {
+            background-color: #0f3460;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Animated Toggle Switches</h1>
+        
+        <div class="toggle-container">
+            <span class="toggle-label">Basic Toggle</span>
+            <label class="toggle-switch">
+                <input type="checkbox">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        
+        <div class="toggle-container">
+            <span class="toggle-label">Colored Toggle</span>
+            <label class="toggle-switch colored">
+                <input type="checkbox">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        
+        <div class="toggle-container">
+            <span class="toggle-label">Icon Toggle</span>
+            <label class="toggle-switch icon">
+                <input type="checkbox">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        
+        <div class="toggle-container">
+            <span class="toggle-label">Text Toggle</span>
+            <label class="toggle-switch text">
+                <input type="checkbox">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        
+        <div class="toggle-container">
+            <span class="toggle-label">Rounded Toggle</span>
+            <label class="toggle-switch rounded">
+                <input type="checkbox">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        
+        <div class="toggle-container">
+            <span class="toggle-label">Gradient Toggle</span>
+            <label class="toggle-switch gradient">
+                <input type="checkbox">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        
+        <div class="toggle-container">
+            <span class="toggle-label">Pulse Toggle</span>
+            <label class="toggle-switch pulse">
+                <input type="checkbox">
+                <span class="toggle-slider"></span>
+                <span class="pulse-effect"></span>
+            </label>
+        </div>
+        
+        <div class="toggle-container">
+            <span class="toggle-label">Slide Toggle</span>
+            <label class="toggle-switch slide">
+                <input type="checkbox">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        
+        <div class="toggle-container">
+            <span class="toggle-label">3D Toggle</span>
+            <label class="toggle-switch toggle-3d">
+                <input type="checkbox">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        
+        <div class="dark-mode-toggle">
+            <span class="toggle-label">Dark Mode</span>
+            <label class="toggle-switch" id="darkModeToggle">
+                <input type="checkbox">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const body = document.body;
+            
+            // Check for saved theme preference or default to light mode
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            
+            if (currentTheme === 'dark') {
+                body.classList.add('dark-mode');
+                darkModeToggle.querySelector('input').checked = true;
+            }
+            
+            darkModeToggle.addEventListener('change', function() {
+                if (this.querySelector('input').checked) {
+                    body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
