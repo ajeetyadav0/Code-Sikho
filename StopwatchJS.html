@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .stopwatch-container {
+            width: 400px;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        
+        .stopwatch-display {
+            font-size: 4rem;
+            color: white;
+            margin-bottom: 30px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .stopwatch-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .control-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .control-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .start-btn {
+            background-color: rgba(46, 213, 115, 0.7);
+        }
+        
+        .start-btn:hover {
+            background-color: rgba(46, 213, 115, 0.9);
+        }
+        
+        .pause-btn {
+            background-color: rgba(255, 193, 7, 0.7);
+        }
+        
+        .pause-btn:hover {
+            background-color: rgba(255, 193, 7, 0.9);
+        }
+        
+        .reset-btn {
+            background-color: rgba(231, 76, 60, 0.7);
+        }
+        
+        .reset-btn:hover {
+            background-color: rgba(231, 76, 60, 0.9);
+        }
+        
+        .lap-btn {
+            background-color: rgba(52, 152, 219, 0.7);
+        }
+        
+        .lap-btn:hover {
+            background-color: rgba(52, 152, 219, 0.9);
+        }
+        
+        .laps-container {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .lap-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 15px;
+            margin-bottom: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            color: white;
+        }
+        
+        .lap-number {
+            font-weight: bold;
+        }
+        
+        .lap-time {
+            font-weight: 700;
+        }
+        
+        .stopwatch-title {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        
+        .milliseconds {
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .digital-stopwatch {
+            width: 100%;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .digital-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .digit-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .digit {
+            width: 50px;
+            height: 80px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+            margin-bottom: 5px;
+        }
+        
+        .digit-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+        
+        .separator {
+            font-size: 3rem;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+            align-self: center;
+            margin-bottom: 25px;
+        }
+        
+        .circular-progress {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin: 0 auto 30px;
+        }
+        
+        .circular-bg {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                #667eea 0deg,
+                #764ba2 90deg,
+                #667eea 180deg,
+                #764ba2 270deg,
+                #667eea 360deg
+            );
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .circular-inner {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .circular-time {
+            font-size: 2.5rem;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .progress-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+        
+        .progress-ring-circle {
+            stroke: rgba(255, 255, 255, 0.2);
+            stroke-width: 10;
+            fill: transparent;
+        }
+        
+        .progress-ring-path {
+            stroke: #00ff00;
+            stroke-width: 10;
+            fill: transparent;
+            stroke-dasharray: 754;
+            stroke-dashoffset: 754;
+            transition: stroke-dashoffset 0.1s linear;
+        }
+    </style>
+</head>
+<body>
+    <div class="stopwatch-container">
+        <h2 class="stopwatch-title">Stopwatch</h2>
+        
+        <div class="circular-progress">
+            <div class="circular-bg">
+                <div class="circular-inner">
+                    <div class="circular-time" id="circularTime">00:00:00</div>
+                </div>
+            </div>
+            <svg class="progress-ring" width="250" height="250">
+                <circle class="progress-ring-circle" cx="125" cy="125" r="120"></circle>
+                <circle class="progress-ring-path" id="progressPath" cx="125" cy="125" r="120"></circle>
+            </svg>
+        </div>
+        
+        <div class="digital-stopwatch">
+            <div class="digital-display">
+                <div class="digit-group">
+                    <div class="digit" id="hoursTens">0</div>
+                    <div class="digit-label">H</div>
+                </div>
+                <div class="digit-group">
+                    <div class="digit" id="hoursOnes">0</div>
+                </div>
+                <div class="separator">:</div>
+                <div class="digit-group">
+                    <div class="digit" id="minutesTens">0</div>
+                    <div class="digit-label">M</div>
+                </div>
+                <div class="digit-group">
+                    <div class="digit" id="minutesOnes">0</div>
+                </div>
+                <div class="separator">:</div>
+                <div class="digit-group">
+                    <div class="digit" id="secondsTens">0</div>
+                    <div class="digit-label">S</div>
+                </div>
+                <div class="digit-group">
+                    <div class="digit" id="secondsOnes">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stopwatch-display" id="display">
+            00:00:00.<span class="milliseconds" id="milliseconds">00</span>
+        </div>
+        
+        <div class="stopwatch-controls">
+            <button class="control-btn start-btn" id="startBtn">Start</button>
+            <button class="control-btn pause-btn" id="pauseBtn">Pause</button>
+            <button class="control-btn reset-btn" id="resetBtn">Reset</button>
+            <button class="control-btn lap-btn" id="lapBtn">Lap</button>
+        </div>
+        
+        <div class="laps-container" id="lapsContainer"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const display = document.getElementById('display');
+            const millisecondsElement = document.getElementById('milliseconds');
+            const startBtn = document.getElementById('startBtn');
+            const pauseBtn = document.getElementById('pauseBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const lapBtn = document.getElementById('lapBtn');
+            const lapsContainer = document.getElementById('lapsContainer');
+            
+            // Digital display elements
+            const hoursTens = document.getElementById('hoursTens');
+            const hoursOnes = document.getElementById('hoursOnes');
+            const minutesTens = document.getElementById('minutesTens');
+            const minutesOnes = document.getElementById('minutesOnes');
+            const secondsTens = document.getElementById('secondsTens');
+            const secondsOnes = document.getElementById('secondsOnes');
+            
+            // Circular progress elements
+            const circularTime = document.getElementById('circularTime');
+            const progressPath = document.getElementById('progressPath');
+            
+            let startTime = 0;
+            let elapsedTime = 0;
+            let timerInterval = null;
+            let isRunning = false;
+            let lapCount = 0;
+            
+            function formatTime(milliseconds) {
+                const totalSeconds = Math.floor(milliseconds / 1000);
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                const hours = Math.floor(minutes / 60);
+                const displayMinutes = minutes % 60;
+                const ms = milliseconds % 1000;
+                
+                return {
+                    hours: hours.toString().padStart(2, '0'),
+                    minutes: displayMinutes.toString().padStart(2, '0'),
+                    seconds: seconds.toString().padStart(2, '0'),
+                    milliseconds: Math.floor(ms / 10).toString().padStart(2, '0')
+                };
+            }
+            
+            function updateDisplay() {
+                const currentTime = Date.now();
+                elapsedTime = currentTime - startTime;
+                
+                const time = formatTime(elapsedTime);
+                
+                // Update main display
+                display.innerHTML = `${time.hours}:${time.minutes}:${time.seconds}.<span class="milliseconds">${time.milliseconds}</span>`;
+                
+                // Update digital display
+                hoursTens.textContent = time.hours[0];
+                hoursOnes.textContent = time.hours[1];
+                minutesTens.textContent = time.minutes[0];
+                minutesOnes.textContent = time.minutes[1];
+                secondsTens.textContent = time.seconds[0];
+                secondsOnes.textContent = time.seconds[1];
+                
+                // Update circular display
+                circularTime.textContent = `${time.hours}:${time.minutes}:${time.seconds}`;
+                
+                // Update progress ring (60 seconds = full circle)
+                const seconds = parseInt(time.seconds);
+                const progress = (seconds / 60) * 754; // 754 is the circumference of the circle
+                progressPath.style.strokeDashoffset = 754 - progress;
+            }
+            
+            function start() {
+                if (!isRunning) {
+                    startTime = Date.now() - elapsedTime;
+                    timerInterval = setInterval(updateDisplay, 10);
+                    isRunning = true;
+                }
+            }
+            
+            function pause() {
+                if (isRunning) {
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                }
+            }
+            
+            function reset() {
+                clearInterval(timerInterval);
+                isRunning = false;
+                elapsedTime = 0;
+                startTime = 0;
+                lapCount = 0;
+                lapsContainer.innerHTML = '';
+                updateDisplay();
+            }
+            
+            function lap() {
+                if (isRunning) {
+                    lapCount++;
+                    const time = formatTime(elapsedTime);
+                    const lapItem = document.createElement('div');
+                    lapItem.className = 'lap-item';
+                    lapItem.innerHTML = `
+                        <span class="lap-number">Lap ${lapCount}</span>
+                        <span class="lap-time">${time.hours}:${time.minutes}:${time.seconds}.${time.milliseconds}</span>
+                    `;
+                    lapsContainer.insertBefore(lapItem, lapsContainer.firstChild);
+                }
+            }
+            
+            // Event listeners
+            startBtn.addEventListener('click', start);
+            pauseBtn.addEventListener('click', pause);
+            resetBtn.addEventListener('click', reset);
+            lapBtn.addEventListener('click', lap);
+            
+            // Initialize display
+            updateDisplay();
+        });
+    </script>
+</body>
+</html>

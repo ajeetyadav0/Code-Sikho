@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Flip Animation</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f7fa;
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .flip-card {
+            width: 300px;
+            height: 400px;
+            perspective: 1000px;
+        }
+        
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .flip-card-front {
+            background-color: #6c5ce7;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .flip-card-back {
+            background-color: white;
+            color: #333;
+            transform: rotateY(180deg);
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .flip-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .flip-title {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+        
+        .flip-description {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        .flip-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #6c5ce7;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            text-decoration: none;
+            margin-top: 20px;
+            align-self: center;
+            transition: all 0.3s ease;
+        }
+        
+        .flip-button:hover {
+            background-color: #5f4bd8;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+        }
+        
+        /* Vertical Flip Card */
+        .flip-vertical {
+            perspective: 1000px;
+        }
+        
+        .flip-vertical .flip-card-inner {
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-vertical:hover .flip-card-inner {
+            transform: rotateX(180deg);
+        }
+        
+        .flip-vertical .flip-card-back {
+            transform: rotateX(180deg);
+        }
+        
+        /* Click to Flip Card */
+        .flip-click .flip-card-inner {
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-click.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        /* Auto Flip Card */
+        .flip-auto .flip-card-inner {
+            animation: autoFlip 8s infinite;
+            transform-style: preserve-3d;
+        }
+        
+        @keyframes autoFlip {
+            0%, 45% {
+                transform: rotateY(0deg);
+            }
+            50%, 95% {
+                transform: rotateY(180deg);
+            }
+            100% {
+                transform: rotateY(0deg);
+            }
+        }
+        
+        /* 3D Flip Card */
+        .flip-3d .flip-card-inner {
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-3d:hover .flip-card-inner {
+            transform: rotateY(180deg) rotateX(10deg);
+        }
+        
+        .flip-3d .flip-card-back {
+            transform: rotateY(180deg) rotateX(-10deg);
+        }
+        
+        /* Image Flip Card */
+        .flip-image .flip-card-front {
+            padding: 0;
+        }
+        
+        .flip-image .flip-card-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .flip-image .flip-card-front .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .flip-image .flip-title {
+            color: white;
+            margin-bottom: 10px;
+        }
+        
+        .flip-image .flip-description {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+        
+        /* Flip Card with Different Speed */
+        .flip-speed .flip-card-inner {
+            transition: transform 0.3s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-speed:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        /* Flip Card with Different Direction */
+        .flip-direction .flip-card-inner {
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-direction:hover .flip-card-inner {
+            transform: rotateY(-180deg);
+        }
+        
+        .flip-direction .flip-card-back {
+            transform: rotateY(-180deg);
+        }
+        
+        /* Instructions */
+        .instructions {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #666;
+        }
+        
+        .instructions h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="instructions">
+            <h2>Card Flip Animations</h2>
+            <p>Hover over the cards to see the flip animation. The third card requires a click.</p>
+        </div>
+        
+        <!-- Horizontal Flip Card -->
+        <div class="flip-card">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <div class="flip-icon">🎨</div>
+                    <h3 class="flip-title">Design</h3>
+                    <p class="flip-description">Beautiful and modern design principles</p>
+                </div>
+                <div class="flip-card-back">
+                    <h3 class="flip-title">Design Details</h3>
+                    <p class="flip-description">Our design approach focuses on creating visually appealing interfaces that are both functional and intuitive. We use the latest design trends and best practices to ensure your product stands out from the competition.</p>
+                    <a href="#" class="flip-button">Learn More</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Vertical Flip Card -->
+        <div class="flip-card flip-vertical">
+            <div class="flip-card-inner">
+                <div class="flip-card-front" style="background-color: #00b894;">
+                    <div class="flip-icon">💻</div>
+                    <h3 class="flip-title">Development</h3>
+                    <p class="flip-description">Clean and efficient code</p>
+                </div>
+                <div class="flip-card-back">
+                    <h3 class="flip-title">Development Process</h3>
+                    <p class="flip-description">We follow industry-standard development practices to create robust and scalable applications. Our team is proficient in the latest technologies and frameworks, ensuring your project is built with the best tools available.</p>
+                    <a href="#" class="flip-button">Learn More</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Click to Flip Card -->
+        <div class="flip-card flip-click" id="clickCard">
+            <div class="flip-card-inner">
+                <div class="flip-card-front" style="background-color: #fdcb6e;">
+                    <div class="flip-icon">🚀</div>
+                    <h3 class="flip-title">Launch</h3>
+                    <p class="flip-description">Click to reveal details</p>
+                </div>
+                <div class="flip-card-back">
+                    <h3 class="flip-title">Launch Strategy</h3>
+                    <p class="flip-description">Our launch strategy ensures your product reaches the right audience at the right time. We use data-driven insights to optimize your launch campaign for maximum impact and return on investment.</p>
+                    <a href="#" class="flip-button">Learn More</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Auto Flip Card -->
+        <div class="flip-card flip-auto">
+            <div class="flip-card-inner">
+                <div class="flip-card-front" style="background-color: #e17055;">
+                    <div class="flip-icon">📊</div>
+                    <h3 class="flip-title">Analytics</h3>
+                    <p class="flip-description">Data-driven insights</p>
+                </div>
+                <div class="flip-card-back">
+                    <h3 class="flip-title">Analytics Dashboard</h3>
+                    <p class="flip-description">Our analytics dashboard provides real-time insights into your product's performance. Track key metrics, identify trends, and make informed decisions based on data.</p>
+                    <a href="#" class="flip-button">Learn More</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 3D Flip Card -->
+        <div class="flip-card flip-3d">
+            <div class="flip-card-inner">
+                <div class="flip-card-front" style="background-color: #a29bfe;">
+                    <div class="flip-icon">🎯</div>
+                    <h3 class="flip-title">3D Effect</h3>
+                    <p class="flip-description">Enhanced flip animation</p>
+                </div>
+                <div class="flip-card-back">
+                    <h3 class="flip-title">3D Animation</h3>
+                    <p class="flip-description">This card uses advanced CSS 3D transforms to create a more dynamic flip effect. The slight rotation on the X-axis adds depth to the animation, making it more engaging and visually appealing.</p>
+                    <a href="#" class="flip-button">Learn More</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Image Flip Card -->
+        <div class="flip-card flip-image">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <img src="https://picsum.photos/seed/landscape/300/400.jpg" alt="Landscape">
+                    <div class="overlay">
+                        <h3 class="flip-title">Beautiful Landscape</h3>
+                        <p class="flip-description">Hover to see details</p>
+                    </div>
+                </div>
+                <div class="flip-card-back">
+                    <h3 class="flip-title">L Photography</h3>
+                    <p class="flip-description">Capturing the beauty of nature through photography is both an art and a science. Our landscape photographers have years of experience finding the perfect shot in any weather condition.</p>
+                    <a href="#" class="flip-button">View Gallery</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Fast Flip Card -->
+        <div class="flip-card flip-speed">
+            <div class="flip-card-inner">
+                <div class="flip-card-front" style="background-color: #ff7675;">
+                    <div class="flip-icon">⚡</div>
+                    <h3 class="flip-title">Fast Flip</h3>
+                    <p class="flip-description">Quick animation</p>
+                </div>
+                <div class="flip-card-back">
+                    <h3 class="flip-title">Quick Animation</h3>
+                    <p class="flip-description">This card flips quickly with a shorter transition duration. Faster animations can create a more responsive feel, but be careful not to make them too fast or they may be disorienting.</p>
+                    <a href="#" class="flip-button">Learn More</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Reverse Flip Card -->
+        <div class="flip-card flip-direction">
+            <div class="flip-card-inner">
+                <div class="flip-card-front" style="background-color: #74b9ff;">
+                    <div class="flip-icon">🔄</div>
+                    <h3 class="flip-title">Reverse Flip</h3>
+                    <p class="flip-description">Flips in opposite direction</p>
+                </div>
+                <div class="flip-card-back">
+                    <h3 class="flip-title">Reverse Direction</h3>
+                    <p class="flip-description">This card flips in the opposite direction compared to the standard horizontal flip. By changing the rotation direction, you can create variety in your flip animations and make your interface more dynamic.</p>
+                    <a href="#" class="flip-button">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const clickCard = document.getElementById('clickCard');
+            
+            clickCard.addEventListener('click', function() {
+                this.classList.toggle('flipped');
+            });
+        });
+    </script>
+</body>
+</html>
