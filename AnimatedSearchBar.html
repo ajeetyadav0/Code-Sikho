@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Search Bar</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f7fa;
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 40px;
+        }
+        
+        .search-container {
+            margin-bottom: 50px;
+        }
+        
+        .search-title {
+            margin-bottom: 15px;
+            color: #555;
+            font-size: 1.2rem;
+        }
+        
+        /* Basic Animated Search Bar */
+        .search-bar {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .search-input:focus {
+            border-color: #6c5ce7;
+            box-shadow: 0 0 10px rgba(108, 92, 231, 0.2);
+        }
+        
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background-color: #6c5ce7;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .search-btn:hover {
+            background-color: #5f4bd8;
+        }
+        
+        /* Expanding Search Bar */
+        .search-bar.expanding .search-input {
+            width: 50px;
+            padding-right: 15px;
+            transition: width 0.4s ease, padding-right 0.4s ease;
+        }
+        
+        .search-bar.expanding .search-input:focus {
+            width: 100%;
+            padding-right: 50px;
+        }
+        
+        .search-bar.expanding .search-btn {
+            pointer-events: none;
+        }
+        
+        .search-bar.expanding .search-input:focus ~ .search-btn {
+            pointer-events: auto;
+        }
+        
+        /* Icon Animation Search Bar */
+        .search-bar.icon-animation .search-btn {
+            background-color: transparent;
+            color: #999;
+            transition: all 0.3s ease;
+        }
+        
+        .search-bar.icon-animation .search-input:focus ~ .search-btn {
+            background-color: #6c5ce7;
+            color: white;
+            transform: translateY(-50%) rotate(90deg);
+        }
+        
+        /* Glow Search Bar */
+        .search-bar.glow .search-input {
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        
+        .search-bar.glow .search-input:focus {
+            border-color: #6c5ce7;
+            box-shadow: 0 0 15px rgba(108, 92, 231, 0.4);
+        }
+        
+        /* Slide Search Bar */
+        .search-bar.slide .search-input {
+            border: none;
+            border-bottom: 2px solid #e0e0e0;
+            border-radius: 0;
+            padding: 10px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .search-bar.slide .search-input:focus {
+            border-bottom-color: #6c5ce7;
+            box-shadow: 0 5px 0 rgba(108, 92, 231, 0.2);
+        }
+        
+        .search-bar.slide .search-btn {
+            top: auto;
+            bottom: 5px;
+            transform: translateY(0);
+            background-color: transparent;
+            color: #999;
+            transition: all 0.3s ease;
+        }
+        
+        .search-bar.slide .search-input:focus ~ .search-btn {
+            color: #6c5ce7;
+        }
+        
+        /* Dropdown Search Bar */
+        .search-bar.dropdown {
+            position: relative;
+        }
+        
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            max-height: 0;
+            overflow: hidden;
+            background-color: white;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: max-height 0.3s ease;
+            z-index: 10;
+        }
+        
+        .search-bar.dropdown .search-input:focus ~ .search-results {
+            max-height: 300px;
+            border: 2px solid #6c5ce7;
+            border-top: none;
+        }
+        
+        .search-result-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .search-result-item:hover {
+            background-color: #f5f7fa;
+        }
+        
+        /* Voice Search Bar */
+        .search-bar.voice .search-btn {
+            background-color: transparent;
+            color: #999;
+        }
+        
+        .voice-btn {
+            position: absolute;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background-color: transparent;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .voice-btn:hover {
+            color: #e74c3c;
+        }
+        
+        .voice-btn.recording {
+            color: #e74c3c;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: translateY(-50%) scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-50%) scale(1.1);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-50%) scale(1);
+                opacity: 1;
+            }
+        }
+        
+        /* Animated Placeholder */
+        .search-bar.animated-placeholder .search-input::placeholder {
+            color: transparent;
+            position: relative;
+        }
+        
+        .search-bar.animated-placeholder .search-input:focus::placeholder {
+            color: #aaa;
+        }
+        
+        .search-bar.animated-placeholder .search-input:not(:focus)::before {
+            content: attr(placeholder);
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            animation: movePlaceholder 3s infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes movePlaceholder {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+        
+        /* Search with Suggestions */
+        .search-bar.suggestions {
+            position: relative;
+        }
+        
+        .suggestions-container {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            display: none;
+        }
+        
+        .search-bar.suggestions .search-input:focus ~ .suggestions-container {
+            display: block;
+        }
+        
+        .suggestion-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .suggestion-item:hover {
+            background-color: #f5f7fa;
+        }
+        
+        .suggestion-icon {
+            margin-right: 10px;
+            color: #999;
+        }
+        
+        .suggestion-text {
+            flex: 1;
+        }
+        
+        .suggestion-highlight {
+            color: #6c5ce7;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Animated Search Bars</h1>
+        
+        <!-- Basic Animated Search Bar -->
+        <div class="search-container">
+            <h2 class="search-title">Basic Animated Search Bar</h2>
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search...">
+                <button class="search-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Expanding Search Bar -->
+        <div class="search-container">
+            <h2 class="search-title">Expanding Search Bar</h2>
+            <div class="search-bar expanding">
+                <input type="text" class="search-input" placeholder="Search...">
+                <button class="search-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Icon Animation Search Bar -->
+        <div class="search-container">
+            <h2 class="search-title">Icon Animation Search Bar</h2>
+            <div class="search-bar icon-animation">
+                <input type="text" class="search-input" placeholder="Search...">
+                <button class="search-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Glow Search Bar -->
+        <div class="search-container">
+            <h2 class="search-title">Glow Search Bar</h2>
+            <div class="search-bar glow">
+                <input type="text" class="search-input" placeholder="Search...">
+                <button class="search-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Slide Search Bar -->
+        <div class="search-container">
+            <h2 class="search-title">Slide Search Bar</h2>
+            <div class="search-bar slide">
+                <input type="text" class="search-input" placeholder="Search...">
+                <button class="search-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Dropdown Search Bar -->
+        <div class="search-container">
+            <h2 class="search-title">Dropdown Search Bar</h2>
+            <div class="search-bar dropdown">
+                <input type="text" class="search-input" placeholder="Search...">
+                <button class="search-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+                <div class="search-results">
+                    <div class="search-result-item">Search Result 1</div>
+                    <div class="search-result-item">Search Result 2</div>
+                    <div class="search-result-item">Search Result 3</div>
+                    <div class="search-result-item">Search Result 4</div>
+                    <div class="search-result-item">Search Result 5</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Voice Search Bar -->
+        <div class="search-container">
+            <h2 class="search-title">Voice Search Bar</h2>
+            <div class="search-bar voice">
+                <input type="text" class="search-input" placeholder="Search...">
+                <button class="voice-btn" id="voiceBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" y1="19" x2="12" y2="23"></line>
+                        <line x1="8" y1="23" x2="16" y2="23"></line>
+                    </svg>
+                </button>
+                <button class="search-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Animated Placeholder Search Bar -->
+        <div class="search-container">
+            <h2 class="search-title">Animated Placeholder Search Bar</h2>
+            <div class="search-bar animated-placeholder">
+                <input type="text" class="search-input" placeholder="Type to search...">
+                <button class="search-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Search with Suggestions -->
+        <div class="search-container">
+            <h2 class="search-title">Search with Suggestions</h2>
+            <div class="search-bar suggestions">
+                <input type="text" class="search-input" placeholder="Search for products...">
+                <button class="search-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+                <div class="suggestions-container">
+                    <div class="suggestion-item">
+                        <span class="suggestion-icon">🔍</span>
+                        <span class="suggestion-text"><span class="suggestion-highlight">Web</span> Development</span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="suggestion-icon">🔍</span>
+                        <span class="suggestion-text"><span class="suggestion-highlight">Web</span> Design</span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="suggestion-icon">🔍</span>
+                        <span class="suggestion-text"><span class="suggestion-highlight">Web</span> Hosting</span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="suggestion-icon">🔍</span>
+                        <span class="suggestion-text"><span class="suggestion-highlight">Web</span> Security</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const voiceBtn = document.getElementById('voiceBtn');
+            const searchInputs = document.querySelectorAll('.search-input');
+            
+            // Voice search simulation
+            voiceBtn.addEventListener('click', function() {
+                this.classList.toggle('recording');
+                
+                if (this.classList.contains('recording')) {
+                    // Simulate voice recognition
+                    setTimeout(() => {
+                        this.classList.remove('recording');
+                        // In a real app, you would process the voice input here
+                        alert('Voice recognition complete! (This is just a demo)');
+                    }, 3000);
+                }
+            });
+            
+            // Search result click handlers
+            const searchResultItems = document.querySelectorAll('.search-result-item');
+            searchResultItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const text = this.textContent;
+                    const searchInput = this.closest('.search-bar').querySelector('.search-input');
+                    searchInput.value = text;
+                    searchInput.focus();
+                });
+            });
+            
+            // Suggestion click handlers
+            const suggestionItems = document.querySelectorAll('.suggestion-item');
+            suggestionItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const text = this.querySelector('.suggestion-text').textContent;
+                    const searchInput = this.closest('.search-bar').querySelector('.search-input');
+                    searchInput.value = text;
+                    searchInput.focus();
+                });
+            });
+            
+            // Search button click handlers
+            const searchButtons = document.querySelectorAll('.search-btn');
+            searchButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const searchInput = this.closest('.search-bar').querySelector('.search-input');
+                    if (searchInput.value.trim()) {
+                        alert(`Searching for: ${searchInput.value}`);
+                    }
+                });
+            });
+            
+            // Enter key handlers
+            searchInputs.forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && this.value.trim()) {
+                        alert(`Searching for: ${this.value}`);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

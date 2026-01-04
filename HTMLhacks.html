@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Input Hacks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #6c5ce7;
+            margin-bottom: 30px;
+        }
+        
+        .hack-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hack-title {
+            font-size: 1.5rem;
+            color: #6c5ce7;
+            margin-bottom: 15px;
+        }
+        
+        .hack-description {
+            margin-bottom: 20px;
+        }
+        
+        .code {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+        
+        .demo {
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #6c5ce7;
+            box-shadow: 0 0 5px rgba(108, 92, 231, 0.3);
+        }
+        
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        
+        .note {
+            background-color: #e8f4f8;
+            border-left: 4px solid #6c5ce7;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        /* Custom styles for specific hacks */
+        .password-strength {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        
+        .strength-bar {
+            height: 5px;
+            flex: 1;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+        }
+        
+        .strength-bar.active {
+            background-color: #4ecdc4;
+        }
+        
+        .strength-bar.weak {
+            background-color: #ff6b6b;
+        }
+        
+        .strength-bar.medium {
+            background-color: #feca57;
+        }
+        
+        .strength-bar.strong {
+            background-color: #4ecdc4;
+        }
+        
+        .color-preview {
+            width: 100%;
+            height: 50px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        .range-value {
+            display: inline-block;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+        
+        .file-preview {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .file-preview.show {
+            display: block;
+        }
+        
+        .input-suggestions {
+            position: relative;
+        }
+        
+        .suggestions-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+            display: none;
+            z-index: 10;
+        }
+        
+        .suggestions-list.show {
+            display: block;
+        }
+        
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+        
+        .suggestion-item:hover {
+            background-color: #f5f7fa;
+        }
+        
+        .input-group.buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .input-group.buttons input[type="checkbox"],
+        .input-group.buttons input[type="radio"] {
+            width: auto;
+            margin-right: 5px;
+        }
+        
+        .input-group.buttons label {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 15px;
+            margin-bottom: 0;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        
+        .input-with-icon input {
+            padding-right: 40px;
+        }
+        
+        .input-with-icon .input-icon.show-password {
+            cursor: pointer;
+        }
+        
+        .input-with-icon .input-icon.show-password:hover {
+            color: #6c5ce7;
+        }
+        
+        .input-with-counter {
+            position: relative;
+        }
+        
+        .char-counter {
+            position: absolute;
+            right: 10px;
+            bottom: -20px;
+            font-size: 0.8rem;
+            color: #999;
+        }
+        
+        .input-with-counter input {
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HTML Input Hacks & Tricks</h1>
+        
+        <!-- Input Type Hacks -->
+        <div class="hack-section">
+            <h2 class="hack-title">1. Input Type Hacks</h2>
+            <p class="hack-description">HTML5 introduced many new input types that provide better user experience and validation.</p>
+            
+            <div class="code">
+                &lt;input type="color" name="color"&gt;<br>
+                &lt;input type="date" name="date"&gt;<br>
+                &lt;input type="datetime-local" name="datetime"&gt;<br>
+                &lt;input type="email" name="email"&gt;<br>
+                &lt;input type="month" name="month"&gt;<br>
+                &lt;input type="number" name="number"&gt;<br>
+                &lt;input type="range" name="range"&gt;<br>
+                &lt;input type="search" name="search"&gt;<br>
+                &lt;input type="tel" name="tel"&gt;<br>
+                &lt;input type="time" name="time"&gt;<br>
+                &lt;input type="url" name="url"&gt;<br>
+                &lt;input type="week" name="week"&gt;
+            </div>
+            
+            <div class="demo">
+                <div class="input-group">
+                    <label for="colorPicker">Color Picker:</label>
+                    <input type="color" id="colorPicker" name="color">
+                    <div class="color-preview" id="colorPreview"></div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="datePicker">Date Picker:</label>
+                    <input type="date" id="datePicker" name="date">
+                </div>
+                
+                <div class="input-group">
+                    <label for="numberInput">Number Input:</label>
+                    <input type="number" id="numberInput" name="number" min="0" max="100" step="5">
+                </div>
+                
+                <div class="input-group">
+                    <label for="rangeInput">Range Input:</label>
+                    <input type="range" id="rangeInput" name="range" min="0" max="100" value="50">
+                    <span class="range-value" id="rangeValue">50</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Input Validation Hacks -->
+        <div class="hack-section">
+            <h2 class="hack-title">2. Input Validation Hacks</h2>
+            <p class="hack-description">Use HTML5 validation attributes to provide instant feedback without JavaScript.</p>
+            
+            <div class="code">
+                &lt;input type="email" required&gt;<br>
+                &lt;input type="text" pattern="[A-Za-z]{3}" title="Three letters"&gt;<br>
+                &lt;input type="text" minlength="5" maxlength="10"&gt;<br>
+                &lt;input type="number" min="1" max="100"&gt;<br>
+                &lt;input type="text" placeholder="Enter your name" required&gt;
+            </div>
+            
+            <div class="demo">
+                <div class="input-group">
+                    <label for="requiredInput">Required Field:</label>
+                    <input type="text" id="requiredInput" name="required" placeholder="This field is required" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="patternInput">Pattern (3 letters):</label>
+                    <input type="text" id="patternInput" name="pattern" pattern="[A-Za-z]{3}" title="Please enter exactly 3 letters">
+                </div>
+                
+                <div class="input-group">
+                    <label for="minMaxInput">Min/Max Length (5-10):</label>
+                    <input type="text" id="minMaxInput" name="minMax" minlength="5" maxlength="10" placeholder="5-10 characters">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Password Strength Indicator -->
+        <div class="hack-section">
+            <h2 class="hack-title">3. Password Strength Indicator</h2>
+            <p class="hack-description">Create a visual password strength indicator with just HTML and CSS.</p>
+            
+            <div class="code">
+                &lt;input type="password" id="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number, one uppercase and lowercase letter, and at least 8 characters"&gt;<br>
+                &lt;div class="password-strength"&gt;<br>
+                &nbsp;&nbsp;&lt;div class="strength-bar"&gt;&lt;/div&gt;<br>
+                &nbsp;&nbsp;&lt;div class="strength-bar"&gt;&lt;/div&gt;<br>
+                &nbsp;&nbsp;&lt;div class="strength-bar"&gt;&lt;/div&gt;<br>
+                &nbsp;&nbsp;&lt;div class="strength-bar"&gt;&lt;/div&gt;<br>
+                &lt;/div&gt;
+            </div>
+            
+            <div class="demo">
+                <div class="input-group">
+                    <label for="passwordInput">Password:</label>
+                    <input type="password" id="passwordInput" name="password" placeholder="Enter a strong password">
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="strength-bar"></div>
+                        <div class="strength-bar"></div>
+                        <div class="strength-bar"></div>
+                        <div class="strength-bar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Show/Hide Password -->
+        <div class="hack-section">
+            <h2 class="hack-title">4. Show/Hide Password</h2>
+            <p class="hack-description">Add a toggle to show or hide password text.</p>
+            
+            <div class="code">
+                &lt;div class="input-with-icon"&gt;<br>
+                &nbsp;&nbsp;&lt;input type="password" id="togglePassword" placeholder="Enter password"&gt;<br>
+                &nbsp;&nbsp;&lt;span class="input-icon show-password" id="toggleIcon"&gt;👁️&lt;/span&gt;<br>
+                &lt;/div&gt;
+            </div>
+            
+            <div class="demo">
+                <div class="input-group input-with-icon">
+                    <input type="password" id="togglePassword" placeholder="Enter password">
+                    <span class="input-icon show-password" id="toggleIcon">👁️</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Character Counter -->
+        <div class="hack-section">
+            <h2 class="hack-title">5. Character Counter</h2>
+            <p class="hack-description">Add a character counter for text inputs.</p>
+            
+            <div class="code">
+                &lt;div class="input-with-counter"&gt;<br>
+                &nbsp;&nbsp;&lt;input type="text" id="charCounter" maxlength="50" placeholder="Enter text (max 50 chars)"&gt;<br>
+                &nbsp;&nbsp;&lt;span class="char-counter"&gt;0/50&lt;/span&gt;<br>
+                &lt;/div&gt;
+            </div>
+            
+            <div class="demo">
+                <div class="input-group input-with-counter">
+                    <input type="text" id="charCounter" maxlength="50" placeholder="Enter text (max 50 chars)">
+                    <span class="char-counter" id="charCounterValue">0/50</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- File Input with Preview -->
+        <div class="hack-section">
+            <h2 class="hack-title">6. File Input with Preview</h2>
+            <p class="hack-description">Show a preview of selected files.</p>
+            
+            <div class="code">
+                &lt;input type="file" id="fileInput" accept="image/*" multiple&gt;<br>
+                &lt;div class="file-preview" id="filePreview"&gt;&lt;/div&gt;
+            </div>
+            
+            <div class="demo">
+                <div class="input-group">
+                    <label for="fileInput">Select Image Files:</label>
+                    <input type="file" id="fileInput" accept="image/*" multiple>
+                    <div class="file-preview" id="filePreview"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Autocomplete Suggestions -->
+        <div class="hack-section">
+            <h2 class="hack-title">7. Autocomplete Suggestions</h2>
+            <p class="hack-description">Create an autocomplete dropdown for input suggestions.</p>
+            
+            <div class="code">
+                &lt;div class="input-suggestions"&gt;<br>
+                &nbsp;&nbsp;&lt;input type="text" id="autocompleteInput" placeholder="Type a programming language"&gt;<br>
+                &nbsp;&nbsp;&lt;div class="suggestions-list" id="suggestionsList"&gt;&lt;/div&gt;<br>
+                &lt;/div&gt;
+            </div>
+            
+            <div class="demo">
+                <div class="input-group input-suggestions">
+                    <input type="text" id="autocompleteInput" placeholder="Type a programming language">
+                    <div class="suggestions-list" id="suggestionsList"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Input Mode and Enter Key Hacks -->
+        <div class="hack-section">
+            <h2 class="hack-title">8. Input Mode and Enter Key Hacks</h2>
+            <p class="hack-description">Control the virtual keyboard and form submission behavior.</p>
+            
+            <div class="code">
+                &lt;input type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Numeric keypad"&gt;<br>
+                &lt;input type="text" inputmode="tel" placeholder="Phone keypad"&gt;<br>
+                &lt;input type="text" inputmode="email" placeholder="Email keyboard"&gt;<br>
+                &lt;input type="text" inputmode="url" placeholder="URL keyboard"&gt;<br>
+                &lt;form&gt;<br>
+                &nbsp;&nbsp;&lt;input type="text" formaction="/search" placeholder="Search (Enter to submit)"&gt;<br>
+                &nbsp;&nbsp;&lt;button type="submit" style="display:none"&gt;Submit&lt;/button&gt;<br>
+                &lt;/form&gt;
+            </div>
+            
+            <div class="demo">
+                <div class="input-group">
+                    <label for="numericInput">Numeric Keypad:</label>
+                    <input type="text" id="numericInput" inputmode="numeric" pattern="[0-9]*" placeholder="Numeric keypad">
+                </div>
+                
+                <div class="input-group">
+                    <label for="telInput">Phone Keypad:</label>
+                    <input type="text" id="telInput" inputmode="tel" placeholder="Phone keypad">
+                </div>
+                
+                <div class="input-group">
+                    <label for="emailInput">Email Keyboard:</label>
+                    <input type="text" id="emailInput" inputmode="email" placeholder="Email keyboard">
+                </div>
+                
+                <div class="input-group">
+                    <label for="urlInput">URL Keyboard:</label>
+                    <input type="text" id="urlInput" inputmode="url" placeholder="URL keyboard">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Multiple Selection Hacks -->
+        <div class="hack-section">
+            <h2 class="hack-title">9. Multiple Selection Hacks</h2>
+            <p class="hack-description">Enhance checkbox and radio button selections.</p>
+            
+            <div class="code">
+                &lt;input type="checkbox" id="selectAll"&gt;<br>
+                &lt;label for="selectAll"&gt;Select All&lt;/label&gt;<br><br>
+                &lt;input type="checkbox" name="option" value="1" class="selectable"&gt;<br>
+                &lt;label for="option1"&gt;Option 1&lt;/label&gt;<br>
+                &lt;input type="checkbox" name="option" value="2" class="selectable"&gt;<br>
+                &lt;label for="option2"&gt;Option 2&lt;/label&gt;<br>
+                &lt;input type="checkbox" name="option" value="3" class="selectable"&gt;<br>
+                &lt;label for="option3"&gt;Option 3&lt;/label&gt;
+            </div>
+            
+            <div class="demo">
+                <div class="input-group buttons">
+                    <input type="checkbox" id="selectAll">
+                    <label for="selectAll">Select All</label>
+                </div>
+                
+                <div class="input-group buttons">
+                    <input type="checkbox" id="option1" class="selectable">
+                    <label for="option1">Option 1</label>
+                    
+                    <input type="checkbox" id="option2" class="selectable">
+                    <label for="option2">Option 2</label>
+                    
+                    <input type="checkbox" id="option3" class="selectable">
+                    <label for="option3">Option 3</label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Input List/Datalist -->
+        <div class="hack-section">
+            <h2 class="hack-title">10. Input List/Datalist</h2>
+            <p class="hack-description">Create autocomplete suggestions with HTML datalist.</p>
+            
+            <div class="code">
+                &lt;input list="browsers" name="browser" placeholder="Select a browser"&gt;<br>
+                &lt;datalist id="browsers"&gt;<br>
+                &nbsp;&nbsp;&lt;option value="Chrome"&gt;<br>
+                &nbsp;&nbsp;&lt;option value="Firefox"&gt;<br>
+                &nbsp;&nbsp;&lt;option value="Safari"&gt;<br>
+                &nbsp;&nbsp;&lt;option value="Edge"&gt;<br>
+                &nbsp;&nbsp;&lt;option value="Opera"&gt;<br>
+                &lt;/datalist&gt;
+            </div>
+            
+            <div class="demo">
+                <div class="input-group">
+                    <label for="browserInput">Select a Browser:</label>
+                    <input list="browsers" id="browserInput" name="browser" placeholder="Select or type a browser">
+                    <datalist id="browsers">
+                        <option value="Chrome">
+                        <option value="Firefox">
+                        <option value="Safari">
+                        <option value="Edge">
+                        <option value="Opera">
+                    </datalist>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Color Picker
+            const colorPicker = document.getElementById('colorPicker');
+            const colorPreview = document.getElementById('colorPreview');
+            
+            colorPicker.addEventListener('input', function() {
+                colorPreview.style.backgroundColor = this.value;
+            });
+            
+            // Range Input
+            const rangeInput = document.getElementById('rangeInput');
+            const rangeValue = document.getElementById('rangeValue');
+            
+            rangeInput.addEventListener('input', function() {
+                rangeValue.textContent = this.value;
+            });
+            
+            // Password Strength Indicator
+            const passwordInput = document.getElementById('passwordInput');
+            const passwordStrength = document.getElementById('passwordStrength');
+            const strengthBars = passwordStrength.querySelectorAll('.strength-bar');
+            
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                let strength = 0;
+                
+                // Check password strength
+                if (password.length >= 8) strength++;
+                if (password.match(/[a-z]+/)) strength++;
+                if (password.match(/[A-Z]+/)) strength++;
+                if (password.match(/[0-9]+/)) strength++;
+                if (password.match(/[$@#&!]+/)) strength++;
+                
+                // Update strength bars
+                strengthBars.forEach((bar, index) => {
+                    bar.classList.remove('active', 'weak', 'medium', 'strong');
+                    
+                    if (index < strength) {
+                        bar.classList.add('active');
+                        
+                        if (strength <= 2) {
+                            bar.classList.add('weak');
+                        } else if (strength <= 3) {
+                            bar.classList.add('medium');
+                        } else {
+                            bar.classList.add('strong');
+                        }
+                    }
+                });
+            });
+            
+            // Show/Hide Password
+            const togglePassword = document.getElementById('togglePassword');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            toggleIcon.addEventListener('click', function() {
+                if (togglePassword.type === 'password') {
+                    togglePassword.type = 'text';
+                    this.textContent = '👁️‍🗨️';
+                } else {
+                    togglePassword.type = 'password';
+                    this.textContent = '👁️';
+                }
+            });
+            
+            // Character Counter
+            const charCounter = document.getElementById('charCounter');
+            const charCounterValue = document.getElementById('charCounterValue');
+            
+            charCounter.addEventListener('input', function() {
+                const currentLength = this.value.length;
+                const maxLength = this.getAttribute('maxlength');
+                charCounterValue.textContent = `${currentLength}/${maxLength}`;
+                
+                if (currentLength >= maxLength * 0.9) {
+                    charCounterValue.style.color = '#ff6b6b';
+                } else if (currentLength >= maxLength * 0.7) {
+                    charCounterValue.style.color = '#feca57';
+                } else {
+                    charCounterValue.style.color = '#999';
+                }
+            });
+            
+            // File Input with Preview
+            const fileInput = document.getElementById('fileInput');
+            const filePreview = document.getElementById('filePreview');
+            
+            fileInput.addEventListener('change', function() {
+                filePreview.innerHTML = '';
+                filePreview.classList.remove('show');
+                
+                if (this.files && this.files[0]) {
+                    filePreview.classList.add('show');
+                    
+                    for (let i = 0; i < this.files.length; i++) {
+                        const file = this.files[i];
+                        
+                        if (file.type.startsWith('image/')) {
+                            const reader = new FileReader();
+                            
+                            reader.onload = function(e) {
+                                const img = document.createElement('img');
+                                img.src = e.target.result;
+                                img.style.maxWidth = '100px';
+                                img.style.maxHeight = '100px';
+                                img.style.margin = '5px';
+                                img.style.borderRadius = '5px';
+                                img.style.objectFit = 'cover';
+                                
+                                filePreview.appendChild(img);
+                            };
+                            
+                            reader.readAsDataURL(file);
+                        } else {
+                            const fileInfo = document.createElement('div');
+                            fileInfo.textContent = `${file.name} (${formatFileSize(file.size)})`;
+                            fileInfo.style.margin = '5px';
+                            fileInfo.style.padding = '5px';
+                            fileInfo.style.backgroundColor = '#f8f9fa';
+                            fileInfo.style.borderRadius = '5px';
+                            
+                            filePreview.appendChild(fileInfo);
+                        }
+                    }
+                }
+            });
+            
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            
+            // Autocomplete Suggestions
+            const autocompleteInput = document.getElementById('autocompleteInput');
+            const suggestionsList = document.getElementById('suggestionsList');
+            
+            const suggestions = [
+                'JavaScript', 'Python', 'Java', 'C++', 'C#', 'PHP', 'Ruby', 'Swift', 'Go', 'Rust',
+                'TypeScript', 'Kotlin', 'Scala', 'Perl', 'R', 'MATLAB', 'Objective-C', 'Dart', 'Lua', 'Haskell'
+            ];
+            
+            autocompleteInput.addEventListener('input', function() {
+                const value = this.value.toLowerCase();
+                suggestionsList.innerHTML = '';
+                
+                if (value.length > 0) {
+                    const filteredSuggestions = suggestions.filter(suggestion => 
+                        suggestion.toLowerCase().includes(value)
+                    );
+                    
+                    if (filteredSuggestions.length > 0) {
+                        suggestionsList.classList.add('show');
+                        
+                        filteredSuggestions.forEach(suggestion => {
+                            const item = document.createElement('div');
+                            item.className = 'suggestion-item';
+                            item.textContent = suggestion;
+                            
+                            item.addEventListener('click', function() {
+                                autocompleteInput.value = suggestion;
+                                suggestionsList.classList.remove('show');
+                            });
+                            
+                            suggestionsList.appendChild(item);
+                        });
+                    } else {
+                        suggestionsList.classList.remove('show');
+                    }
+                } else {
+                    suggestionsList.classList.remove('show');
+                }
+            });
+            
+            document.addEventListener('click', function(e) {
+                if (!autocompleteInput.contains(e.target) && !suggestionsList.contains(e.target)) {
+                    suggestionsList.classList.remove('show');
+                }
+            });
+            
+            // Select All Checkboxes
+            const selectAll = document.getElementById('selectAll');
+            const selectables = document.querySelectorAll('.selectable');
+            
+            selectAll.addEventListener('change', function() {
+                selectables.forEach(checkbox => {
+                    checkbox.checked = this.checked;
+                });
+            });
+            
+            selectables.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const allChecked = Array.from(selectables).every(cb => cb.checked);
+                    const someChecked = Array.from(selectables).some(cb => cb.checked);
+                    
+                    selectAll.checked = allChecked;
+                    selectAll.indeterminate = !allChecked && someChecked;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
