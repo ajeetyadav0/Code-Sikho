@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Palette Generator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f7fa;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 800px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .palette-container {
+            display: flex;
+            height: 300px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .color-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .color-box:hover {
+            transform: translateY(-10px);
+            z-index: 10;
+        }
+        
+        .color-code {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .color-name {
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .scheme-selector {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .scheme-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            background-color: #f0f0f0;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .scheme-btn.active {
+            background-color: #6c5ce7;
+            color: white;
+        }
+        
+        .generate-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            background-color: #6c5ce7;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .generate-btn:hover {
+            background-color: #5f4bd8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+        }
+        
+        .copy-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4ecdc4;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .copy-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .color-details {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .color-detail {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .color-preview {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .color-hex {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .color-rgb {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .export-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .export-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            background-color: #f0f0f0;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .export-btn:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+        
+        .locked {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .color-box:hover .locked {
+            opacity: 1;
+        }
+        
+        .locked.locked {
+            background-color: #ff6b6b;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Color Palette Generator</h1>
+        
+        <div class="palette-container" id="paletteContainer">
+            <!-- Color boxes will be generated here -->
+        </div>
+        
+        <div class="controls">
+            <div class="scheme-selector">
+                <button class="scheme-btn active" data-scheme="monochromatic">Monochromatic</button>
+                <button class="scheme-btn" data-scheme="analogous">Analogous</button>
+                <button class="scheme-btn" data-scheme="complementary">Complementary</button>
+                <button class="scheme-btn" data-scheme="triadic">Triadic</button>
+                <button class="scheme-btn" data-scheme="tetradic">Tetradic</button>
+            </div>
+            
+            <button class="generate-btn" id="generateBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+                Generate
+            </button>
+        </div>
+        
+        <div class="color-details" id="colorDetails">
+            <!-- Color details will be generated here -->
+        </div>
+        
+        <div class="export-container">
+            <button class="export-btn" id="exportCssBtn">Export as CSS</button>
+            <button class="export-btn" id="exportJsonBtn">Export as JSON</button>
+            <button class="export-btn" id="exportImageBtn">Export as Image</button>
+        </div>
+    </div>
+    
+    <div class="copy-notification" id="copyNotification">
+        Color copied to clipboard!
+    </div>
+    
+    <div class="toast" id="toast"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const paletteContainer = document.getElementById('paletteContainer');
+            const colorDetails = document.getElementById('colorDetails');
+            const generateBtn = document.getElementById('generateBtn');
+            const schemeBtns = document.querySelectorAll('.scheme-btn');
+            const exportCssBtn = document.getElementById('exportCssBtn');
+            const exportJsonBtn = document.getElementById('exportJsonBtn');
+            const exportImageBtn = document.getElementById('exportImageBtn');
+            const copyNotification = document.getElementById('copyNotification');
+            const toast = document.getElementById('toast');
+            
+            let currentScheme = 'monochromatic';
+            let colors = [];
+            let lockedColors = new Set();
+            
+            // Color name generator
+            function getColorName(hex) {
+                const r = parseInt(hex.substr(1, 2), 16);
+                const g = parseInt(hex.substr(3, 2), 16);
+                const b = parseInt(hex.substr(5, 2), 16);
+                
+                // Simple color name logic
+                if (r > 200 && g < 100 && b < 100) return 'Red';
+                if (r < 100 && g > 200 && b < 100) return 'Green';
+                if (r < 100 && g < 100 && b > 200) return 'Blue';
+                if (r > 200 && g > 200 && b < 100) return 'Yellow';
+                if (r > 200 && g < 100 && b > 200) return 'Magenta';
+                if (r < 100 && g > 200 && b > 200) return 'Cyan';
+                if (r > 200 && g > 200 && b > 200) return 'White';
+                if (r < 100 && g < 100 && b < 100) return 'Black';
+                if (r > 150 && g > 150 && b > 150) return 'Light Gray';
+                if (r < 150 && g < 150 && b < 150) return 'Dark Gray';
+                if (r > 200 && g > 100 && b < 100) return 'Orange';
+                if (r > 100 && g < 100 && b > 200) return 'Purple';
+                if (r < 100 && g > 100 && b > 200) return 'Teal';
+                if (r > 200 && g > 150 && b < 150) return 'Peach';
+                if (r > 150 && g < 100 && b < 100) return 'Brown';
+                if (r > 100 && g > 200 && b < 100) return 'Lime';
+                if (r > 100 && g < 100 && b > 200) return 'Indigo';
+                
+                return 'Custom';
+            }
+            
+            // Convert hex to RGB
+            function hexToRgb(hex) {
+                const r = parseInt(hex.substr(1, 2), 16);
+                const g = parseInt(hex.substr(3, 2), 16);
+                const b = parseInt(hex.substr(5, 2), 16);
+                
+                return `rgb(${r}, ${g}, ${b})`;
+            }
+            
+            // Generate random color
+            function getRandomColor() {
+                return '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+            }
+            
+            // Convert HSL to Hex
+            function hslToHex(h, s, l) {
+                l /= 100;
+                const a = s * Math.min(l, 1 - l) / 100;
+                const f = n => {
+                    const k = (n + h / 30) % 12;
+                    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                    return Math.round(255 * color).toString(16).padStart(2, '0');
+                };
+                return `#${f(0)}${f(8)}${f(4)}`;
+            }
+            
+            // Generate color palette based on scheme
+            function generatePalette() {
+                const baseColor = lockedColors.size > 0 ? Array.from(lockedColors)[0] : getRandomColor();
+                colors = [baseColor];
+                
+                // Extract HSL values from base color
+                const r = parseInt(baseColor.substr(1, 2), 16) / 255;
+                const g = parseInt(baseColor.substr(3, 2), 16) / 255;
+                const b = parseInt(baseColor.substr(5, 2), 16) / 255;
+                
+                const max = Math.max(r, g, b);
+                const min = Math.min(r, g, b);
+                let h, s, l = (max + min) / 2;
+                
+                if (max === min) {
+                    h = s = 0; // achromatic
+                } else {
+                    const d = max - min;
+                    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                    
+                    switch (max) {
+                        case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+                        case g: h = ((b - r) / d + 2) / 6; break;
+                        case b: h = ((r - g) / d + 4) / 6; break;
+                    }
+                }
+                
+                h = Math.round(h * 360);
+                s = Math.round(s * 100);
+                l = Math.round(l * 100);
+                
+                // Generate colors based on scheme
+                switch (currentScheme) {
+                    case 'monochromatic':
+                        for (let i = 1; i < 5; i++) {
+                            const newL = Math.max(10, Math.min(90, l + (i - 2) * 15));
+                            colors.push(hslToHex(h, s, newL));
+                        }
+                        break;
+                        
+                    case 'analogous':
+                        for (let i = 1; i < 5; i++) {
+                            const newH = (h + i * 30) % 360;
+                            colors.push(hslToHex(newH, s, l));
+                        }
+                        break;
+                        
+                    case 'complementary':
+                        colors.push(hslToHex((h + 180) % 360, s, l));
+                        for (let i = 1; i < 3; i++) {
+                            const newL1 = Math.max(10, Math.min(90, l + i * 15));
+                            const newL2 = Math.max(10, Math.min(90, l - i * 15));
+                            colors.push(hslToHex(h, s, newL1));
+                            colors.push(hslToHex((h + 180) % 360, s, newL2));
+                        }
+                        break;
+                        
+                    case 'triadic':
+                        for (let i = 1; i < 3; i++) {
+                            const newH = (h + i * 120) % 360;
+                            colors.push(hslToHex(newH, s, l));
+                        }
+                        for (let i = 1; i < 3; i++) {
+                            const newL = Math.max(10, Math.min(90, l + (i - 1) * 20));
+                            colors.push(hslToHex(h, s, newL));
+                        }
+                        break;
+                        
+                    case 'tetradic':
+                        for (let i = 1; i < 4; i++) {
+                            const newH = (h + i * 90) % 360;
+                            colors.push(hslToHex(newH, s, l));
+                        }
+                        break;
+                }
+                
+                // Apply locked colors
+                if (lockedColors.size > 0) {
+                    colors = colors.map((color, index) => {
+                        if (index < lockedColors.size) {
+                            return Array.from(lockedColors)[index];
+                        }
+                        return color;
+                    });
+                }
+                
+                renderPalette();
+            }
+            
+            // Render palette
+            function renderPalette() {
+                paletteContainer.innerHTML = '';
+                colorDetails.innerHTML = '';
+                
+                colors.forEach((color, index) => {
+                    // Create color box
+                    const colorBox = document.createElement('div');
+                    colorBox.className = 'color-box';
+                    colorBox.style.backgroundColor = color;
+                    
+                    const colorCode = document.createElement('div');
+                    colorCode.className = 'color-code';
+                    colorCode.textContent = color.toUpperCase();
+                    
+                    const colorName = document.createElement('div');
+                    colorName.className = 'color-name';
+                    colorName.textContent = getColorName(color);
+                    
+                    const lockIcon = document.createElement('div');
+                    lockIcon.className = 'locked';
+                    lockIcon.innerHTML = lockedColors.has(color) ? '🔒' : '🔓';
+                    lockIcon.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        toggleLock(color);
+                    });
+                    
+                    colorBox.appendChild(colorCode);
+                    colorBox.appendChild(colorName);
+                    colorBox.appendChild(lockIcon);
+                    
+                    colorBox.addEventListener('click', function() {
+                        copyToClipboard(color);
+                    });
+                    
+                    paletteContainer.appendChild(colorBox);
+                    
+                    // Create color detail
+                    const colorDetail = document.createElement('div');
+                    colorDetail.className = 'color-detail';
+                    
+                    const colorPreview = document.createElement('div');
+                    colorPreview.className = 'color-preview';
+                    colorPreview.style.backgroundColor = color;
+                    
+                    const colorHex = document.createElement('div');
+                    colorHex.className = 'color-hex';
+                    colorHex.textContent = color.toUpperCase();
+                    
+                    const colorRgb = document.createElement('div');
+                    colorRgb.className = 'color-rgb';
+                    colorRgb.textContent = hexToRgb(color);
+                    
+                    colorDetail.appendChild(colorPreview);
+                    colorDetail.appendChild(colorHex);
+                    colorDetail.appendChild(colorRgb);
+                    
+                    colorDetails.appendChild(colorDetail);
+                });
+            }
+            
+            // Toggle lock on color
+            function toggleLock(color) {
+                if (lockedColors.has(color)) {
+                    lockedColors.delete(color);
+                } else {
+                    lockedColors.add(color);
+                }
+                renderPalette();
+            }
+            
+            // Copy color to clipboard
+            function copyToClipboard(color) {
+                navigator.clipboard.writeText(color).then(() => {
+                    copyNotification.classList.add('show');
+                    setTimeout(() => {
+                        copyNotification.classList.remove('show');
+                    }, 2000);
+                });
+            }
+            
+            // Show toast message
+            function showToast(message) {
+                toast.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+            
+            // Export as CSS
+            function exportAsCss() {
+                let css = ':root {\n';
+                colors.forEach((color, index) => {
+                    const colorName = getColorName(color).toLowerCase().replace(/\s+/g, '-');
+                    css += `  --color-${index + 1}: ${color}; /* ${colorName} */\n`;
+                });
+                css += '}';
+                
+                downloadFile('palette.css', css, 'text/css');
+                showToast('CSS file downloaded!');
+            }
+            
+            // Export as JSON
+            function exportAsJson() {
+                const palette = {
+                    scheme: currentScheme,
+                    colors: colors.map(color => ({
+                        hex: color,
+                        name: getColorName(color),
+                        rgb: hexToRgb(color)
+                    }))
+                };
+                
+                downloadFile('palette.json', JSON.stringify(palette, null, 2), 'application/json');
+                showToast('JSON file downloaded!');
+            }
+            
+            // Export as Image
+            function exportAsImage() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.width = 800;
+                canvas.height = 400;
+                
+                const colorWidth = canvas.width / colors.length;
+                
+                colors.forEach((color, index) => {
+                    ctx.fillStyle = color;
+                    ctx.fillRect(index * colorWidth, 0, colorWidth, canvas.height);
+                });
+                
+                canvas.toBlob(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'palette.png';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    showToast('Image downloaded!');
+                });
+            }
+            
+            // Download file helper
+            function downloadFile(filename, content, mimeType) {
+                const a = document.createElement('a');
+                a.href = `data:${mimeType},${encodeURIComponent(content)}`;
+                a.download = filename;
+                a.click();
+            }
+            
+            // Event listeners
+            generateBtn.addEventListener('click', generatePalette);
+            
+            schemeBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    schemeBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentScheme = this.dataset.scheme;
+                    generatePalette();
+                });
+            });
+            
+            exportCssBtn.addEventListener('click', exportAsCss);
+            exportJsonBtn.addEventListener('click', exportAsJson);
+            exportImageBtn.addEventListener('click', exportAsImage);
+            
+            // Generate initial palette
+            generatePalette();
+        });
+    </script>
+</body>
+</html>

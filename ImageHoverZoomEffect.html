@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Hover Zoom Effect</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f7fa;
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            max-width: 1200px;
+            padding: 20px;
+        }
+        
+        h1 {
+            width: 100%;
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        /* Basic Zoom Effect */
+        .zoom-basic {
+            width: 300px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .zoom-basic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .zoom-basic:hover img {
+            transform: scale(1.2);
+        }
+        
+        /* Zoom with Overlay */
+        .zoom-overlay {
+            width: 300px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .zoom-overlay img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .zoom-overlay:hover img {
+            transform: scale(1.2);
+        }
+        
+        .zoom-overlay .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .zoom-overlay:hover .overlay {
+            opacity: 1;
+        }
+        
+        /* Zoom with Caption */
+        .zoom-caption {
+            width: 300px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .zoom-caption img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .zoom-caption:hover img {
+            transform: scale(1.2);
+        }
+        
+        .zoom-caption .caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .zoom-caption:hover .caption {
+            transform: translateY(0);
+        }
+        
+        /* Zoom with Rotation */
+        .zoom-rotate {
+            width: 300px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .zoom-rotate img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .zoom-rotate:hover img {
+            transform: scale(1.2) rotate(5deg);
+        }
+        
+        /* Zoom with Blur */
+        .zoom-blur {
+            width: 300px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .zoom-blur img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.5s ease;
+        }
+        
+        .zoom-blur:hover img {
+            transform: scale(1.2);
+            filter: blur(2px);
+        }
+        
+        .zoom-blur .text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .zoom-blur:hover .text {
+            opacity: 1;
+        }
+        
+        /* Zoom with Grayscale */
+        .zoom-grayscale {
+            width: 300px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .zoom-grayscale img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.5s ease;
+            filter: grayscale(100%);
+        }
+        
+        .zoom-grayscale:hover img {
+            transform: scale(1.1);
+            filter: grayscale(0%);
+        }
+        
+        /* Zoom with Sepia */
+        .zoom-sepia {
+            width: 300px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .zoom-sepia img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.5s ease;
+            filter: sepia(100%);
+        }
+        
+        .zoom-sepia:hover img {
+            transform: scale(1.1);
+            filter: sepia(0%);
+        }
+        
+        /* Zoom with Brightness */
+        .zoom-brightness {
+            width: 300px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .zoom-brightness img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.5s ease;
+            filter: brightness(0.7);
+        }
+        
+        .zoom-brightness:hover img {
+            transform: scale(1.1);
+            filter: brightness(1.2);
+        }
+        
+        /* Zoom with Contrast */
+        .zoom-contrast {
+            width: 300px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .zoom-contrast img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.5s ease;
+            filter: contrast(0.8);
+        }
+        
+        .zoom-contrast:hover img {
+            transform: scale(1.1);
+            filter: contrast(1.5);
+        }
+        
+        /* Zoom with Hue Rotate */
+        .zoom-hue {
+            width: 300px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .zoom-hue img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.5s ease;
+        }
+        
+        .zoom-hue:hover img {
+            transform: scale(1.1);
+            filter: hue-rotate(90deg);
+        }
+        
+        /* Zoom with Saturation */
+        .zoom-saturation {
+            width: 300px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .zoom-saturation img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.5s ease;
+            filter: saturate(0.5);
+        }
+        
+        .zoom-saturation:hover img {
+            transform: scale(1.1);
+            filter: saturate(2);
+        }
+        
+        /* Zoom with Invert */
+        .zoom-invert {
+            width: 300px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .zoom-invert img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.5s ease;
+        }
+        
+        .zoom-invert:hover img {
+            transform: scale(1.1);
+            filter: invert(100%);
+        }
+        
+        /* Zoom with Multiple Effects */
+        .zoom-multiple {
+            width: 300px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .zoom-multiple img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.5s ease;
+        }
+        
+        .zoom-multiple:hover img {
+            transform: scale(1.2) rotate(3deg);
+            filter: brightness(1.2) contrast(1.2) saturate(1.3);
+        }
+        
+        .zoom-multiple .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.7) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .zoom-multiple:hover .overlay {
+            opacity: 1;
+        }
+        
+        .zoom-multiple .text {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        
+        .zoom-multiple:hover .text {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Position relative for overlays */
+        .zoom-blur, .zoom-multiple {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Hover Zoom Effects</h1>
+        
+        <!-- Basic Zoom Effect -->
+        <div class="zoom-basic">
+            <img src="https://picsum.photos/seed/nature1/300/200.jpg" alt="Nature">
+        </div>
+        
+        <!-- Zoom with Overlay -->
+        <div class="zoom-overlay">
+            <img src="https://picsum.photos/seed/nature2/300/200.jpg" alt="Nature">
+            <div class="overlay">View Image</div>
+        </div>
+        
+        <!-- Zoom with Caption -->
+        <div class="zoom-caption">
+            <img src="https://picsum.photos/seed/nature3/300/200.jpg" alt="Nature">
+            <div class="caption">
+                <h3>Beautiful Landscape</h3>
+                <p>A stunning view of nature's beauty</p>
+            </div>
+        </div>
+        
+        <!-- Zoom with Rotation -->
+        <div class="zoom-rotate">
+            <img src="https://picsum.photos/seed/nature4/300/200.jpg" alt="Nature">
+        </div>
+        
+        <!-- Zoom with Blur -->
+        <div class="zoom-blur">
+            <img src="https://picsum.photos/seed/nature5/300/200.jpg" alt="Nature">
+            <div class="text">Nature Photography</div>
+        </div>
+        
+        <!-- Zoom with Grayscale -->
+        <div class="zoom-grayscale">
+            <img src="https://picsum.photos/seed/nature6/300/200.jpg" alt="Nature">
+        </div>
+        
+        <!-- Zoom with Sepia -->
+        <div class="zoom-sepia">
+            <img src="https://picsum.photos/seed/nature7/300/200.jpg" alt="Nature">
+        </div>
+        
+        <!-- Zoom with Brightness -->
+        <div class="zoom-brightness">
+            <img src="https://picsum.photos/seed/nature8/300/200.jpg" alt="Nature">
+        </div>
+        
+        <!-- Zoom with Contrast -->
+        <div class="zoom-contrast">
+            <img src="https://picsum.photos/seed/nature9/300/200.jpg" alt="Nature">
+        </div>
+        
+        <!-- Zoom with Hue Rotate -->
+        <div class="zoom-hue">
+            <img src="https://picsum.photos/seed/nature10/300/200.jpg" alt="Nature">
+        </div>
+        
+        <!-- Zoom with Saturation -->
+        <div class="zoom-saturation">
+            <img src="https://picsum.photos/seed/nature11/300/200.jpg" alt="Nature">
+        </div>
+        
+        <!-- Zoom with Invert -->
+        <div class="zoom-invert">
+            <img src="https://picsum.photos/seed/nature12/300/200.jpg" alt="Nature">
+        </div>
+        
+        <!-- Zoom with Multiple Effects -->
+        <div class="zoom-multiple">
+            <img src="https://picsum.photos/seed/nature13/300/200.jpg" alt="Nature">
+            <div class="overlay"></div>
+            <div class="text">Amazing Nature</div>
+        </div>
+    </div>
+</body>
+</html>
