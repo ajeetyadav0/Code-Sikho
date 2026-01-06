@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll Indicator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        /* Basic Scroll Indicator */
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 5px;
+            background-color: #6c5ce7;
+            z-index: 1000;
+            transition: width 0.2s ease;
+        }
+        
+        /* Circular Scroll Indicator */
+        .circular-indicator {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            z-index: 1000;
+        }
+        
+        .circular-progress {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(#6c5ce7 0deg, #6c5ce7 0deg, #f0f0f0 0deg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .circular-progress::before {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: white;
+        }
+        
+        .circular-progress span {
+            position: relative;
+            font-weight: bold;
+            font-size: 12px;
+            color: #333;
+        }
+        
+        /* Side Scroll Indicator */
+        .side-indicator {
+            position: fixed;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 200px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+        
+        .side-progress {
+            height: 0%;
+            width: 100%;
+            background-color: #6c5ce7;
+            border-radius: 5px;
+            transition: height 0.2s ease;
+        }
+        
+        /* Dots Scroll Indicator */
+        .dots-indicator {
+            position: fixed;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .dot.active {
+            background-color: #6c5ce7;
+            transform: scale(1.5);
+        }
+        
+        /* Text Scroll Indicator */
+        .text-indicator {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 1000;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        /* Progress Bar with Steps */
+        .steps-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+        }
+        
+        .steps-container {
+            display: flex;
+            width: 100%;
+            position: relative;
+        }
+        
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            margin: 0 auto 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: #999;
+            transition: all 0.3s ease;
+        }
+        
+        .step.active .step-circle {
+            background-color: #6c5ce7;
+            color: white;
+        }
+        
+        .step.completed .step-circle {
+            background-color: #4ecdc4;
+            color: white;
+        }
+        
+        .step-label {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .step.active .step-label,
+        .step.completed .step-label {
+            color: #333;
+        }
+        
+        .steps-line {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #f0f0f0;
+            z-index: 1;
+        }
+        
+        .steps-progress {
+            height: 100%;
+            width: 0%;
+            background-color: #6c5ce7;
+            transition: width 0.3s ease;
+        }
+        
+        /* Page Content */
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #6c5ce7;
+        }
+        
+        .section {
+            margin-bottom: 60px;
+            padding: 30px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        p {
+            margin-bottom: 20px;
+        }
+        
+        .demo-title {
+            margin-bottom: 15px;
+            color: #6c5ce7;
+            font-weight: bold;
+        }
+        
+        /* Scroll to Top Button */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #6c5ce7;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .scroll-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .scroll-to-top:hover {
+            background-color: #5f4bd8;
+            transform: translateY(-5px);
+        }
+        
+        /* Reading Time Indicator */
+        .reading-time {
+            position: fixed;
+            top: 70px;
+            right: 30px;
+            padding: 10px 15px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Chapter Indicator */
+        .chapter-indicator {
+            position: fixed;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+        
+        .chapter {
+            margin: 15px 0;
+            padding: 8px 15px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .chapter.active {
+            background-color: #6c5ce7;
+            color: white;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Basic Scroll Indicator -->
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+    
+    <!-- Circular Scroll Indicator -->
+    <div class="circular-indicator">
+        <div class="circular-progress" id="circularProgress">
+            <span id="circularPercent">0%</span>
+        </div>
+    </div>
+    
+    <!-- Side Scroll Indicator -->
+    <div class="side-indicator">
+        <div class="side-progress" id="sideProgress"></div>
+    </div>
+    
+    <!-- Dots Scroll Indicator -->
+    <div class="dots-indicator" id="dotsIndicator">
+        <div class="dot active" data-section="0"></div>
+        <div class="dot" data-section="1"></div>
+        <div class="dot" data-section="2"></div>
+        <div class="dot" data-section="3"></div>
+        <div class="dot" data-section="4"></div>
+    </div>
+    
+    <!-- Text Scroll Indicator -->
+    <div class="text-indicator">
+        <span id="scrollPercent">0%</span> of page read
+    </div>
+    
+    <!-- Progress Bar with Steps -->
+    <div class="steps-indicator">
+        <div class="steps-container">
+            <div class="steps-line">
+                <div class="steps-progress" id="stepsProgress"></div>
+            </div>
+            <div class="step active">
+                <div class="step-circle">1</div>
+                <div class="step-label">Introduction</div>
+            </div>
+            <div class="step">
+                <div class="step-circle">2</div>
+                <div class="step-label">Basics</div>
+            </div>
+            <div class="step">
+                <div class="step-circle">3</div>
+                <div class="step-label">Advanced</div>
+            </div>
+            <div class="step">
+                <div class="step-circle">4</div>
+                <div class="step-label">Examples</div>
+            </div>
+            <div class="step">
+                <div class="step-circle">5</div>
+                <div class="step-label">Conclusion</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Reading Time Indicator -->
+    <div class="reading-time">
+        <span id="readingTime">5 min</span> read
+    </div>
+    
+    <!-- Chapter Indicator -->
+    <div class="chapter-indicator">
+        <div class="chapter active" data-chapter="0">Introduction</div>
+        <div class="chapter" data-chapter="1">Basics</div>
+        <div class="chapter" data-chapter="2">Advanced</div>
+        <div class="chapter" data-chapter="3">Examples</div>
+        <div class="chapter" data-chapter="4">Conclusion</div>
+    </div>
+    
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" id="scrollToTop">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
+    
+    <!-- Page Content -->
+    <div class="content">
+        <h1>Scroll Indicators</h1>
+        
+        <div class="section" id="section0">
+            <h2>Introduction</h2>
+            <p>Scroll indicators are visual elements that show users their progress through a webpage or document. They provide context and help users understand how much content is left to read.</p>
+            <p>Scroll indicators can take many forms, from simple progress bars to more complex visualizations. They improve user experience by giving users a sense of control and orientation within the content.</p>
+            <p>In this demo, we'll explore different types of scroll indicators and how they can enhance the user experience on your website.</p>
+            <p>Scroll indicators are particularly useful for long-form content, articles, tutorials, and any page where users need to scroll extensively.</p>
+            <p>They can also serve as navigation tools, allowing users to quickly jump to different sections of the content.</p>
+        </div>
+        
+        <div class="section" id="section1">
+            <h2>Basic Scroll Indicator</h2>
+            <p>The basic scroll indicator is a simple horizontal bar at the top of the page that fills up as the user scrolls down. It's one of the most common types of scroll indicators.</p>
+            <p>This type of indicator is subtle yet effective, providing users with a quick visual reference of their position in the document.</p>
+            <p>Basic scroll indicators are easy to implement and can be customized with different colors, heights, and animations to match your website's design.</p>
+            <p>They work well on most websites and don't interfere with the content or other UI elements.</p>
+            <p>For a basic scroll indicator, you'll need to calculate the scroll position as a percentage of the total document height and update the width of the indicator accordingly.</p>
+        </div>
+        
+        <div class="section" id="section2">
+            <h2>Advanced Scroll Indicators</h2>
+            <p>Advanced scroll indicators go beyond simple progress bars and can include more interactive elements and visual feedback.</p>
+            <p>Circular progress indicators, for example, show the scroll progress in a circular format, often with a percentage display.</p>
+            <p>Dots indicators show the user's position among multiple sections, with each dot representing a section of the content.</p>
+            <p>Step-based indicators break the content into logical steps or chapters, showing the user's progress through each step.</p>
+            <p>These advanced indicators can provide more context about the content structure and allow users to navigate directly to specific sections.</p>
+            <p>When implementing advanced scroll indicators, it's important to consider the performance impact, especially on mobile devices with limited processing power.</p>
+        </div>
+        
+        <div class="section" id="section3">
+            <h2>Examples and Use Cases</h2>
+            <p>Scroll indicators are commonly used in long-form articles, tutorials, documentation, and product pages with extensive content.</p>
+            <p>News websites often use scroll indicators to show readers how much of an article is left to read.</p>
+            <p>E-commerce sites might use scroll indicators on product pages with detailed descriptions, reviews, and related products.</p>
+            <p>Online courses and tutorials benefit from step-based scroll indicators that show progress through different lessons or chapters.</p>
+            <p>Some websites use creative scroll indicators that match their brand identity, such as book-themed indicators for reading platforms or film strip indicators for movie sites.</p>
+            <p>When designing a scroll indicator, consider your audience and the type of content you're presenting to choose the most appropriate style.</p>
+        </div>
+        
+        <div class="section" id="section4">
+            <h2>Conclusion</h2>
+            <p>Scroll indicators are valuable UI elements that enhance the user experience by providing context and orientation within long-form content.</p>
+            <p>Whether you choose a simple progress bar or a more complex interactive indicator, the key is to make it intuitive and unobtrusive.</p>
+            <p>When implementing scroll indicators, consider factors such as performance, accessibility, and mobile responsiveness.</p>
+            <p>Remember that scroll indicators should complement your content, not distract from it. Keep them subtle and consistent with your overall design.</p>
+            <p>By providing users with a clear sense of their position within the content, scroll indicators can help reduce frustration and improve engagement with your website.</p>
+            <p>Experiment with different styles and find the one that works best for your specific use case and audience.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const scrollIndicator = document.getElementById('scrollIndicator');
+            const circularProgress = document.getElementById('circularProgress');
+            const circularPercent = document.getElementById('circularPercent');
+            const sideProgress = document.getElementById('sideProgress');
+            const scrollPercent = document.getElementById('scrollPercent');
+            const stepsProgress = document.getElementById('stepsProgress');
+            const scrollToTop = document.getElementById('scrollToTop');
+            const dots = document.querySelectorAll('.dot');
+            const chapters = document.querySelectorAll('.chapter');
+            const steps = document.querySelectorAll('.step');
+            
+            // Update scroll indicators
+            function updateScrollIndicators() {
+                const scrollTop = window.scrollY;
+                const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const scrollPercentValue = Math.round((scrollTop / documentHeight) * 100);
+                
+                // Update basic scroll indicator
+                scrollIndicator.style.width = scrollPercentValue + '%';
+                
+                // Update circular scroll indicator
+                circularProgress.style.background = `conic-gradient(#6c5ce7 ${scrollPercentValue * 3.6}deg, #f0f0f0 0deg)`;
+                circularPercent.textContent = scrollPercentValue + '%';
+                
+                // Update side scroll indicator
+                sideProgress.style.height = scrollPercentValue + '%';
+                
+                // Update text scroll indicator
+                scrollPercent.textContent = scrollPercentValue + '%';
+                
+                // Update steps progress
+                stepsProgress.style.width = scrollPercentValue + '%';
+                
+                // Update active step
+                const stepIndex = Math.floor((scrollPercentValue / 100) * steps.length);
+                steps.forEach((step, index) => {
+                    if (index < stepIndex) {
+                        step.classList.add('completed');
+                        step.classList.remove('active');
+                    } else if (index === stepIndex) {
+                        step.classList.add('active');
+                        step.classList.remove('completed');
+                    } else {
+                        step.classList.remove('active', 'completed');
+                    }
+                });
+                
+                // Update active dot based on section
+                const sections = document.querySelectorAll('.section');
+                sections.forEach((section, index) => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    
+                    if (scrollTop >= sectionTop - 100 && scrollTop < sectionTop + sectionHeight - 100) {
+                        dots.forEach(dot => dot.classList.remove('active'));
+                        dots[index].classList.add('active');
+                        
+                        chapters.forEach(chapter => chapter.classList.remove('active'));
+                        chapters[index].classList.add('active');
+                    }
+                });
+                
+                // Show/hide scroll to top button
+                if (scrollTop > 300) {
+                    scrollToTop.classList.add('show');
+                } else {
+                    scrollToTop.classList.remove('show');
+                }
+            }
+            
+            // Scroll to top
+            scrollToTop.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Dot click to scroll to section
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', function() {
+                    const sectionId = 'section' + index;
+                    const section = document.getElementById(sectionId);
+                    
+                    window.scrollTo({
+                        top: section.offsetTop - 60,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // Chapter click to scroll to section
+            chapters.forEach((chapter, index) => {
+                chapter.addEventListener('click', function() {
+                    const sectionId = 'section' + index;
+                    const section = document.getElementById(sectionId);
+                    
+                    window.scrollTo({
+                        top: section.offsetTop - 60,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // Update scroll indicators on scroll
+            window.addEventListener('scroll', updateScrollIndicators);
+            
+            // Initialize scroll indicators
+            updateScrollIndicators();
+        });
+    </script>
+</body>
+</html>
