@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation UI</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f7fa;
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #6c5ce7;
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+        }
+        
+        .form-input.valid {
+            border-color: #4ecdc4;
+        }
+        
+        .form-input.invalid {
+            border-color: #ff6b6b;
+        }
+        
+        .validation-icon {
+            position: absolute;
+            top: 42px;
+            right: 15px;
+            font-size: 18px;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s ease;
+        }
+        
+        .validation-icon.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .validation-icon.valid {
+            color: #4ecdc4;
+        }
+        
+        .validation-icon.invalid {
+            color: #ff6b6b;
+        }
+        
+        .validation-message {
+            font-size: 14px;
+            margin-top: 5px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        
+        .validation-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .validation-message.valid {
+            color: #4ecdc4;
+        }
+        
+        .validation-message.invalid {
+            color: #ff6b6b;
+        }
+        
+        .password-strength {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .strength-bar {
+            height: 5px;
+            flex: 1;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .strength-bar.active {
+            background-color: #4ecdc4;
+        }
+        
+        .strength-bar.weak {
+            background-color: #ff6b6b;
+        }
+        
+        .strength-bar.medium {
+            background-color: #feca57;
+        }
+        
+        .strength-bar.strong {
+            background-color: #4ecdc4;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #6c5ce7;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            background-color: #5f4bd8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+        }
+        
+        .submit-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .form-success {
+            text-align: center;
+            padding: 20px;
+            background-color: #d4edda;
+            color: #155724;
+            border-radius: 8px;
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+        }
+        
+        .form-success.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .requirements {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .requirement {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .requirement-icon {
+            margin-right: 8px;
+            color: #ccc;
+            transition: color 0.3s ease;
+        }
+        
+        .requirement.met .requirement-icon {
+            color: #4ecdc4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Form Validation</h1>
+        
+        <form id="validationForm">
+            <div class="form-group">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" id="name" class="form-input" placeholder="Enter your name">
+                <span class="validation-icon" id="nameIcon"></span>
+                <div class="validation-message" id="nameMessage"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" class="form-input" placeholder="Enter your email">
+                <span class="validation-icon" id="emailIcon"></span>
+                <div class="validation-message" id="emailMessage"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" class="form-input" placeholder="Enter your password">
+                <span class="validation-icon" id="passwordIcon"></span>
+                <div class="validation-message" id="passwordMessage"></div>
+                
+                <div class="password-strength" id="passwordStrength">
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                </div>
+                
+                <div class="requirements">
+                    <div class="requirement" id="lengthReq">
+                        <span class="requirement-icon">○</span>
+                        <span>At least 8 characters</span>
+                    </div>
+                    <div class="requirement" id="uppercaseReq">
+                        <span class="requirement-icon">○</span>
+                        <span>At least one uppercase letter</span>
+                    </div>
+                    <div class="requirement" id="numberReq">
+                        <span class="requirement-icon">○</span>
+                        <span>At least one number</span>
+                    </div>
+                    <div class="requirement" id="specialReq">
+                        <span class="requirement-icon">○</span>
+                        <span>At least one special character</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm your password">
+                <span class="validation-icon" id="confirmPasswordIcon"></span>
+                <div class="validation-message" id="confirmPasswordMessage"></div>
+            </div>
+            
+            <button type="submit" class="submit-btn" id="submitBtn">Submit</button>
+        </form>
+        
+        <div class="form-success" id="formSuccess">
+            <h3>Form Submitted Successfully!</h3>
+            <p>Thank you for your submission.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('validationForm');
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const submitBtn = document.getElementById('submitBtn');
+            const formSuccess = document.getElementById('formSuccess');
+            
+            // Validation elements
+            const nameIcon = document.getElementById('nameIcon');
+            const nameMessage = document.getElementById('nameMessage');
+            
+            const emailIcon = document.getElementById('emailIcon');
+            const emailMessage = document.getElementById('emailMessage');
+            
+            const passwordIcon = document.getElementById('passwordIcon');
+            const passwordMessage = document.getElementById('passwordMessage');
+            const passwordStrength = document.getElementById('passwordStrength');
+            const strengthBars = passwordStrength.querySelectorAll('.strength-bar');
+            
+            const confirmPasswordIcon = document.getElementById('confirmPasswordIcon');
+            const confirmPasswordMessage = document.getElementById('confirmPasswordMessage');
+            
+            // Requirement elements
+            const lengthReq = document.getElementById('lengthReq');
+            const uppercaseReq = document.getElementById('uppercaseReq');
+            const numberReq = document.getElementById('numberReq');
+            const specialReq = document.getElementById('specialReq');
+            
+            // Validation functions
+            function validateName() {
+                const name = nameInput.value.trim();
+                
+                if (name === '') {
+                    showValidation(nameInput, nameIcon, nameMessage, false, 'Name is required');
+                    return false;
+                } else if (name.length < 2) {
+                    showValidation(nameInput, nameIcon, nameMessage, false, 'Name must be at least 2 characters');
+                    return false;
+                } else {
+                    showValidation(nameInput, nameIcon, nameMessage, true, 'Valid name');
+                    return true;
+                }
+            }
+            
+            function validateEmail() {
+                const email = emailInput.value.trim();
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                
+                if (email === '') {
+                    showValidation(emailInput, emailIcon, emailMessage, false, 'Email is required');
+                    return false;
+                } else if (!emailRegex.test(email)) {
+                    showValidation(emailInput, emailIcon, emailMessage, false, 'Please enter a valid email');
+                    return false;
+                } else {
+                    showValidation(emailInput, emailIcon, emailMessage, true, 'Valid email');
+                    return true;
+                }
+            }
+            
+            function validatePassword() {
+                const password = passwordInput.value;
+                
+                if (password === '') {
+                    showValidation(passwordInput, passwordIcon, passwordMessage, false, 'Password is required');
+                    updatePasswordStrength(0);
+                    return false;
+                } else {
+                    let strength = 0;
+                    
+                    // Check length
+                    if (password.length >= 8) {
+                        strength++;
+                        lengthReq.classList.add('met');
+                    } else {
+                        lengthReq.classList.remove('met');
+                    }
+                    
+                    // Check uppercase
+                    if (/[A-Z]/.test(password)) {
+                        strength++;
+                        uppercaseReq.classList.add('met');
+                    } else {
+                        uppercaseReq.classList.remove('met');
+                    }
+                    
+                    // Check number
+                    if (/[0-9]/.test(password)) {
+                        strength++;
+                        numberReq.classList.add('met');
+                    } else {
+                        numberReq.classList.remove('met');
+                    }
+                    
+                    // Check special character
+                    if (/[^A-Za-z0-9]/.test(password)) {
+                        strength++;
+                        specialReq.classList.add('met');
+                    } else {
+                        specialReq.classList.remove('met');
+                    }
+                    
+                    updatePasswordStrength(strength);
+                    
+                    if (strength < 3) {
+                        showValidation(passwordInput, passwordIcon, passwordMessage, false, 'Password is too weak');
+                        return false;
+                    } else {
+                        showValidation(passwordInput, passwordIcon, passwordMessage, true, 'Strong password');
+                        return true;
+                    }
+                }
+            }
+            
+            function validateConfirmPassword() {
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                
+                if (confirmPassword === '') {
+                    showValidation(confirmPasswordInput, confirmPasswordIcon, confirmPasswordMessage, false, 'Please confirm your password');
+                    return false;
+                } else if (password !== confirmPassword) {
+                    showValidation(confirmPasswordInput, confirmPasswordIcon, confirmPasswordMessage, false, 'Passwords do not match');
+                    return false;
+                } else {
+                    showValidation(confirmPasswordInput, confirmPasswordIcon, confirmPasswordMessage, true, 'Passwords match');
+                    return true;
+                }
+            }
+            
+            function showValidation(input, icon, message, isValid, text) {
+                if (isValid) {
+                    input.classList.remove('invalid');
+                    input.classList.add('valid');
+                    icon.classList.remove('invalid');
+                    icon.classList.add('valid');
+                    icon.textContent = '✓';
+                    message.classList.remove('invalid');
+                    message.classList.add('valid');
+                } else {
+                    input.classList.remove('valid');
+                    input.classList.add('invalid');
+                    icon.classList.remove('valid');
+                    icon.classList.add('invalid');
+                    icon.textContent = '✗';
+                    message.classList.remove('valid');
+                    message.classList.add('invalid');
+                }
+                
+                message.textContent = text;
+                icon.classList.add('show');
+                message.classList.add('show');
+            }
+            
+            function updatePasswordStrength(strength) {
+                strengthBars.forEach((bar, index) => {
+                    bar.classList.remove('active', 'weak', 'medium', 'strong');
+                    
+                    if (index < strength) {
+                        bar.classList.add('active');
+                        
+                        if (strength <= 1) {
+                            bar.classList.add('weak');
+                        } else if (strength <= 2) {
+                            bar.classList.add('medium');
+                        } else {
+                            bar.classList.add('strong');
+                        }
+                    }
+                });
+            }
+            
+            function validateForm() {
+                const isNameValid = validateName();
+                const isEmailValid = validateEmail();
+                const isPasswordValid = validatePassword();
+                const isConfirmPasswordValid = validateConfirmPassword();
+                
+                return isNameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid;
+            }
+            
+            // Event listeners
+            nameInput.addEventListener('input', validateName);
+            nameInput.addEventListener('blur', validateName);
+            
+            emailInput.addEventListener('input', validateEmail);
+            emailInput.addEventListener('blur', validateEmail);
+            
+            passwordInput.addEventListener('input', validatePassword);
+            passwordInput.addEventListener('blur', validatePassword);
+            
+            confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+            confirmPasswordInput.addEventListener('blur', validateConfirmPassword);
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (validateForm()) {
+                    // Show success message
+                    formSuccess.classList.add('show');
+                    
+                    // Reset form
+                    form.reset();
+                    
+                    // Reset validation states
+                    document.querySelectorAll('.form-input').forEach(input => {
+                        input.classList.remove('valid', 'invalid');
+                    });
+                    
+                    document.querySelectorAll('.validation-icon').forEach(icon => {
+                        icon.classList.remove('show', 'valid', 'invalid');
+                    });
+                    
+                    document.querySelectorAll('.validation-message').forEach(message => {
+                        message.classList.remove('show', 'valid', 'invalid');
+                    });
+                    
+                    document.querySelectorAll('.requirement').forEach(req => {
+                        req.classList.remove('met');
+                    });
+                    
+                    strengthBars.forEach(bar => {
+                        bar.classList.remove('active', 'weak', 'medium', 'strong');
+                    });
+                    
+                    // Hide success message after 5 seconds
+                    setTimeout(() => {
+                        formSuccess.classList.remove('show');
+                    }, 5000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skeleton Loader</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f7fa;
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            width: 90%;
+            max-width: 800px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .skeleton-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .skeleton-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 5px;
+        }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        
+        .skeleton-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .skeleton-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        
+        .skeleton-info {
+            flex: 1;
+        }
+        
+        .skeleton-title {
+            height: 20px;
+            width: 70%;
+            margin-bottom: 10px;
+        }
+        
+        .skeleton-subtitle {
+            height: 15px;
+            width: 40%;
+        }
+        
+        .skeleton-text {
+            height: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .skeleton-text:last-child {
+            width: 80%;
+        }
+        
+        .skeleton-button {
+            height: 40px;
+            width: 120px;
+            border-radius: 20px;
+            margin-top: 20px;
+        }
+        
+        .skeleton-image {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .skeleton-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .skeleton-list-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .skeleton-list-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        
+        .skeleton-list-text {
+            height: 15px;
+            flex: 1;
+        }
+        
+        .skeleton-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .skeleton-table th,
+        .skeleton-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .skeleton-table th {
+            height: 20px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 5px;
+        }
+        
+        .skeleton-table td {
+            height: 15px;
+        }
+        
+        .skeleton-pulse {
+            animation: pulse 1.5s infinite ease-in-out;
+            background-color: #e0e0e0;
+        }
+        
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #6c5ce7;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: #5f4bd8;
+        }
+        
+        .content {
+            display: none;
+        }
+        
+        .content.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .profile-card {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 20px;
+            object-fit: cover;
+        }
+        
+        .profile-info h3 {
+            margin: 0 0 5px 0;
+            color: #333;
+        }
+        
+        .profile-info p {
+            margin: 0;
+            color: #666;
+        }
+        
+        .post-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        .post-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .post-title {
+            font-size: 1.5rem;
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        
+        .post-excerpt {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .read-more {
+            color: #6c5ce7;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .read-more:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Skeleton Loader Examples</h1>
+        
+        <div class="skeleton-grid">
+            <!-- Card Skeleton -->
+            <div class="skeleton-card">
+                <div class="skeleton-header">
+                    <div class="skeleton skeleton-avatar"></div>
+                    <div class="skeleton-info">
+                        <div class="skeleton skeleton-title"></div>
+                        <div class="skeleton skeleton-subtitle"></div>
+                    </div>
+                </div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-button"></div>
+            </div>
+            
+            <!-- Image Skeleton -->
+            <div class="skeleton-card">
+                <div class="skeleton skeleton-image"></div>
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-button"></div>
+            </div>
+            
+            <!-- List Skeleton -->
+            <div class="skeleton-card">
+                <div class="skeleton skeleton-title"></div>
+                <ul class="skeleton-list">
+                    <li class="skeleton-list-item">
+                        <div class="skeleton skeleton-list-icon"></div>
+                        <div class="skeleton skeleton-list-text"></div>
+                    </li>
+                    <li class="skeleton-list-item">
+                        <div class="skeleton skeleton-list-icon"></div>
+                        <div class="skeleton skeleton-list-text"></div>
+                    </li>
+                    <li class="skeleton-list-item">
+                        <div class="skeleton skeleton-list-icon"></div>
+                        <div class="skeleton skeleton-list-text"></div>
+                    </li>
+                    <li class="skeleton-list-item">
+                        <div class="skeleton skeleton-list-icon"></div>
+                        <div class="skeleton skeleton-list-text"></div>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Table Skeleton -->
+            <div class="skeleton-card">
+                <table class="skeleton-table">
+                    <thead>
+                        <tr>
+                            <th><div class="skeleton-pulse"></div></th>
+                            <th><div class="skeleton-pulse"></div></th>
+                            <th><div class="skeleton-pulse"></div></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><div class="skeleton"></div></td>
+                            <td><div class="skeleton"></div></td>
+                            <td><div class="skeleton"></div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="skeleton"></div></td>
+                            <td><div class="skeleton"></div></td>
+                            <td><div class="skeleton"></div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="skeleton"></div></td>
+                            <td><div class="skeleton"></div></td>
+                            <td><div class="skeleton"></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn" id="loadContentBtn">Load Content</button>
+            <button class="btn" id="resetBtn">Reset Skeleton</button>
+        </div>
+        
+        <!-- Content to be loaded -->
+        <div class="content" id="content">
+            <div class="skeleton-grid">
+                <!-- Profile Card -->
+                <div class="profile-card">
+                    <img src="https://picsum.photos/seed/profile1/80/80.jpg" alt="Profile" class="profile-avatar">
+                    <div class="profile-info">
+                        <h3>John Doe</h3>
+                        <p>Frontend Developer</p>
+                    </div>
+                </div>
+                
+                <!-- Post Card -->
+                <div class="post-card">
+                    <img src="https://picsum.photos/seed/post1/400/200.jpg" alt="Post" class="post-image">
+                    <h3 class="post-title">Understanding CSS Grid</h3>
+                    <p class="post-excerpt">CSS Grid is a powerful layout system that allows you to create complex responsive layouts with ease. In this article, we'll explore the basics of CSS Grid and how you can use it to build modern web layouts.</p>
+                    <a href="#" class="read-more">Read More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadContentBtn = document.getElementById('loadContentBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const content = document.getElementById('content');
+            const skeletonGrid = document.querySelector('.skeleton-grid');
+            
+            loadContentBtn.addEventListener('click', function() {
+                // Hide skeleton
+                skeletonGrid.style.display = 'none';
+                
+                // Show content with a delay to simulate loading
+                setTimeout(() => {
+                    content.classList.add('show');
+                }, 500);
+            });
+            
+            resetBtn.addEventListener('click', function() {
+                // Hide content
+                content.classList.remove('show');
+                
+                // Show skeleton with a delay
+                setTimeout(() => {
+                    skeletonGrid.style.display = 'grid';
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>
