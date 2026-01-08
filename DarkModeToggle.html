@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Mode Toggle</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #f9f9f9;
+            --primary-color: #6c5ce7;
+        }
+        
+        [data-theme="dark"] {
+            --bg-color: #1a1a2e;
+            --text-color: #f5f7fa;
+            --card-bg: #16213e;
+            --primary-color: #a29bfe;
+        }
+        
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background-color: #ccc;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+        
+        .toggle-switch input {
+            display: none;
+        }
+        
+        .toggle-switch input:checked + .toggle-slider {
+            transform: translateX(30px);
+        }
+        
+        .toggle-switch input:checked ~ .toggle-switch {
+            background-color: var(--primary-color);
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: background-color 0.3s ease;
+        }
+        
+        .card h2 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn:hover {
+            opacity: 0.8;
+        }
+        
+        /* Icon styles */
+        .sun-icon, .moon-icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: #feca57;
+        }
+        
+        .sun-icon {
+            left: 5px;
+        }
+        
+        .moon-icon {
+            right: 5px;
+            color: #6c5ce7;
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle">
+        <label class="toggle-switch">
+            <input type="checkbox" id="themeToggle">
+            <span class="toggle-slider"></span>
+            <span class="sun-icon">☀️</span>
+            <span class="moon-icon">🌙</span>
+        </label>
+    </div>
+    
+    <div class="container">
+        <h1>Dark Mode Toggle</h1>
+        
+        <div class="card">
+            <h2>About This Demo</h2>
+            <p>This is a demonstration of a dark mode toggle using CSS variables and JavaScript. Click the toggle in the top-right corner to switch between light and dark themes.</p>
+            <p>The page's colors are defined in CSS variables, which are then updated based on the selected theme. This approach provides a smooth transition between themes and is easy to maintain.</p>
+        </div>
+        
+        <div class="card">
+            <h2>How It Works</h2>
+            <p>The toggle switch sets a `data-theme` attribute on the `body` element. CSS then uses attribute selectors to apply different variable values for light and dark themes.</p>
+            <p>The theme preference is also saved to `localStorage` so it persists across page reloads.</p>
+            <button class="btn" id="resetBtn">Reset Theme</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const resetBtn = document.getElementById('resetBtn');
+            const body = document.body;
+            
+            // Check for saved theme preference or default to light
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            body.setAttribute('data-theme', currentTheme);
+            themeToggle.checked = currentTheme === 'dark';
+            
+            // Toggle theme
+            themeToggle.addEventListener('change', function() {
+                const theme = this.checked ? 'dark' : 'light';
+                body.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+            });
+            
+            // Reset theme
+            resetBtn.addEventListener('click', function() {
+                body.setAttribute('data-theme', 'light');
+                themeToggle.checked = false;
+                localStorage.removeItem('theme');
+            });
+        });
+    </script>
+</body>
+</html>
