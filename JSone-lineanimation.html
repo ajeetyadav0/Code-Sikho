@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS One-Line Animation</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #0a0a0a;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            align-items: center;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+        }
+        
+        .animation-box {
+            width: 200px;
+            height: 200px;
+            background-color: #6c5ce7;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(108, 92, 231, 0.3);
+        }
+        
+        .code-block {
+            background-color: #1a1a2e;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        .code {
+            color: #a29bfe;
+        }
+        
+        /* Animations to be triggered by JS */
+        .pulse {
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .rotate {
+            animation: rotate 2s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .bounce {
+            animation: bounce 1s infinite ease-in-out;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .shake {
+            animation: shake 0.5s infinite ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .flip {
+            animation: flip 1s infinite ease-in-out;
+        }
+        
+        @keyframes flip {
+            0% { transform: rotateY(0); }
+            50% { transform: rotateY(180deg); }
+            100% { transform: rotateY(360deg); }
+        }
+        
+        .color-change {
+            animation: colorChange 2s infinite;
+        }
+        
+        @keyframes colorChange {
+            0% { background-color: #6c5ce7; }
+            25% { background-color: #00b894; }
+            50% { background-color: #fdcb6e; }
+            75% { background-color: #e17055; }
+            100% { background-color: #6c5ce7; }
+        }
+        
+        .fade {
+            animation: fade 2s infinite;
+        }
+        
+        @keyframes fade {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .slide {
+            animation: slide 2s infinite ease-in-out;
+        }
+        
+        @keyframes slide {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(20px); }
+        }
+        
+        .zoom {
+            animation: zoom 1.5s infinite ease-in-out;
+        }
+        
+        @keyframes zoom {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .skew {
+            animation: skew 2s infinite ease-in-out;
+        }
+        
+        @keyframes skew {
+            0%, 100% { transform: skew(0deg, 0deg); }
+            50% { transform: skew(10deg, 10deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>JS One-Line Animations</h1>
+        
+        <div class="animation-box" id="animationBox">
+            Hover over me
+        </div>
+        
+        <div class="code-block">
+            <span class="code">element.style.animation = 'pulse 1.5s infinite ease-in-out';</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const animationBox = document.getElementById('animationBox');
+            const animations = ['pulse', 'rotate', 'bounce', 'shake', 'flip', 'color-change', 'fade', 'slide', 'zoom', 'skew'];
+            let currentAnimationIndex = 0;
+            
+            // Apply animation on hover
+            animationBox.addEventListener('mouseenter', function() {
+                const currentAnimation = animations[currentAnimationIndex];
+                this.style.animation = `${currentAnimation} 1.5s infinite ease-in-out`;
+                
+                // Update code display
+                document.querySelector('.code').textContent = `element.style.animation = '${currentAnimation} 1.5s infinite ease-in-out';`;
+            });
+            
+            // Remove animation on mouse leave
+            animationBox.addEventListener('mouseleave', function() {
+                this.style.animation = '';
+            });
+            
+            // Cycle through animations on click
+            animationBox.addEventListener('click', function() {
+                currentAnimationIndex = (currentAnimationIndex + 1) % animations.length;
+                
+                // Re-trigger mouseenter to apply new animation
+                this.dispatchEvent(new Event('mouseenter'));
+            });
+        });
+    </script>
+</body>
+</html>

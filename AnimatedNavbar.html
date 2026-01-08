@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Navbar</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            padding-top: 80px; /* Offset for fixed navbar */
+        }
+        
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .navbar-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #6c5ce7;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .navbar-logo:hover {
+            color: #5f4bd8;
+        }
+        
+        .navbar-menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar-item {
+            position: relative;
+            margin: 0 15px;
+        }
+        
+        .navbar-link {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 0;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        
+        .navbar-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #6c5ce7;
+            transition: width 0.3s ease;
+        }
+        
+        .navbar-link:hover {
+            color: #6c5ce7;
+        }
+        
+        .navbar-link:hover::after {
+            width: 100%;
+        }
+        
+        /* Dropdown Menu */
+        .navbar-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-item:hover .navbar-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .dropdown-item {
+            display: block;
+            padding: 12px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #f5f7fa;
+        }
+        
+        /* Mobile Menu Toggle */
+        .navbar-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            cursor: pointer;
+        }
+        
+        .navbar-toggle span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: #333;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Scrolled Navbar */
+        .navbar.scrolled {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Content for demonstration */
+        .content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        h1, h2 {
+            color: #6c5ce7;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar-menu {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background-color: white;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding-top: 50px;
+                transition: left 0.3s ease;
+            }
+            
+            .navbar-menu.active {
+                left: 0;
+            }
+            
+            .navbar-item {
+                margin: 15px 0;
+            }
+            
+            .navbar-dropdown {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                box-shadow: none;
+                background-color: #f5f7fa;
+                display: none;
+                text-align: center;
+            }
+            
+            .navbar-item.active .navbar-dropdown {
+                display: block;
+            }
+            
+            .navbar-toggle {
+                display: flex;
+            }
+            
+            .navbar-toggle.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+            
+            .navbar-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+            
+            .navbar-toggle.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -6px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <a href="#" class="navbar-logo">YourLogo</a>
+            
+            <ul class="navbar-menu" id="navbarMenu">
+                <li class="navbar-item">
+                    <a href="#" class="navbar-link">Home</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="#" class="navbar-link">About</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="#" class="navbar-link">Services</a>
+                    <div class="navbar-dropdown">
+                        <a href="#" class="dropdown-item">Web Design</a>
+                        <a href="#" class="dropdown-item">Web Development</a>
+                        <a href="#" class="dropdown-item">SEO</a>
+                    </div>
+                </li>
+                <li class="navbar-item">
+                    <a href="#" class="navbar-link">Portfolio</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="#" class="navbar-link">Contact</a>
+                </li>
+            </ul>
+            
+            <div class="navbar-toggle" id="navbarToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="content">
+        <div class="section">
+            <h1>Animated Navbar Demo</h1>
+            <p>Scroll down to see the navbar change style. On mobile, use the hamburger menu to toggle navigation.</p>
+        </div>
+        
+        <div class="section">
+            <h2>Section 1</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl.</p>
+        </div>
+        
+        <div class="section">
+            <h2>Section 2</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl.</p>
+        </div>
+        
+        <div class="section">
+            <h2>Section 3</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navbar = document.getElementById('navbar');
+            const navbarToggle = document.getElementById('navbarToggle');
+            const navbarMenu = document.getElementById('navbarMenu');
+            const navbarItems = document.querySelectorAll('.navbar-item');
+            
+            // Change navbar style on scroll
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+            
+            // Toggle mobile menu
+            navbarToggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                navbarMenu.classList.toggle('active');
+            });
+            
+            // Handle dropdowns on mobile
+            if (window.innerWidth <= 768) {
+                navbarItems.forEach(item => {
+                    const link = item.querySelector('.navbar-link');
+                    const dropdown = item.querySelector('.navbar-dropdown');
+                    
+                    if (dropdown) {
+                        link.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            item.classList.toggle('active');
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
