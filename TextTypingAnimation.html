@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Typing Animation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&display=swap');
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #1a1a2e;
+            font-family: 'Source Code Pro', monospace;
+            color: #f5f7fa;
+        }
+        
+        .typing-container {
+            max-width: 800px;
+            padding: 40px;
+            background-color: #16213e;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .typing-text {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            min-height: 100px;
+        }
+        
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1.5rem;
+            background-color: #00ff41;
+            animation: blink 1s infinite;
+            vertical-align: text-bottom;
+            margin-left: 2px;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            background-color: #6c5ce7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: #5f4bd8;
+        }
+        
+        .typing-speed {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        
+        .speed-label {
+            font-size: 1rem;
+        }
+        
+        .speed-slider {
+            width: 200px;
+            height: 5px;
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: #3d3d5c;
+            border-radius: 5px;
+            outline: none;
+        }
+        
+        .speed-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            background-color: #6c5ce7;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .speed-slider::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            background-color: #6c5ce7;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .speed-value {
+            font-weight: 600;
+            color: #6c5ce7;
+        }
+    </style>
+</head>
+<body>
+    <div class="typing-container">
+        <div class="typing-text" id="typingText">
+            <span id="typedText"></span><span class="cursor" id="cursor"></span>
+        </div>
+        
+        <div class="typing-speed">
+            <span class="speed-label">Typing Speed:</span>
+            <input type="range" class="speed-slider" id="speedSlider" min="10" max="200" value="50">
+            <span class="speed-value" id="speedValue">50ms</span>
+        </div>
+        
+        <div class="controls">
+            <button class="btn" id="startBtn">Start Typing</button>
+            <button class="btn" id="pauseBtn">Pause</button>
+            <button class="btn" id="resetBtn">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const typedTextElement = document.getElementById('typedText');
+            const cursor = document.getElementById('cursor');
+            const startBtn = document.getElementById('startBtn');
+            const pauseBtn = document.getElementById('pauseBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const speedSlider = document.getElementById('speedSlider');
+            const speedValue = document.getElementById('speedValue');
+            
+            const textToType = `Welcome to the typing animation demo! This effect simulates someone typing text in real-time. You can adjust the typing speed, start, pause, and reset the animation using the controls below. This is a great way to add a dynamic element to your website, especially for hero sections, chat interfaces, or code demonstrations.`;
+            
+            let charIndex = 0;
+            let typingInterval;
+            let isTyping = false;
+            let typingSpeed = 50;
+            
+            // Function to type text
+            function typeText() {
+                if (charIndex < textToType.length) {
+                    typedTextElement.textContent += textToType.charAt(charIndex);
+                    charIndex++;
+                } else {
+                    // Typing is complete
+                    clearInterval(typingInterval);
+                    isTyping = false;
+                    cursor.style.display = 'none';
+                }
+            }
+            
+            // Function to start typing
+            function startTyping() {
+                if (!isTyping && charIndex < textToType.length) {
+                    isTyping = true;
+                    cursor.style.display = 'inline-block';
+                    typingInterval = setInterval(typeText, typingSpeed);
+                }
+            }
+            
+            // Function to pause typing
+            function pauseTyping() {
+                if (isTyping) {
+                    isTyping = false;
+                    clearInterval(typingInterval);
+                    cursor.style.display = 'none';
+                }
+            }
+            
+            // Function to reset typing
+            function resetTyping() {
+                pauseTyping();
+                charIndex = 0;
+                typedTextElement.textContent = '';
+                cursor.style.display = 'inline-block';
+            }
+            
+            // Function to update typing speed
+            function updateSpeed() {
+                typingSpeed = parseInt(speedSlider.value);
+                speedValue.textContent = `${typingSpeed}ms`;
+                
+                // If currently typing, restart with new speed
+                if (isTyping) {
+                    pauseTyping();
+                    startTyping();
+                }
+            }
+            
+            // Event listeners
+            startBtn.addEventListener('click', startTyping);
+            pauseBtn.addEventListener('click', pauseTyping);
+            resetBtn.addEventListener('click', resetTyping);
+            speedSlider.addEventListener('input', updateSpeed);
+            
+            // Initialize
+            resetTyping();
+        });
+    </script>
+</body>
+</html>

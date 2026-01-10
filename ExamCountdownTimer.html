@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Countdown Timer</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Poppins', sans-serif;
+            color: white;
+        }
+        
+        .countdown-container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 90%;
+        }
+        
+        .exam-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .exam-subject {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .countdown-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            min-width: 100px;
+            transition: transform 0.3s ease;
+        }
+        
+        .countdown-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .countdown-number {
+            font-size: 3rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .countdown-label {
+            font-size: 1rem;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+        
+        .message {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .start-btn {
+            padding: 15px 30px;
+            background-color: #f5576c;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.3);
+        }
+        
+        .start-btn:hover {
+            background-color: #e63950;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(245, 87, 108, 0.4);
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1rem;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+        
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .input-field:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .celebration {
+            display: none;
+            text-align: center;
+            animation: fadeIn 1s ease;
+        }
+        
+        .celebration.show {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .emoji {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: bounce 1s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .good-luck-message {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .study-tips {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .study-tips h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #f093fb;
+        }
+        
+        .study-tips ul {
+            padding-left: 20px;
+        }
+        
+        .study-tips li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="countdown-container">
+        <h1 class="exam-title">Exam Countdown</h1>
+        <h2 class="exam-subject" id="examSubject">Final Exam</h2>
+        
+        <div class="input-group">
+            <label for="examDate" class="input-label">Enter Exam Date and Time:</label>
+            <input type="datetime-local" id="examDate" class="input-field">
+        </div>
+        
+        <div class="countdown" id="countdown">
+            <div class="countdown-item">
+                <span class="countdown-number" id="days">00</span>
+                <span class="countdown-label">Days</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-number" id="hours">00</span>
+                <span class="countdown-label">Hours</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-number" id="minutes">00</span>
+                <span class="countdown-label">Minutes</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-number" id="seconds">00</span>
+                <span class="countdown-label">Seconds</span>
+            </div>
+        </div>
+        
+        <div class="message" id="message">Time until your exam starts. Make every second count!</div>
+        
+        <button class="start-btn" id="startBtn">Set Countdown</button>
+        
+        <div class="celebration" id="celebration">
+            <div class="emoji">🎉</div>
+            <div class="good-luck-message">Good Luck with Your Exam!</div>
+            <div class="study-tips">
+                <h3>Quick Study Tips:</h3>
+                <ul>
+                    <li>Review your notes one last time</li>
+                    <li>Get a good night's sleep</li>
+                    <li>Eat a healthy breakfast</li>
+                    <li>Arrive at the exam location early</li>
+                    <li>Stay calm and focused during the exam</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const examDateInput = document.getElementById('examDate');
+            const startBtn = document.getElementById('startBtn');
+            const countdown = document.getElementById('countdown');
+            const message = document.getElementById('message');
+            const celebration = document.getElementById('celebration');
+            
+            const daysElement = document.getElementById('days');
+            const hoursElement = document.getElementById('hours');
+            const minutesElement = document.getElementById('minutes');
+            const secondsElement = document.getElementById('seconds');
+            
+            let countdownInterval;
+            
+            // Set default exam date (7 days from now)
+            const defaultExamDate = new Date();
+            defaultExamDate.setDate(defaultExamDate.getDate() + 7);
+            examDateInput.value = defaultExamDate.toISOString().slice(0, 16);
+            
+            function updateCountdown() {
+                const examDate = new Date(examDateInput.value).getTime();
+                const now = new Date().getTime();
+                const distance = examDate - now;
+                
+                if (distance < 0) {
+                    // Exam has started
+                    clearInterval(countdownInterval);
+                    countdown.style.display = 'none';
+                    message.style.display = 'none';
+                    celebration.classList.add('show');
+                } else {
+                    // Calculate time units
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    
+                    // Update DOM
+                    daysElement.textContent = days.toString().padStart(2, '0');
+                    hoursElement.textContent = hours.toString().padStart(2, '0');
+                    minutesElement.textContent = minutes.toString().padStart(2, '0');
+                    secondsElement.textContent = seconds.toString().padStart(2, '0');
+                }
+            }
+            
+            startBtn.addEventListener('click', function() {
+                // Clear any existing interval
+                if (countdownInterval) {
+                    clearInterval(countdownInterval);
+                }
+                
+                // Show countdown, hide celebration
+                countdown.style.display = 'flex';
+                message.style.display = 'block';
+                celebration.classList.remove('show');
+                
+                // Start the countdown
+                updateCountdown();
+                countdownInterval = setInterval(updateCountdown, 1000);
+            });
+            
+            // Start countdown on page load
+            startBtn.click();
+        });
+    </script>
+</body>
+</html>
