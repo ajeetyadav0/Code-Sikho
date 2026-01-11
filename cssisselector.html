@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS :is() Selector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #6c5ce7;
+            margin-bottom: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        h2 {
+            color: #6c5ce7;
+            margin-top: 0;
+        }
+        
+        /* Before :is() - you'd have to write each selector separately */
+        .old-way h1, .old-way h2, .old-way h3 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+        
+        .old-way p, .old-way li {
+            color: #4ecdc4;
+            margin-bottom: 10px;
+        }
+        
+        /* With :is() - you can group selectors */
+        .new-way :is(h1, h2, h3) {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+        
+        .new-way :is(p, li) {
+            color: #4ecdc4;
+            margin-bottom: 10px;
+        }
+        
+        /* More complex example */
+        .complex-example :is(.section, .article) :is(h1, h2, h3) {
+            color: #6c5ce7;
+        }
+        
+        .complex-example :is(.section, .article) :is(p, li, a) {
+            color: #333;
+        }
+        
+        /* :is() with pseudo-classes */
+        .nav :is(a, button) {
+            display: block;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            background-color: #f8f9fa;
+            color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .nav :is(a, button):hover {
+            background-color: #e9ecef;
+        }
+        
+        .nav :is(a, button):active {
+            background-color: #dee2e6;
+        }
+        
+        /* :is() with attribute selectors */
+        .form-example :is(input[type="text"], input[type="email"], textarea) {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        
+        .form-example :is(input[type="text"]:focus, input[type="email"]:focus, textarea:focus) {
+            outline: none;
+            border-color: #6c5ce7;
+            box-shadow: 0 0 5px rgba(108, 92, 231, 0.3);
+        }
+        
+        /* :is() with :not() */
+        .list-example :is(li:not(.first), li:not(.last)) {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        
+        /* :is() for responsive design */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .card :is(h3, p) {
+            margin: 0 0 15px 0;
+        }
+        
+        .card :is(h3) {
+            color: #6c5ce7;
+        }
+        
+        /* Code display */
+        .code-block {
+            background-color: #f8f9fa;
+            border-left: 4px solid #6c5ce7;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        
+        .code {
+            color: #e83e8c;
+        }
+        
+        /* Comparison table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .comparison-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .highlight {
+            background-color: #e8f4f8;
+            border-left: 4px solid #4ecdc4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSS :is() Selector Magic</h1>
+        
+        <div class="section">
+            <h2>What is the :is() Selector?</h2>
+            <p>The <code>:is()</code> pseudo-class function takes a selector list as its argument, and selects any element that can be selected by one of the selectors in that list. This is useful for writing large, complex selectors in a more compact form.</p>
+            <p>Before <code>:is()</code>, you would have to write each selector separately, which could lead to long and repetitive CSS rules.</p>
+        </div>
+        
+        <div class="section">
+            <h2>Example: Styling Headings and Paragraphs</h2>
+            
+            <h3>Without :is()</h3>
+            <div class="code-block">
+                <div class="old-way">
+                    <p><span class="code">.old-way h1, .old-way h2, .old-way h3</span> { color: #ff6b6b; }</p>
+                    <p><span class="code">.old-way p, .old-way li</span> { color: #4ecdc4; }</p>
+                </div>
+            </div>
+            
+            <h3>With :is()</h3>
+            <div class="code-block">
+                <div class="new-way">
+                    <p><span class="code">.new-way :is(h1, h2, h3)</span> { color: #ff6b6b; }</p>
+                    <p><span class="code">.new-way :is(p, li)</span> { color: #4ecdc4; }</p>
+                </div>
+            </div>
+            
+            <div class="old-way">
+                <h1>Heading 1</h1>
+                <p>Paragraph 1</p>
+                <h2>Heading 2</h2>
+                <p>Paragraph 2</p>
+                <h3>Heading 3</h3>
+                <ul>
+                    <li>List item 1</li>
+                    <li>List item 2</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Example: Navigation Styling</h2>
+            <div class="code-block">
+                <p><span class="code">.nav :is(a, button)</span> { display: block; padding: 10px; }</p>
+                <p><span class="code">.nav :is(a, button):hover</span> { background-color: #e9ecef; }</p>
+                <p><span class="code">.nav :is(a, button):active</span> { background-color: #dee2e6; }</p>
+            </div>
+            
+            <div class="nav">
+                <a href="#">Home</a>
+                <a href="#">About</a>
+                <a href="#">Services</a>
+                <button>Contact</button>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Example: Form Styling</h2>
+            <div class="code-block">
+                <p><span class="code">.form-example :is(input[type="text"], input[type="email"], textarea)</span> { width: 100%; padding: 10px; }</p>
+                <p><span class="code">.form-example :is(input[type="text"]:focus, input[type="email"]:focus, textarea:focus)</span> { border-color: #6c5ce7; }</p>
+            </div>
+            
+            <div class="form-example">
+                <input type="text" placeholder="Your Name">
+                <input type="email" placeholder="Your Email">
+                <textarea placeholder="Your Message"></textarea>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Example: Combining with :not()</h2>
+            <div class="code-block">
+                <p><span class="code">.list-example :is(li:not(.first), li:not(.last))</span> { border-bottom: 1px solid #eee; }</p>
+            </div>
+            
+            <div class="list-example">
+                <ul>
+                    <li class="first">First item (no border)</li>
+                    <li>Middle item (has border)</li>
+                    <li>Middle item (has border)</li>
+                    <li class="last">Last item (no border)</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Browser Support</h2>
+            <p>The <code>:is()</code> pseudo-class is supported in all modern browsers, including Chrome, Firefox, Safari, and Edge. It's a great tool for writing more maintainable and readable CSS.</p>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Browser</th>
+                        <th>Support</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Chrome</td>
+                        <td class="highlight">Supported (version 88+)</td>
+                    </tr>
+                    <tr>
+                        <td>Firefox</td>
+                        <td class="highlight">Supported (version 78+)</td>
+                    </tr>
+                    <tr>
+                        <td>Safari</td>
+                        <td class="highlight">Supported (version 14+)</td>
+                    </tr>
+                    <tr>
+                        <td>Edge</td>
+                        <td class="highlight">Supported (version 88+)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ripple Button Effect</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f7fa;
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .ripple-btn {
+            position: relative;
+            padding: 15px 30px;
+            background-color: #6c5ce7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            overflow: hidden;
+            transition: background-color 0.3s ease;
+        }
+        
+        .ripple-btn:hover {
+            background-color: #5f4bd8;
+        }
+        
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.7);
+            transform: scale(0);
+            animation: ripple-animation 0.6s ease-out;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        
+        /* Different button styles */
+        .btn-primary {
+            background-color: #6c5ce7;
+        }
+        
+        .btn-primary:hover {
+            background-color: #5f4bd8;
+        }
+        
+        .btn-success {
+            background-color: #00b894;
+        }
+        
+        .btn-success:hover {
+            background-color: #00a884;
+        }
+        
+        .btn-danger {
+            background-color: #d63031;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c22626;
+        }
+        
+        .btn-warning {
+            background-color: #fdcb6e;
+        }
+        
+        .btn-warning:hover {
+            background-color: #fdc34e;
+        }
+        
+        .btn-info {
+            background-color: #74b9ff;
+        }
+        
+        .btn-info:hover {
+            background-color: #54a0ff;
+        }
+        
+        .btn-rounded {
+            border-radius: 50px;
+        }
+        
+        .btn-large {
+            padding: 20px 40px;
+            font-size: 1.2rem;
+        }
+        
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.8rem;
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid #6c5ce7;
+            color: #6c5ce7;
+        }
+        
+        .btn-outline:hover {
+            background-color: #6c5ce7;
+            color: white;
+        }
+        
+        /* Icon buttons */
+        .btn-icon {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+        
+        /* Gradient buttons */
+        .btn-gradient {
+            background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+            color: white;
+        }
+        
+        .btn-gradient:hover {
+            background: linear-gradient(45deg, #5f4bd8, #9b8bfe);
+        }
+        
+        /* Social media buttons */
+        .social-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn-facebook {
+            background-color: #3b5998;
+        }
+        
+        .btn-facebook:hover {
+            background-color: #2d4373;
+        }
+        
+        .btn-twitter {
+            background-color: #1da1f2;
+        }
+        
+        .btn-twitter:hover {
+            background-color: #0c85d0;
+        }
+        
+        .btn-linkedin {
+            background-color: #0077b5;
+        }
+        
+        .btn-linkedin:hover {
+            background-color: #005885;
+        }
+        
+        .btn-instagram {
+            background: linear-gradient(45deg, #f09433 0%, #f6675c 25%, #c7356a 50%, #8231a8 75%, #515bd4 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ripple Button Effect</h1>
+        
+        <button class="ripple-btn btn-primary">Primary Button</button>
+        <button class="ripple-btn btn-success">Success Button</button>
+        <button class="ripple-btn btn-danger">Danger Button</button>
+        <button class="ripple-btn btn-warning">Warning Button</button>
+        <button class="ripple-btn btn-info">Info Button</button>
+        
+        <button class="ripple-btn btn-rounded">Rounded Button</button>
+        <button class="ripple-btn btn-large">Large Button</button>
+        <button class="ripple-btn btn-small">Small Button</button>
+        
+        <button class="ripple-btn btn-outline">Outline Button</button>
+        <button class="ripple-btn btn-gradient">Gradient Button</button>
+        
+        <button class="ripple-btn btn-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+            </svg>
+            Download
+        </button>
+        
+        <div class="social-buttons">
+            <button class="ripple-btn btn-facebook">Facebook</button>
+            <button class="ripple-btn btn-twitter">Twitter</button>
+            <button class="ripple-btn btn-linkedin">LinkedIn</button>
+            <button class="ripple-btn btn-instagram">Instagram</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.ripple-btn');
+            
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    // Create ripple element
+                    const ripple = document.createElement('span');
+                    ripple.classList.add('ripple');
+                    
+                    // Calculate ripple size and position
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    // Set ripple styles
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    
+                    // Add ripple to button
+                    this.appendChild(ripple);
+                    
+                    // Remove ripple after animation completes
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
