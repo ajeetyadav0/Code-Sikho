@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Counter</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f7fa;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .form-input:focus, .form-textarea:focus {
+            border-color: #6c5ce7;
+        }
+        
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .char-counter {
+            position: absolute;
+            bottom: -25px;
+            right: 0;
+            font-size: 0.9rem;
+            color: #666;
+            background-color: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 20px;
+            transition: color 0.3s ease;
+        }
+        
+        .char-warning {
+            color: #feca57;
+        }
+        
+        .char-danger {
+            color: #ff6b6b;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 5px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #6c5ce7;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+        
+        .progress-warning {
+            background-color: #feca57;
+        }
+        
+        .progress-danger {
+            background-color: #ff6b6b;
+        }
+        
+        .tweet-example {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .tweet-text {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        
+        .tweet-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .instructions {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e8f4f8;
+            border-left: 4px solid #6c5ce7;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .instructions h3 {
+            margin-top: 0;
+            color: #6c5ce7;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Character Counter</h1>
+        
+        <div class="form-group">
+            <label for="textInput" class="form-label">Text Input (Max 50 characters)</label>
+            <input type="text" id="textInput" class="form-input" maxlength="50" placeholder="Type something...">
+            <div class="char-counter" id="textCounter">0 / 50</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="textProgress"></div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="messageInput" class="form-label">Message (Max 200 characters)</label>
+            <textarea id="messageInput" class="form-textarea" maxlength="200" placeholder="Type your message here..."></textarea>
+            <div class="char-counter" id="messageCounter">0 / 200</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="messageProgress"></div>
+            </div>
+        </div>
+        
+        <div class="tweet-example">
+            <label for="tweetInput" class="form-label">Tweet Example (Max 280 characters)</label>
+            <textarea id="tweetInput" class="tweet-text" maxlength="280" placeholder="What's happening?"></textarea>
+            <div class="tweet-stats">
+                <span id="tweetCounter">0 / 280</span>
+                <span id="wordCount">0 words</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="tweetProgress"></div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>How It Works</h3>
+            <ul>
+                <li>The character counter updates in real-time as you type.</li>
+                <li>The progress bar fills up as you approach the character limit.</li>
+                <li>The counter changes color when you're getting close to the limit.</li>
+                <li>The tweet example also includes a word counter.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Text Input
+            const textInput = document.getElementById('textInput');
+            const textCounter = document.getElementById('textCounter');
+            const textProgress = document.getElementById('textProgress');
+            
+            // Message Input
+            const messageInput = document.getElementById('messageInput');
+            const messageCounter = document.getElementById('messageCounter');
+            const messageProgress = document.getElementById('messageProgress');
+            
+            // Tweet Input
+            const tweetInput = document.getElementById('tweetInput');
+            const tweetCounter = document.getElementById('tweetCounter');
+            const tweetProgress = document.getElementById('tweetProgress');
+            const wordCount = document.getElementById('wordCount');
+            
+            // Function to update character counter
+            function updateCharacterCounter(input, counter, progress, maxLength) {
+                const currentLength = input.value.length;
+                const remainingLength = maxLength - currentLength;
+                
+                // Update counter text
+                counter.textContent = `${currentLength} / ${maxLength}`;
+                
+                // Update progress bar
+                const percentage = (currentLength / maxLength) * 100;
+                progress.style.width = percentage + '%';
+                
+                // Update counter and progress bar color based on remaining characters
+                if (remainingLength < 10) {
+                    counter.classList.add('char-danger');
+                    progress.classList.add('progress-danger');
+                    counter.classList.remove('char-warning');
+                    progress.classList.remove('progress-warning');
+                } else if (remainingLength < 20) {
+                    counter.classList.add('char-warning');
+                    progress.classList.add('progress-warning');
+                    counter.classList.remove('char-danger');
+                    progress.classList.remove('progress-danger');
+                } else {
+                    counter.classList.remove('char-warning', 'char-danger');
+                    progress.classList.remove('progress-warning', 'progress-danger');
+                }
+            }
+            
+            // Function to count words
+            function updateWordCount(input) {
+                const text = input.value.trim();
+                const words = text.split(/\s+/).filter(word => word.length > 0);
+                wordCount.textContent = `${words.length} words`;
+            }
+            
+            // Event listeners
+            textInput.addEventListener('input', function() {
+                updateCharacterCounter(this, textCounter, textProgress, 50);
+            });
+            
+            messageInput.addEventListener('input', function() {
+                updateCharacterCounter(this, messageCounter, messageProgress, 200);
+            });
+            
+            tweetInput.addEventListener('input', function() {
+                updateCharacterCounter(this, tweetCounter, tweetProgress, 280);
+                updateWordCount(this);
+            });
+        });
+    </script>
+</body>
+</html>
