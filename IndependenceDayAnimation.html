@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Independence Day Animation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0a0a0a;
+            color: white;
+            overflow: hidden;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .title {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            background: linear-gradient(45deg, #ff9966, #ff5e62, #ff9966);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            text-align: center;
+            opacity: 0.8;
+        }
+        
+        .flag-container {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            margin-bottom: 40px;
+        }
+        
+        .flag {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .flag-strip {
+            position: absolute;
+            height: 100%;
+            width: 33.33%;
+            top: 0;
+        }
+        
+        .saffron {
+            background-color: #FF9933;
+            left: 0;
+            animation: slideIn 1s ease-out;
+        }
+        
+        .white {
+            background-color: #FFFFFF;
+            left: 33.33%;
+            animation: slideIn 1s ease-out 0.2s;
+        }
+        
+        .green {
+            background-color: #138808;
+            left: 66.66%;
+            animation: slideIn 1s ease-out 0.4s;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+        
+        .ashoka-chakra {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            animation: rotateIn 2s ease-out 0.6s;
+        }
+        
+        @keyframes rotateIn {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg) scale(0);
+            }
+            to {
+                transform: translate(-50%, -50%) rotate(360deg) scale(1);
+            }
+        }
+        
+        .chakra-line {
+            position: absolute;
+            background-color: #000080;
+            transform-origin: center;
+        }
+        
+        .line-1 {
+            width: 100%;
+            height: 4px;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+        }
+        
+        .line-2 {
+            width: 4px;
+            height: 100%;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .line-3 {
+            width: 70%;
+            height: 4px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+        
+        .line-4 {
+            width: 70%;
+            height: 4px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+        
+        .message {
+            font-size: 1.2rem;
+            text-align: center;
+            max-width: 600px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+        
+        .fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .firework {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: firework-launch 2s ease-out infinite;
+        }
+        
+        @keyframes firework-launch {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(50vh) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(0) scale(0);
+                opacity: 0;
+            }
+        }
+        
+        .spark {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: spark-explode 1s ease-out infinite;
+        }
+        
+        @keyframes spark-explode {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            background-color: #FF9933;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 153, 51, 0.3);
+        }
+        
+        .btn:hover {
+            background-color: #ff7733;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 153, 51, 0.4);
+        }
+        
+        /* Background particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+        }
+        
+        .countdown {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .countdown-number {
+            font-size: 3rem;
+            color: #FF9933;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="fireworks" id="fireworks"></div>
+    
+    <div class="container">
+        <h1 class="title">Happy Independence Day!</h1>
+        <p class="subtitle">Celebrating Freedom and Unity</p>
+        
+        <div class="countdown" id="countdown">
+            <div class="countdown-number" id="daysUntil">0</div>
+            <div>days until August 15</div>
+        </div>
+        
+        <div class="flag-container">
+            <div class="flag">
+                <div class="flag-strip saffron"></div>
+                <div class="flag-strip white"></div>
+                <div class="flag-strip green"></div>
+                
+                <div class="ashoka-chakra">
+                    <div class="chakra-line line-1"></div>
+                    <div class="chakra-line line-2"></div>
+                    <div class="chakra-line line-3"></div>
+                    <div class="chakra-line line-4"></div>
+                </div>
+            </div>
+        </div>
+        
+        <p class="message">
+            On this day, we celebrate the spirit of freedom, unity, and the rich cultural heritage of our nation. 
+            Let's honor the sacrifices of our heroes and strive to build a better future for generations to come.
+        </p>
+        
+        <button class="btn" id="celebrateBtn">Celebrate with Fireworks</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const particlesContainer = document.getElementById('particles');
+            const fireworksContainer = document.getElementById('fireworks');
+            const celebrateBtn = document.getElementById('celebrateBtn');
+            const daysUntilElement = document.getElementById('daysUntil');
+            
+            // Create background particles
+            function createParticles() {
+                for (let i = 0; i < 100; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    
+                    // Random position
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.top = Math.random() * 100 + '%';
+                    
+                    // Random size
+                    const size = Math.random() * 3 + 1;
+                    particle.style.width = size + 'px';
+                    particle.style.height = size + 'px';
+                    
+                    // Random opacity
+                    particle.style.opacity = Math.random() * 0.5 + 0.2;
+                    
+                    // Random animation delay
+                    particle.style.animationDelay = Math.random() * 5 + 's';
+                    particle.style.animationDuration = Math.random() * 10 + 10 + 's';
+                    
+                    particlesContainer.appendChild(particle);
+                }
+            }
+            
+            // Create fireworks
+            function createFirework(x, y) {
+                const firework = document.createElement('div');
+                firework.classList.add('firework');
+                
+                // Random position
+                firework.style.left = x + 'px';
+                firework.style.top = y + 'px';
+                
+                // Random color
+                const colors = ['#FF9933', '#FFFFFF', '#138808', '#000080', '#FF0800'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                firework.style.backgroundColor = color;
+                
+                // Random size
+                const size = Math.random() * 3 + 2;
+                firework.style.width = size + 'px';
+                firework.style.height = size + 'px';
+                
+                // Random animation delay
+                firework.style.animationDelay = Math.random() * 2 + 's';
+                
+                fireworksContainer.appendChild(firework);
+                
+                // Create sparks
+                for (let i = 0; i < 20; i++) {
+                    const spark = document.createElement('div');
+                    spark.classList.add('spark');
+                    
+                    // Random position around firework
+                    const angle = (Math.PI * 2 * i) / 20;
+                    const velocity = Math.random() * 50 + 50;
+                    const sparkX = Math.cos(angle) * velocity;
+                    const sparkY = Math.sin(angle) * velocity;
+                    
+                    spark.style.left = (parseInt(firework.style.left) + sparkX) + 'px';
+                    spark.style.top = (parseInt(firework.style.top) + sparkY) + 'px';
+                    
+                    // Random color
+                    spark.style.backgroundColor = color;
+                    
+                    // Random size
+                    const sparkSize = Math.random() * 2 + 1;
+                    spark.style.width = sparkSize + 'px';
+                    spark.style.height = sparkSize + 'px';
+                    
+                    // Random animation delay
+                    spark.style.animationDelay = Math.random() * 0.5 + 's';
+                    
+                    fireworksContainer.appendChild(spark);
+                    
+                    // Remove spark after animation
+                    setTimeout(() => {
+                        spark.remove();
+                    }, 1000);
+                }
+                
+                // Remove firework after animation
+                setTimeout(() => {
+                    firework.remove();
+                }, 2000);
+            }
+            
+            // Calculate days until August 15
+            function updateDaysUntil() {
+                const today = new Date();
+                const currentYear = today.getFullYear();
+                let independenceDay = new Date(currentYear, 7, 15); // August 15
+                
+                // If this year's Independence Day has passed, calculate for next year
+                if (today > independenceDay) {
+                    independenceDay = new Date(currentYear + 1, 7, 15);
+                }
+                
+                const timeDiff = independenceDay - today;
+                const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+                
+                daysUntilElement.textContent = daysDiff;
+            }
+            
+            // Event listeners
+            celebrateBtn.addEventListener('click', function() {
+                // Create multiple fireworks
+                for (let i = 0; i < 10; i++) {
+                    setTimeout(() => {
+                        const x = Math.random() * window.innerWidth;
+                        const y = Math.random() * window.innerHeight;
+                        createFirework(x, y);
+                    }, i * 300);
+                }
+            });
+            
+            // Initialize
+            createParticles();
+            updateDaysUntil();
+            
+            // Update days countdown daily
+            setInterval(updateDaysUntil, 1000 * 60 * 60 * 24); // Update once per day
+        });
+    </script>
+</body>
+</html>
