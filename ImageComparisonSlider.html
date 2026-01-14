@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Comparison Slider</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f7fa;
+            font-family: Arial, sans-serif;
+        }
+        
+        .comparison-container {
+            position: relative;
+            width: 800px;
+            max-width: 90%;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .comparison-image {
+            width: 100%;
+            display: block;
+        }
+        
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .image-after {
+            width: 100%;
+            display: block;
+        }
+        
+        .slider {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 5px;
+            height: 100%;
+            background-color: white;
+            cursor: ew-resize;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .slider-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+            user-select: none;
+        }
+        
+        .comparison-labels {
+            position: absolute;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-sizing: border-box;
+            top: 20px;
+            left: 0;
+            pointer-events: none;
+            user-select: none;
+        }
+        
+        .label-before, .label-after {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        /* Vertical slider option */
+        .vertical-slider {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background-color: white;
+            cursor: ns-resize;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transform: translateY(-50%);
+        }
+        
+        .vertical-slider .slider-button {
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .vertical-slider .comparison-labels {
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            top: 0;
+            left: 0;
+            padding: 20px;
+            gap: 20px;
+        }
+        
+        /* Circular slider option */
+        .circular-slider {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .circular-slider .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                to 360deg,
+                white 0deg,
+                white 180deg,
+                transparent 180deg,
+                transparent 360deg
+            );
+            cursor: pointer;
+        }
+        
+        .circular-slider .slider-button {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .circular-slider .comparison-labels {
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            top: 0;
+            left: 0;
+            padding: 20px;
+            gap: 20px;
+        }
+        
+        /* Multiple comparison */
+        .multi-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .comparison-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .comparison-item .comparison-labels {
+            position: relative;
+            top: auto;
+            bottom: 20px;
+            background: none;
+            padding: 0;
+        }
+        
+        .comparison-item .label-before, .comparison-item .label-after {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        
+        .comparison-item .label-before {
+            bottom: 20px;
+            left: 20px;
+        }
+        
+        .comparison-item .label-after {
+            bottom: 20px;
+            right: 20px;
+        }
+        
+        /* Instructions */
+        .instructions {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .instructions h2 {
+            color: #6c5ce7;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .instructions p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        .instructions code {
+            background-color: #f8f9fa;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="comparison-container">
+        <img src="https://picsum.photos/seed/before/800/600.jpg" alt="Before" class="comparison-image">
+        
+        <div class="image-overlay">
+            <img src="https://picsum.photos/seed/after/800/600.jpg" alt="After" class="image-after">
+            
+            <div class="slider" id="slider">
+                <div class="slider-button">Slider</div>
+            </div>
+            
+            <div class="comparison-labels">
+                <div class="label-before">Before</div>
+                <div class="label-after">After</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        <h2>Image Comparison Slider</h2>
+        <p>Drag the slider to compare the before and after images. This is perfect for showing transformations, renovations, or any visual changes.</p>
+        <p>You can customize the slider by changing the colors, labels, and even the orientation (horizontal or vertical).</p>
+        <p>To create a vertical slider, change the <code>width</code> and <code>height</code> properties of the slider, and adjust the cursor value to <code>ns-resize</code>.</p>
+        <p>For a more advanced effect, you can create a circular slider using CSS <code>conic-gradient</code> and transform properties.</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.comparison-container');
+            const slider = document.getElementById('slider');
+            const overlay = document.querySelector('.image-overlay');
+            let isDragging = false;
+            
+            // Update slider position based on mouse movement
+            function updateSliderPosition(e) {
+                if (!isDragging) return;
+                
+                const containerRect = container.getBoundingClientRect();
+                let position = ((e.clientX - containerRect.left) / containerRect.width) * 100;
+                
+                // Constrain position between 0 and 100
+                position = Math.max(0, Math.min(100, position));
+                
+                // Update slider and overlay width
+                slider.style.left = position + '%';
+                overlay.style.width = position + '%';
+            }
+            
+            // Mouse events
+            slider.addEventListener('mousedown', function() {
+                isDragging = true;
+            });
+            
+            document.addEventListener('mousemove', updateSliderPosition);
+            
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+            });
+            
+            // Touch events for mobile
+            slider.addEventListener('touchstart', function() {
+                isDragging = true;
+            });
+            
+            document.addEventListener('touchmove', function(e) {
+                if (!isDragging) return;
+                
+                const containerRect = container.getBoundingClientRect();
+                let position = ((e.touches[0].clientX - containerRect.left) / containerRect.width) * 100;
+                
+                // Constrain position between 0 and 100
+                position = Math.max(0, Math.min(100, position));
+                
+                // Update slider and overlay width
+                slider.style.left = position + '%';
+                overlay.style.width = position + '%';
+            });
+            
+            document.addEventListener('touchend', function() {
+                isDragging = false;
+            });
+        });
+    </script>
+</body>
+</html>

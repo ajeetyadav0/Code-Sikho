@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS backdrop-filter Magic</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #6c5ce7;
+            margin-bottom: 40px;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .demo-card {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            height: 400px;
+        }
+        
+        .demo-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #6c5ce7;
+            text-align: center;
+        }
+        
+        /* Glassmorphism */
+        .glassmorphism {
+            background: url('https://picsum.photos/seed/nature/400/400.jpg') center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        /* Frosted Glass */
+        .frosted-glass {
+            background: url('https://picsum.photos/seed/city/400/400.jpg') center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .frosted-panel {
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px) saturate(150%);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        /* Tinted Glass */
+        .tinted-glass {
+            background: url('https://picsum.photos/seed/abstract/400/400.jpg') center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .tinted-panel {
+            background-color: rgba(108, 92, 231, 0.2);
+            backdrop-filter: blur(8px) hue-rotate(90deg);
+            border-radius: 15px;
+            border: 1px solid rgba(108, 92, 231, 0.3);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        /* Textured Glass */
+        .textured-glass {
+            background: url('https://picsum.photos/seed/texture/400/400.jpg') center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .textured-panel {
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px) contrast(150%) brightness(110%);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        /* Distorted Glass */
+        .distorted-glass {
+            background: url('https://picsum.photos/seed/distort/400/400.jpg') center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .distorted-panel {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(3px) sepia(50%) hue-rotate(270deg);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        /* Animated backdrop-filter */
+        .animated-glass {
+            background: url('https://picsum.photos/seed/animated/400/400.jpg') center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .animated-panel {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            text-align: center;
+            color: white;
+            animation: animatedFilter 5s infinite alternate;
+        }
+        
+        @keyframes animatedFilter {
+            0% { backdrop-filter: blur(10px) brightness(100%); }
+            50% { backdrop-filter: blur(5px) brightness(120%); }
+            100% { backdrop-filter: blur(15px) hue-rotate(90deg); }
+        }
+        
+        /* Multiple backdrop-filters */
+        .multi-filter {
+            background: url('https://picsum.photos/seed/multi/400/400.jpg') center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .multi-panel {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px) contrast(150%) saturate(120%) hue-rotate(15deg);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        /* Instructions */
+        .instructions {
+            grid-column: 1 / -1;
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .instructions h2 {
+            color: #6c5ce7;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        
+        .instructions p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .instructions code {
+            background-color: #f8f9fa;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #e83e8c;
+        }
+        
+        .filter-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        
+        .filter-list li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .filter-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4ecdc4;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSS backdrop-filter Magic</h1>
+        
+        <div class="demo-grid">
+            <!-- Glassmorphism -->
+            <div class="demo-card">
+                <div class="demo-title">Glassmorphism</div>
+                <div class="glassmorphism">
+                    <div class="glass-panel">
+                        <h3>Frosted Glass Effect</h3>
+                        <p>Modern UI with blur</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Frosted Glass -->
+            <div class="demo-card">
+                <div class="demo-title">Frosted Glass</div>
+                <div class="frosted-glass">
+                    <div class="frosted-panel">
+                        <h3>Enhanced Blur</h3>
+                        <p>Increased blur intensity</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tinted Glass -->
+            <div class="demo-card">
+                <div class="demo-title">Tinted Glass</div>
+                <div class="tinted-glass">
+                    <div class="tinted-panel">
+                        <h3>Colored Overlay</h3>
+                        <p>Blur with color tint</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Textured Glass -->
+            <div class="demo-card">
+                <div class="demo-title">Textured Glass</div>
+                <div class="textured-glass">
+                    <div class="textured-panel">
+                        <h3>Enhanced Contrast</h3>
+                        <p>Improved texture visibility</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Distorted Glass -->
+            <div class="demo-card">
+                <div class="demo-title">Distorted Glass</div>
+                <div class="distorted-glass">
+                    <div class="distorted-panel">
+                        <h3>Creative Effects</h3>
+                        <p>Artistic filter combinations</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Animated backdrop-filter -->
+            <div class="demo-card">
+                <div class="demo-title">Animated Filter</div>
+                <div class="animated-glass">
+                    <div class="animated-panel">
+                        <h3>Dynamic Effects</h3>
+                        <p>Changing filters over time</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Multiple backdrop-filters -->
+            <div class="demo-card">
+                <div class="demo-title">Multiple Filters</div>
+                <div class="multi-filter">
+                    <div class="multi-panel">
+                        <h3>Combined Effects</h3>
+                        <p>Multiple filter functions</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Instructions -->
+            <div class="instructions">
+                <h2>Common backdrop-filter Values</h2>
+                <ul class="filter-list">
+                    <li><code>blur()</code> - Applies a Gaussian blur</li>
+                    <li><code>brightness()</code> - Adjusts brightness</li>
+                    <li><code>contrast()</code> - Adjusts contrast</li>
+                    <li><code>drop-shadow()</code> - Applies a drop shadow</li>
+                    <li><code>grayscale()</code> - Converts to grayscale</li>
+                    <li><code>hue-rotate()</code> - Changes hue</li>
+                    <li><code>invert()</code> - Inverts colors</li>
+                    <li><code>opacity()</code> - Applies transparency</li>
+                    <li><code>saturate()</code> - Adjusts color saturation</li>
+                    <li><code>sepia()</code> - Applies sepia tone</li>
+                </ul>
+                
+                <p>You can combine multiple filters by space-separating them:</p>
+                <p><code>backdrop-filter: blur(5px) contrast(150%) saturate(120%);</code></p>
+                
+                <p>Note: backdrop-filter is applied to the area behind an element, not the element itself.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
