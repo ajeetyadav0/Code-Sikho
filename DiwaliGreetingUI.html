@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diwali Greeting UI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0a0a0a;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .diwali-card {
+            width: 90%;
+            max-width: 500px;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #ffecd2 100%);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .diwali-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #ff9a9e; }
+            to { text-shadow: 0 0 20px #fad0c4, 0 0 30px #ffecd2; }
+        }
+        
+        .diwali-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .diwali-wishes {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .diwali-lamps {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .lamp {
+            position: relative;
+            width: 60px;
+            height: 80px;
+        }
+        
+        .lamp-top {
+            width: 60px;
+            height: 40px;
+            background-color: #ff9a9e;
+            border-radius: 30px 30px 0 0;
+            position: relative;
+        }
+        
+        .lamp-top::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background-color: #ffcd3c;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #ffcd3c;
+            animation: flicker 1.5s infinite alternate;
+        }
+        
+        .lamp-bottom {
+            width: 10px;
+            height: 40px;
+            background-color: #ff9a9e;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .lamp-bottom::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -5px;
+            width: 20px;
+            height: 60px;
+            background-color: #ff9a9e;
+            border-radius: 10px;
+            transform: rotate(-5deg);
+        }
+        
+        .lamp-glow {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, rgba(255, 205, 60, 0.8) 0%, rgba(255, 205, 60, 0) 70%);
+            border-radius: 50%;
+            animation: pulse 2s infinite alternate;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            100% { transform: scale(1.2); opacity: 1; }
+        }
+        
+        .diwali-fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .firework {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: firework-launch 2s ease-out infinite;
+        }
+        
+        @keyframes firework-launch {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(50vh) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(0) scale(0);
+                opacity: 0;
+            }
+        }
+        
+        .spark {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: spark-explode 1s ease-out infinite;
+        }
+        
+        @keyframes spark-explode {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
+        
+        .diwali-rangoli {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 300px;
+        }
+        
+        .rangoli-pattern {
+            width: 100%;
+            height: 100%;
+            background: conic-gradient(
+                from 0deg,
+                #ff9a9e 0deg,
+                #fad0c4 90deg,
+                #ffecd2 180deg,
+                #fcb69f 270deg,
+                #ff9a9e 360deg
+            );
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .diwali-button {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 154, 158, 0.3);
+            margin-top: 20px;
+        }
+        
+        .diwali-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 154, 158, 0.4);
+        }
+        
+        /* Floating elements */
+        .floating-element {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .element-1 {
+            width: 50px;
+            height: 50px;
+            background-color: #ff9a9e;
+            border-radius: 50%;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .element-2 {
+            width: 30px;
+            height: 30px;
+            background-color: #fad0c4;
+            border-radius: 50%;
+            top: 20%;
+            right: 15%;
+            animation-delay: 1s;
+        }
+        
+        .element-3 {
+            width: 40px;
+            height: 40px;
+            background-color: #ffecd2;
+            border-radius: 50%;
+            bottom: 15%;
+            left: 20%;
+            animation-delay: 2s;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+            100% { transform: translateY(0) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="diwali-fireworks" id="fireworks"></div>
+    
+    <div class="floating-element element-1"></div>
+    <div class="floating-element element-2"></div>
+    <div class="floating-element element-3"></div>
+    
+    <div class="container">
+        <div class="diwali-card">
+            <h1 class="diwali-title">Happy Diwali!</h1>
+            <p class="diwali-subtitle">Festival of Lights</p>
+            
+            <div class="diwali-wishes">
+                May the festival of lights bring joy, prosperity, and happiness to your life. 
+                Wishing you and your family a Diwali filled with fun and frolic!
+            </div>
+            
+            <div class="diwali-lamps">
+                <div class="lamp">
+                    <div class="lamp-top"></div>
+                    <div class="lamp-bottom"></div>
+                    <div class="lamp-glow"></div>
+                </div>
+                
+                <div class="lamp">
+                    <div class="lamp-top"></div>
+                    <div class="lamp-bottom"></div>
+                    <div class="lamp-glow"></div>
+                </div>
+            </div>
+            
+            <button class="diwali-button" id="celebrateBtn">Celebrate with Fireworks</button>
+        </div>
+        
+        <div class="diwali-rangoli">
+            <div class="rangoli-pattern"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fireworksContainer = document.getElementById('fireworks');
+            const celebrateBtn = document.getElementById('celebrateBtn');
+            
+            // Create fireworks
+            function createFirework(x, y) {
+                const firework = document.createElement('div');
+                firework.classList.add('firework');
+                
+                // Random position
+                firework.style.left = x + 'px';
+                firework.style.top = y + 'px';
+                
+                // Random color
+                const colors = ['#ff9a9e', '#fad0c4', '#ffecd2', '#fcb69f', '#ffcd3c'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                firework.style.backgroundColor = color;
+                
+                // Random size
+                const size = Math.random() * 3 + 2;
+                firework.style.width = size + 'px';
+                firework.style.height = size + 'px';
+                
+                // Random animation delay
+                firework.style.animationDelay = Math.random() * 2 + 's';
+                
+                fireworksContainer.appendChild(firework);
+                
+                // Create sparks
+                for (let i = 0; i < 20; i++) {
+                    const spark = document.createElement('div');
+                    spark.classList.add('spark');
+                    
+                    // Random position around firework
+                    const angle = (Math.PI * 2 * i) / 20;
+                    const velocity = Math.random() * 50 + 50;
+                    const sparkX = Math.cos(angle) * velocity;
+                    const sparkY = Math.sin(angle) * velocity;
+                    
+                    spark.style.left = (parseInt(firework.style.left) + sparkX) + 'px';
+                    spark.style.top = (parseInt(firework.style.top) + sparkY) + 'px';
+                    
+                    // Random color
+                    spark.style.backgroundColor = color;
+                    
+                    // Random size
+                    const sparkSize = Math.random() * 2 + 1;
+                    spark.style.width = sparkSize + 'px';
+                    spark.style.height = sparkSize + 'px';
+                    
+                    // Random animation delay
+                    spark.style.animationDelay = Math.random() * 0.5 + 's';
+                    
+                    fireworksContainer.appendChild(spark);
+                    
+                    // Remove spark after animation
+                    setTimeout(() => {
+                        spark.remove();
+                    }, 1000);
+                }
+                
+                // Remove firework after animation
+                setTimeout(() => {
+                    firework.remove();
+                }, 2000);
+            }
+            
+            // Event listener for celebrate button
+            celebrateBtn.addEventListener('click', function() {
+                // Create multiple fireworks
+                for (let i = 0; i < 10; i++) {
+                    setTimeout(() => {
+                        const x = Math.random() * window.innerWidth;
+                        const y = Math.random() * window.innerHeight;
+                        createFirework(x, y);
+                    }, i * 300);
+                }
+            });
+            
+            // Create initial fireworks
+            setTimeout(() => {
+                for (let i = 0; i < 5; i++) {
+                    setTimeout(() => {
+                        const x = Math.random() * window.innerWidth;
+                        const y = Math.random() * window.innerHeight;
+                        createFirework(x, y);
+                    }, i * 500);
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

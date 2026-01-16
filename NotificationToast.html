@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Toast</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f7fa;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 40px;
+        }
+        
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        
+        .toast-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .btn-success {
+            background-color: #4ecdc4;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #45b7aa;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+        }
+        
+        .btn-error {
+            background-color: #ff6b6b;
+            color: white;
+        }
+        
+        .btn-error:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .btn-warning {
+            background-color: #feca57;
+            color: #333;
+        }
+        
+        .btn-warning:hover {
+            background-color: #fdb94e;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(254, 202, 87, 0.3);
+        }
+        
+        .btn-info {
+            background-color: #74b9ff;
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background-color: #5ca0ff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(116, 185, 255, 0.3);
+        }
+        
+        /* Toast Container */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        /* Toast Styles */
+        .toast {
+            min-width: 300px;
+            padding: 16px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(400px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast.hide {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        
+        .toast-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .toast-content {
+            flex: 1;
+        }
+        
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: block;
+        }
+        
+        .toast-message {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .toast-close {
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            padding: 0;
+            margin-left: auto;
+        }
+        
+        .toast-close:hover {
+            opacity: 1;
+        }
+        
+        /* Success Toast */
+        .toast-success {
+            background-color: white;
+            border-left: 4px solid #4ecdc4;
+        }
+        
+        .toast-success .toast-icon {
+            color: #4ecdc4;
+        }
+        
+        .toast-success .toast-title {
+            color: #4ecdc4;
+        }
+        
+        /* Error Toast */
+        .toast-error {
+            background-color: white;
+            border-left: 4px solid #ff6b6b;
+        }
+        
+        .toast-error .toast-icon {
+            color: #ff6b6b;
+        }
+        
+        .toast-error .toast-title {
+            color: #ff6b6b;
+        }
+        
+        /* Warning Toast */
+        .toast-warning {
+            background-color: white;
+            border-left: 4px solid #feca57;
+        }
+        
+        .toast-warning .toast-icon {
+            color: #feca57;
+        }
+        
+        .toast-warning .toast-title {
+            color: #feca57;
+        }
+        
+        /* Info Toast */
+        .toast-info {
+            background-color: white;
+            border-left: 4px solid #74b9ff;
+        }
+        
+        .toast-info .toast-icon {
+            color: #74b9ff;
+        }
+        
+        .toast-info .toast-title {
+            color: #74b9ff;
+        }
+        
+        /* Progress Toast */
+        .toast-progress {
+            background-color: white;
+            border-left: 4px solid #6c5ce7;
+        }
+        
+        .toast-progress .toast-icon {
+            color: #6c5ce7;
+        }
+        
+        .toast-progress .toast-title {
+            color: #6c5ce7;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background-color: #f0f0f0;
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #6c5ce7;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+        
+        /* Slide-in Animation */
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+        
+        /* Slide-out Animation */
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+        
+        /* Bounce-in Animation */
+        @keyframes bounceIn {
+            0% {
+                transform: translateX(400px) scale(0.3);
+                opacity: 0;
+            }
+            50% {
+                transform: translateX(-20px) scale(1.05);
+                opacity: 1;
+            }
+            70% {
+                transform: translateX(10px) scale(0.98);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+        }
+        
+        /* Top and Bottom Positions */
+        .toast-top {
+            top: 20px;
+            right: 20px;
+            left: auto;
+            bottom: auto;
+        }
+        
+        .toast-bottom {
+            bottom: 20px;
+            right: 20px;
+            left: auto;
+            top: auto;
+        }
+        
+        .toast-top-left {
+            top: 20px;
+            left: 20px;
+            right: auto;
+            bottom: auto;
+        }
+        
+        .toast-bottom-left {
+            bottom: 20px;
+            left: 20px;
+            right: auto;
+            top: auto;
+        }
+        
+        /* Toast with Image */
+        .toast-with-image {
+            background-color: white;
+            border-left: 4px solid #6c5ce7;
+        }
+        
+        .toast-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        
+        /* Dark Theme Toast */
+        .dark-theme .toast {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+        }
+        
+        .dark-theme .toast-close {
+            color: #ecf0f1;
+        }
+        
+        /* Stack of Toasts */
+        .toast-stack {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Notification Toast Examples</h1>
+        
+        <div class="button-container">
+            <button class="toast-btn btn-success" data-type="success" data-message="Operation completed successfully!">Success Toast</button>
+            <button class="toast-btn btn-error" data-type="error" data-message="Error: Something went wrong!">Error Toast</button>
+            <button class="toast-btn btn-warning" data-type="warning" data-message="Warning: Please check your input!">Warning Toast</button>
+            <button class="toast-btn btn-info" data-type="info" data-message="Info: New update available!">Info Toast</button>
+            <button class="toast-btn btn-info" data-type="progress" data-message="Uploading file...">Progress Toast</button>
+            <button class="toast-btn btn-success" data-type="image" data-message="New message from John!">Toast with Image</button>
+        </div>
+    </div>
+    
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toastContainer = document.getElementById('toastContainer');
+            const toastButtons = document.querySelectorAll('.toast-btn');
+            
+            // Function to create toast
+            function createToast(type, message, options = {}) {
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type}`;
+                
+                // Create toast content based on type
+                let toastContent = '';
+                
+                if (type === 'progress') {
+                    toastContent = `
+                        <div class="toast-icon">⏳</div>
+                        <div class="toast-content">
+                            <div class="toast-title">Processing</div>
+                            <div class="toast-message">${message}</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                        </div>
+                        <button class="toast-close">&times;</button>
+                    `;
+                } else if (type === 'image') {
+                    toastContent = `
+                        <img src="https://picsum.photos/seed/avatar/40/40.jpg" alt="Avatar" class="toast-image">
+                        <div class="toast-content">
+                            <div class="toast-title">New Message</div>
+                            <div class="toast-message">${message}</div>
+                        </div>
+                        <button class="toast-close">&times;</button>
+                    `;
+                } else {
+                    const iconMap = {
+                        success: '✓',
+                        error: '✗',
+                        warning: '⚠',
+                        info: 'ℹ'
+                    };
+                    
+                    toastContent = `
+                        <div class="toast-icon">${iconMap[type]}</div>
+                        <div class="toast-content">
+                            <div class="toast-title">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
+                            <div class="toast-message">${message}</div>
+                        </div>
+                        <button class="toast-close">&times;</button>
+                    `;
+                }
+                
+                toast.innerHTML = toastContent;
+                
+                // Add close functionality
+                const closeBtn = toast.querySelector('.toast-close');
+                closeBtn.addEventListener('click', function() {
+                    hideToast(toast);
+                });
+                
+                // Auto-hide after specified time
+                const autoHideTime = options.autoHide || 5000;
+                setTimeout(() => {
+                    hideToast(toast);
+                }, autoHideTime);
+                
+                return toast;
+            }
+            
+            // Function to show toast
+            function showToast(toast) {
+                toastContainer.appendChild(toast);
+                
+                // Trigger animation
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 10);
+                
+                // Simulate progress for progress toast
+                if (toast.classList.contains('toast-progress')) {
+                    const progressFill = document.getElementById('progressFill');
+                    let width = 0;
+                    const interval = setInterval(() => {
+                        width += 10;
+                        progressFill.style.width = width + '%';
+                        
+                        if (width >= 100) {
+                            clearInterval(interval);
+                            setTimeout(() => {
+                                hideToast(toast);
+                            createToast('success', 'Upload completed!', { autoHide: 3000 });
+                            showToast(document.querySelector('.toast-success'));
+                            setTimeout(() => {
+                                hideToast(document.querySelector('.toast-success'));
+                            }, 3000);
+                        }, 500);
+                        }
+                    }, 200);
+                }
+            }
+            
+            // Function to hide toast
+            function hideToast(toast) {
+                toast.classList.add('hide');
+                
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }
+            
+            // Event listeners for buttons
+            toastButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const type = this.dataset.type;
+                    const message = this.dataset.message;
+                    
+                    // Remove existing toasts of the same type
+                    const existingToasts = toastContainer.querySelectorAll(`.toast-${type}`);
+                    existingToasts.forEach(toast => {
+                        hideToast(toast);
+                    });
+                    
+                    // Create and show new toast
+                    const toast = createToast(type, message);
+                    showToast(toast);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
