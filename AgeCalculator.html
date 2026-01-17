@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .calculator-container {
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+        
+        .date-input {
+            width: 100%;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        
+        .date-input:focus {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .date-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #6c5ce7;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+        }
+        
+        .calculate-btn:hover {
+            background-color: #5f4bd8;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
+        }
+        
+        .result-container {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .result-container.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .result-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #6c5ce7;
+        }
+        
+        .result-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .result-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+        
+        .result-value {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .age-display {
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .age-unit {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-left: 5px;
+        }
+        
+        .fun-fact {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            line-height: 1.5;
+        }
+        
+        .error-message {
+            color: #ff6b6b;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        /* Quick Date Buttons */
+        .quick-dates {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .quick-date-btn {
+            padding: 8px 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-date-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <h1>Age Calculator</h1>
+        
+        <div class="quick-dates">
+            <button class="quick-date-btn" data-date="2000-01-01">New Year</button>
+            <button class="quick-date-btn" data-date="1990-01-01">90's Kid</button>
+            <button class="quick-date-btn" data-date="1980-01-01">80's Kid</button>
+            <button class="quick-date-btn" data-date="1970-01-01">70's Kid</button>
+        </div>
+        
+        <div class="input-group">
+            <label for="birthdate" class="input-label">Enter Your Birthdate</label>
+            <input type="date" id="birthdate" class="date-input" max="">
+        </div>
+        
+        <button class="calculate-btn" id="calculateBtn">Calculate Age</button>
+        
+        <div class="result-container" id="resultContainer">
+            <div class="age-display">
+                <span class="result-value" id="ageValue">0</span>
+                <span class="age-unit">years old</span>
+            </div>
+            
+            <div class="result-details">
+                <div class="result-item">
+                    <span class="result-label">Years:</span>
+                    <span class="result-value" id="yearsValue">0</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Months:</span>
+                    <span class="result-value" id="monthsValue">0</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Days:</span>
+                    <span class="result-value" id="daysValue">0</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Hours:</span>
+                    <span class="result-value" id="hoursValue">0</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Minutes:</span>
+                    <span class="result-value" id="minutesValue">0</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Seconds:</span>
+                    <span class="result-value" id="secondsValue">0</span>
+                </div>
+            </div>
+            
+            <div class="result-title">Next Birthday</div>
+            <div class="result-item">
+                <span class="result-label">Days until:</span>
+                <span class="result-value" id="nextBirthdayValue">0</span>
+            </div>
+        </div>
+        
+        <div class="error-message" id="errorMessage">Please enter a valid birthdate</div>
+        
+        <div class="fun-fact" id="funFact">
+            Fun fact will appear here...
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const birthdateInput = document.getElementById('birthdate');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const resultContainer = document.getElementById('resultContainer');
+            const ageValue = document.getElementById('ageValue');
+            const yearsValue = document.getElementById('yearsValue');
+            const monthsValue = document.getElementById('monthsValue');
+            const daysValue = document.getElementById('daysValue');
+            const hoursValue = document.getElementById('hoursValue');
+            const minutesValue = document.getElementById('minutesValue');
+            const secondsValue = document.getElementById('secondsValue');
+            const nextBirthdayValue = document.getElementById('nextBirthdayValue');
+            const errorMessage = document.getElementById('errorMessage');
+            const funFact = document.getElementById('funFact');
+            const quickDateBtns = document.querySelectorAll('.quick-date-btn');
+            
+            // Set max date to today
+            const today = new Date();
+            birthdateInput.max = today.toISOString().split('T')[0];
+            
+            // Fun facts
+            const funFacts = [
+                "Did you know? The average person spends about 6 months of their life looking for lost items?",
+                "The average person blinks about 15-20 times per minute.",
+                "Your heart beats about 100,000 times per day.",
+                "Humans are the only animals that blush or need to wear clothes because they're self-conscious about their appearance.",
+                "The average person laughs about 15 times per day.",
+                "Your nose can remember 50,000 different scents.",
+                "Humans are the best long-distance runners on the planet.",
+                "The average person will spend about 25 years sleeping.",
+                "Your eyes blink about 6 million times a year.",
+                "The average person walks about 115,000 miles in their lifetime."
+            ];
+            
+            // Calculate age function
+            function calculateAge() {
+                const birthdate = birthdateInput.value;
+                
+                if (!birthdate) {
+                    errorMessage.classList.add('show');
+                    resultContainer.classList.remove('show');
+                    return;
+                }
+                
+                errorMessage.classList.remove('show');
+                
+                const birthDate = new Date(birthdate);
+                const today = new Date();
+                
+                // Calculate age
+                let ageInMs = today - birthDate;
+                let years = Math.floor(ageInMs / (365.25 * 24 * 60 * 60 * 1000));
+                let months = Math.floor((ageInMs % (365.25 * 24 * 60 * 60 * 1000)) / (30.44 * 24 * 60 * 60 * 1000));
+                let days = Math.floor((ageInMs % (30.44 * 24 * 60 * 60 * 1000)) / (24 * 60 * 60 * 1000));
+                let hours = Math.floor((ageInMs % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+                let minutes = Math.floor((ageInMs % (60 * 60 * 1000)) / (60 * 1000));
+                let seconds = Math.floor((ageInMs % (60 * 1000)) / 1000);
+                
+                // Calculate next birthday
+                const nextBirthday = new Date(birthDate);
+                nextBirthday.setFullYear(today.getFullYear() + 1);
+                
+                let daysUntilNextBirthday = Math.floor((nextBirthday - today) / (24 * 60 * 60 * 1000));
+                
+                // Update DOM
+                ageValue.textContent = years;
+                yearsValue.textContent = years;
+                monthsValue.textContent = months;
+                daysValue.textContent = days;
+                hoursValue.textContent = hours;
+                minutesValue.textContent = minutes;
+                secondsValue.textContent = seconds;
+                nextBirthdayValue.textContent = daysUntilNextBirthday;
+                
+                // Show result container
+                resultContainer.classList.add('show');
+                
+                // Show fun fact
+                const randomFact = funFacts[Math.floor(Math.random() * funFacts.length)];
+                funFact.textContent = randomFact;
+            }
+            
+            // Event listeners
+            calculateBtn.addEventListener('click', calculateAge);
+            
+            quickDateBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    birthdateInput.value = this.dataset.date;
+                    calculateAge();
+                });
+            });
+            
+            // Calculate on Enter key
+            birthdateInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    calculateAge();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

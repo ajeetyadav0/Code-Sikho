@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Animation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            padding: 40px 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #6c5ce7;
+            margin-bottom: 50px;
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: #6c5ce7;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 50px;
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: fadeInUp 0.5s ease forwards;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            animation-delay: 0.2s;
+        }
+        
+        .timeline-item:nth-child(even) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .timeline-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .timeline-date {
+            position: absolute;
+            top: 12px;
+            left: -40px;
+            background-color: #6c5ce7;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        
+        .timeline-date::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-right: 10px solid #6c5ce7;
+            transform: translateY(-50%);
+        }
+        
+        .timeline-icon {
+            position: absolute;
+            top: 12px;
+            left: -40px;
+            width: 40px;
+            height: 40px;
+            background-color: #6c5ce7;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.2rem;
+            z-index: 1;
+        }
+        
+        .timeline-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #6c5ce7;
+        }
+        
+        .timeline-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #666;
+        }
+        
+        .timeline-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .tag {
+            background-color: #f0f0f0;
+            color: #6c5ce7;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        /* Horizontal Timeline */
+        .horizontal-timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+        
+        .horizontal-timeline::before {
+            content: '';
+            position: absolute;
+            height: 4px;
+            background-color: #6c5ce7;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+        }
+        
+        .horizontal-item {
+            position: relative;
+            width: 300px;
+            margin: 0 auto 50px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInDown 0.5s ease forwards;
+        }
+        
+        .horizontal-item:nth-child(odd) {
+            animation-delay: 0.2s;
+        }
+        
+        .horizontal-item:nth-child(even) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes fadeInDown {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .horizontal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .horizontal-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .horizontal-date {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #6c5ce7;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        
+        .horizontal-date::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-top: 10px solid #6c5ce7;
+            transform: translateX(-50%);
+        }
+        
+        /* Centered Timeline */
+        .centered-timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+        
+        .centered-item {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-bottom: 50px;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: zoomIn 0.5s ease forwards;
+        }
+        
+        .centered-item:nth-child(odd) {
+            animation-delay: 0.2s;
+        }
+        
+        .centered-item:nth-child(even) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes zoomIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .centered-date {
+            flex: 0 0 100px 0;
+            background-color: #6c5ce7;
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+        
+        .centered-content {
+            flex: 1;
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            margin-left: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .centered-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Instructions */
+        .instructions {
+            max-width: 800px;
+            margin: 50px auto 0;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .instructions h2 {
+            color: #6c5ce7;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        
+        .instructions p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .instructions code {
+            background-color: #f8f9fa;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #e83e8c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Timeline Animation Examples</h1>
+    
+    <!-- Vertical Timeline -->
+    <div class="timeline">
+        <div class="timeline-item">
+            <div class="timeline-date">2021</div>
+            <div class="timeline-content">
+                <h3 class="timeline-title">Project Started</h3>
+                <p class="timeline-description">Began working on an exciting new project that will change the world.</p>
+                <div class="timeline-tags">
+                    <span class="tag">Planning</span>
+                    <span class="tag">Research</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="timeline-item">
+            <div class="timeline-date">2022</div>
+            <div class="timeline-content">
+                <h3 class="timeline-title">First Milestone</h3>
+                <p class="timeline-description">Completed the initial phase and achieved our first major milestone.</p>
+                <div class="timeline-tags">
+                    <span class="tag">Development</span>
+                    <span class="tag">Design</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="timeline-item">
+            <div class="timeline-date">2023</div>
+            <div class="timeline-content">
+                <h3 class="timeline-title">Product Launch</h3>
+                <p class="timeline-description">Successfully launched our product to the market and received amazing feedback.</p>
+                <div class="timeline-tags">
+                    <span class="tag">Launch</span>
+                    <span class="tag">Marketing</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="timeline-item">
+            <div class="timeline-date">2024</div>
+            <div class="timeline-content">
+                <h3 class="timeline-title">Future Plans</h3>
+                <p class="timeline-description">Expanding our reach and developing new features for the future.</p>
+                <div class="timeline-tags">
+                    <span class="tag">Growth</span>
+                    <span class="tag">Innovation</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Horizontal Timeline -->
+    <div class="horizontal-timeline">
+        <div class="horizontal-item">
+            <div class="horizontal-date">Q1 2021</div>
+            <div class="horizontal-content">
+                <h3 class="timeline-title">Concept Phase</h3>
+                <p class="timeline-description">Initial idea and concept development.</p>
+            </div>
+        </div>
+        
+        <div class="horizontal-item">
+            <div class="horizontal-date">Q2 2021</div>
+            <div class="horizontal-content">
+                <h3 class="timeline-title">Design Phase</h3>
+                <p class="timeline-description">Created mockups and design prototypes.</p>
+            </div>
+        </div>
+        
+        <div class="horizontal-item">
+            <div class="horizontal-date">Q3 2021</div>
+            <div class="horizontal-content">
+                <h3 class="timeline-title">Development</h3>
+                <p class="timeline-description">Started coding and building the application.</p>
+            </div>
+        </div>
+        
+        <div class="horizontal-item">
+            <div class="horizontal-date">Q4 2021</div>
+            <div class="horizontal-content">
+                <h3 class="timeline-title">Testing</h3>
+                <p class="timeline-description">Conducted thorough testing and bug fixes.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Centered Timeline -->
+    <div class="centered-timeline">
+        <div class="centered-item">
+            <div class="centered-date">Jan 2022</div>
+            <div class="centered-content">
+                <h3 class="timeline-title">Project Kickoff</h3>
+                <p class="timeline-description">Officially started the project with a dedicated team.</p>
+            </div>
+        </div>
+        
+        <div class="centered-item">
+            <div class="centered-date">Jun 2022</div>
+            <div class="centered-content">
+                <h3 class="timeline-title">Beta Release</h3>
+                <p class="timeline-description">Released beta version for early testers.</p>
+            </div>
+        </div>
+        
+        <div class="centered-item">
+            <div class="centered-date">Dec 2022</div>
+            <div class="centered-content">
+                <h3 class="timeline-title">Official Launch</h3>
+                <p class="timeline-description">Product is now available to everyone.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        <h2>Timeline Animation Techniques</h2>
+        <p>These examples demonstrate different timeline layouts and animation techniques:</p>
+        <ul>
+            <li><strong>Vertical Timeline:</strong> Classic timeline with dates on the left and content on the right.</li>
+            <li><strong>Horizontal Timeline:</strong> Timeline that flows horizontally with dates above the content.</li>
+            <li><strong>Centered Timeline:</strong> Timeline with dates and content arranged in a centered layout.</li>
+        </ul>
+        <p>The animations use CSS keyframes to create smooth entrance effects:</p>
+        <ul>
+            <li><code>fadeInUp</code> - Elements fade in and move up from below.</li>
+            <li><code>fadeInDown</code> - Elements fade in and move down from above.</li>
+            <li><code>zoomIn</code> - Elements fade in and scale up from a smaller size.</li>
+        </ul>
+        <p>The <code>animation-delay</code> property is used to stagger the animations, creating a sequential appearance effect.</p>
+        <p>Hover effects are added to the content boxes to provide interactive feedback.</p>
+    </div>
+</body>
+</html>
