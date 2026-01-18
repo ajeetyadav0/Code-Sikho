@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll Snap Cards</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #6c5ce7;
+            margin: 40px 0;
+        }
+        
+        .instructions {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .instructions p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .instructions code {
+            background-color: #f8f9fa;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #e83e8c;
+        }
+        
+        /* Horizontal Scroll Snap */
+        .horizontal-scroll {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            padding: 20px 0;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .horizontal-scroll::-webkit-scrollbar {
+            height: 10px;
+        }
+        
+        .horizontal-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .horizontal-scroll::-webkit-scrollbar-thumb {
+            background: #6c5ce7;
+            border-radius: 10px;
+        }
+        
+        .card {
+            flex: 0 0 auto;
+            width: 300px;
+            height: 400px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            scroll-snap-align: center;
+            transition: transform 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .card-content {
+            padding: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #6c5ce7;
+        }
+        
+        .card-description {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #666;
+        }
+        
+        /* Vertical Scroll Snap */
+        .vertical-scroll {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            padding: 0 20px;
+            gap: 20px;
+            height: 500px;
+            margin-bottom: 40px;
+        }
+        
+        .vertical-scroll::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        .vertical-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .vertical-scroll::-webkit-scrollbar-thumb {
+            background: #6c5ce7;
+            border-radius: 10px;
+        }
+        
+        .vertical-card {
+            flex: 0 0 auto;
+            width: 300px;
+            height: 400px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            scroll-snap-align: center;
+            transition: transform 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .vertical-card:hover {
+            transform: translateX(-10px);
+        }
+        
+        /* 2D Grid Scroll Snap */
+        .grid-scroll {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            overflow-x: auto;
+            scroll-snap-type: both mandatory;
+            scroll-behavior: smooth;
+            max-height: 600px;
+        }
+        
+        .grid-scroll::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        
+        .grid-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .grid-scroll::-webkit-scrollbar-thumb {
+            background: #6c5ce7;
+            border-radius: 10px;
+        }
+        
+        /* Full Page Snap */
+        .fullpage-snap {
+            height: 100vh;
+            overflow-y: auto;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+        
+        .section {
+            height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+        
+        .section:nth-child(1) {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .section:nth-child(2) {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .section:nth-child(3) {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        
+        .section-content {
+            max-width: 800px;
+            text-align: center;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .section-description {
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+        
+        .scroll-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        
+        .indicator-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(108, 92, 231, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .indicator-dot.active {
+            background-color: #6c5ce7;
+            transform: scale(1.2);
+        }
+        
+        /* Navigation Dots */
+        .nav-dots {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+        
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(108, 92, 231, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-dot:hover {
+            background-color: rgba(108, 92, 231, 0.6);
+            transform: scale(1.2);
+        }
+        
+        .nav-dot.active {
+            background-color: #6c5ce7;
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <h1>Scroll Snap Cards Examples</h1>
+    
+    <div class="instructions">
+        <h2>What is Scroll Snap?</h2>
+        <p>Scroll Snap is a CSS feature that allows you to create snap points in your scrollable containers. When users scroll, the content will "snap" to these points, providing a better user experience for certain types of layouts.</p>
+        
+        <h3>Key Properties:</h3>
+        <ul>
+            <li><code>scroll-snap-type: x | y | both</code> - Defines the snap axis</li>
+            <li><code>scroll-snap-align: start | center | end</code> - Defines the snap alignment within the element</li>
+            <li><code>scroll-behavior: smooth</code> - Enables smooth scrolling between snap points</li>
+        </ul>
+        
+        <h3>Browser Support:</h3>
+        <p>Scroll Snap is supported in all modern browsers, including Chrome, Firefox, Safari, and Edge.</p>
+    </div>
+    
+    <!-- Horizontal Scroll Snap -->
+    <h2>Horizontal Scroll Snap</h2>
+    <div class="horizontal-scroll">
+        <div class="card">
+            <img src="https://picsum.photos/seed/scroll1/300/200.jpg" alt="Card 1" class="card-image">
+            <div class="card-content">
+                <h3 class="card-title">Card 1</h3>
+                <p class="card-description">This is the first card in a horizontal scroll snap container.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <img src="https://picsum.photos/seed/scroll2/300/200.jpg" alt="Card 2" class="card-image">
+            <div class="card-content">
+                <h3 class="card-title">Card 2</h3>
+                <p class="card-description">Scroll horizontally to see the snap effect in action.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <img src="https://picsum.photos/seed/scroll3/300/200.jpg" alt="Card 3" class="card-image">
+            <div class="card-content">
+                <h3 class="card-title">Card 3</h3>
+                <p class="card-description">Each card will snap to the center of the viewport as you scroll.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <img src="https://picsum.photos/seed/scroll4/300/200.jpg" alt="Card 4" class="card-image">
+            <div class="card-content">
+                <h3 class="card-title">Card 4</h3>
+                <p class="card-description">This creates a carousel-like effect without JavaScript.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <img src="https://picsum.photos/seed/scroll5/300/200.jpg" alt="Card 5" class="card-image">
+            <div class="card-content">
+                <h3 class="card-title">Card 5</h3>
+                <p class="card-description">Perfect for image galleries, product showcases, and testimonials.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Vertical Scroll Snap -->
+    <h2>Vertical Scroll Snap</h2>
+    <div class="vertical-scroll">
+        <div class="vertical-card">
+            <img src="https://picsum.photos/seed/vscroll1/300/400.jpg" alt="Card 1" class="card-image">
+            <div class="card-content">
+                <h3 class="card-title">Vertical Card 1</h3>
+                <p class="card-description">Scroll vertically to see the snap effect.</p>
+            </div>
+        </div>
+        
+        <div class="vertical-card">
+            <img src="https://picsum.photos/seed/vscroll2/300/400.jpg" alt="Card 2" class="card-image">
+            <div class="card-content">
+                <h3 class="card-title">Vertical Card 2</h3>
+                <p class="card-description">Each card snaps to the center of the viewport.</p>
+            </div>
+        </div>
+        
+        <div class="vertical-card">
+            <img src="https://picsum.photos/seed/vscroll3/300/400.jpg" alt="Card 3" class="card-image">
+            <div class="card-content">
+                <h3 class="card-title">Vertical Card 3</h3>
+                <p class="card-description">Great for step-by-step tutorials or timelines.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 2D Grid Scroll Snap -->
+    <h2>2D Grid Scroll Snap</h2>
+    <div class="grid-scroll">
+        <div class="card">
+            <img src="https://picsum.photos/seed/grid1/300/200.jpg" alt="Card 1" class="card-image">
+            <div class="card-content">
+                <h3 class="card-title">Grid Card 1</h3>
+                <p class="card-description">Cards snap both horizontally and vertically.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <img src="https://picsum.photos/seed/grid2/300/200.jpg" alt="Card 2" class="card-image">
+            <div class="card-content">
+                <h3 class="card-title">Grid Card 2</h3>
+                <p class="card-description">Creates a grid-like snap experience.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <img src="https://picsum.photos/seed/grid3/300/200.jpg" alt="Card 3" class="card-image">
+            <div class="card-content">
+                <h3 class="card-title">Grid Card 3</h3>
+                <p class="card-description">Perfect for portfolios or image galleries.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <img src="https://picsum.photos/seed/grid4/300/200.jpg" alt="Card 4" class="card-image">
+            <div class="card-content">
+                <h3 class="card-title">Grid Card 4</h3>
+                <p class="card-description">Scroll in any direction to see the snap effect.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <img src="https://picsum.photos/seed/grid5/300/200.jpg" alt="Card 5" class="card-image">
+            <div class="card-content">
+                <h3 class="card-title">Grid Card 5</h3>
+                <p class="card-description">Each card is a snap point in the grid.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <img src="https://picsum.photos/seed/grid6/300/200.jpg" alt="Card 6" class="card-image">
+            <div class="card-content">
+                <h3 class="card-title">Grid Card 6</h3>
+                <p class="card-description">Combines the best of both worlds.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Full Page Snap -->
+    <h2>Full Page Snap</h2>
+    <div class="fullpage-snap">
+        <div class="section">
+            <div class="section-content">
+                <h2 class="section-title">Section 1</h2>
+                <p class="section-description">This is a full-page snap section. Scroll down to snap to the next section.</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-content">
+                <h2 class="section-title">Section 2</h2>
+                <p class="section-description">Each section takes up the full viewport height.</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-content">
+                <h2 class="section-title">Section 3</h2>
+                <p class="section-description">Perfect for presentations or storytelling websites.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator">
+        <div class="indicator-dot active"></div>
+        <div class="indicator-dot"></div>
+        <div class="indicator-dot"></div>
+    </div>
+    
+    <!-- Navigation Dots -->
+    <div class="nav-dots">
+        <div class="nav-dot active"></div>
+        <div class="nav-dot"></div>
+        <div class="nav-dot"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update scroll indicators for full-page snap
+            const sections = document.querySelectorAll('.section');
+            const indicatorDots = document.querySelectorAll('.indicator-dot');
+            const navDots = document.querySelectorAll('.nav-dot');
+            
+            function updateIndicators() {
+                const scrollPosition = window.scrollY;
+                const windowHeight = window.innerHeight;
+                
+                sections.forEach((section, index) => {
+                    const sectionTop = section.offsetTop;
+                    
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + windowHeight) {
+                        // Section is in view
+                        indicatorDots[index].classList.add('active');
+                        navDots[index].classList.add('active');
+                    } else {
+                        // Section is out of view
+                        indicatorDots[index].classList.remove('active');
+                        navDots[index].classList.remove('active');
+                    }
+                });
+            }
+            
+            // Navigation dots click to scroll to section
+            navDots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    sections[index].scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+            
+            // Update indicators on scroll
+            window.addEventListener('scroll', updateIndicators);
+            
+            // Initialize indicators
+            updateIndicators();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS aspect-ratio Property</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            padding: 40px 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #6c5ce7;
+            margin-bottom: 40px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .demo-section {
+            margin-bottom: 60px;
+        }
+        
+        .demo-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #6c5ce7;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .aspect-box {
+            background-color: #6c5ce7;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 16:9 Aspect Ratio */
+        .aspect-16-9 {
+            aspect-ratio: 16 / 9;
+            width: 100%;
+        }
+        
+        /* 1:1 Aspect Ratio */
+        .aspect-1-1 {
+            aspect-ratio: 1 / 1;
+            width: 100%;
+        }
+        
+        /* 4:3 Aspect Ratio */
+        .aspect-4-3 {
+            aspect-ratio: 4 / 3;
+            width: 100%;
+        }
+        
+        /* 3:2 Aspect Ratio */
+        .aspect-3-2 {
+            aspect-ratio: 3 / 2;
+            width: 100%;
+        }
+        
+        /* 21:9 Aspect Ratio */
+        .aspect-21-9 {
+            aspect-ratio: 21 / 9;
+            width: 100%;
+        }
+        
+        /* Golden Ratio */
+        .aspect-golden {
+            aspect-ratio: 1.618 / 1;
+            width: 100%;
+        }
+        
+        /* Square */
+        .aspect-square {
+            aspect-ratio: 1 / 1;
+            width: 200px;
+            height: 200px;
+        }
+        
+        /* Circle */
+        .aspect-circle {
+            aspect-ratio: 1 / 1;
+            width: 200px;
+            border-radius: 50%;
+        }
+        
+        /* Responsive Aspect Ratio */
+        .aspect-responsive {
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        /* Image with Aspect Ratio */
+        .aspect-image {
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            object-fit: cover;
+        }
+        
+        /* Video with Aspect Ratio */
+        .aspect-video {
+            aspect-ratio: 16 / 9;
+            width: 100%;
+        }
+        
+        /* Card with Aspect Ratio */
+        .aspect-card {
+            aspect-ratio: 3 / 2;
+            width: 100%;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-image {
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            object-fit: cover;
+        }
+        
+        .card-content {
+            padding: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #6c5ce7;
+        }
+        
+        .card-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #666;
+        }
+        
+        /* Gallery with Aspect Ratio */
+        .aspect-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .gallery-item {
+            aspect-ratio: 1 / 1;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .gallery-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover .gallery-image {
+            transform: scale(1.05);
+        }
+        
+        /* Instructions */
+        .instructions {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .instructions h2 {
+            color: #6c5ce7;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        
+        .instructions p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .instructions code {
+            background-color: #f8f9fa;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #e83e8c;
+        }
+        
+        .compatibility-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .compatibility-table th, .compatibility-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .compatibility-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .support-yes {
+            color: #4ecdc4;
+            font-weight: 600;
+        }
+        
+        .support-no {
+            color: #ff6b6b;
+        }
+        
+        .support-partial {
+            color: #feca57;
+        }
+    </style>
+</head>
+<body>
+    <h1>CSS aspect-ratio Property</h1>
+    
+    <div class="container">
+        <div class="demo-section">
+            <h2 class="demo-title">Common Aspect Ratios</h2>
+            <div class="demo-grid">
+                <div class="aspect-box aspect-16-9">
+                    16:9<br>Video
+                </div>
+                <div class="aspect-box aspect-1-1">
+                    1:1<br>Square
+                </div>
+                <div class="aspect-box aspect-4-3">
+                    4:3<br>Photo
+                </div>
+                <div class="aspect-box aspect-3-2">
+                    3:2<br>Photo
+                </div>
+                <div class="aspect-box aspect-21-9">
+                    21:9<br>Cinema
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2 class="demo-title">Aspect Ratio in Action</h2>
+            <div class="demo-grid">
+                <div class="aspect-card">
+                    <img src="https://picsum.photos/seed/landscape/400/225.jpg" alt="Landscape" class="card-image">
+                    <div class="card-content">
+                        <h3 class="card-title">16:9 Aspect Ratio</h3>
+                        <p class="card-description">Perfect for video thumbnails and widescreen images.</p>
+                    </div>
+                </div>
+                
+                <div class="aspect-card">
+                    <img src="https://picsum.photos/seed/portrait/400/400.jpg" alt="Portrait" class="card-image" style="aspect-ratio: 3/4;">
+                        <div class="card-content">
+                            <h3 class="card-title">3:4 Aspect Ratio</h3>
+                                <p class="card-description">Ideal for portrait photos and social media posts.</p>
+                            </div>
+                        </div>
+                
+                <div class="aspect-card">
+                    <img src="https://picsum.photos/seed/square/400/400.jpg" alt="Square" class="card-image" style="aspect-ratio: 1/1;">
+                        <div class="card-content">
+                            <h3 class="card-title">1:1 Aspect Ratio</h3>
+                                <p class="card-description">Perfect for Instagram posts and profile pictures.</p>
+                            </div>
+                        </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2 class="demo-title">Responsive Gallery</h2>
+            <div class="aspect-gallery">
+                <div class="gallery-item">
+                    <img src="https://picsum.photos/seed/gallery1/200/200.jpg" alt="Gallery 1" class="gallery-image">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://picsum.photos/seed/gallery2/200/200.jpg" alt="Gallery 2" class="gallery-image">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://picsum.photos/seed/gallery3/200/200.jpg" alt="Gallery 3" class="gallery-image">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://picsum.photos/seed/gallery4/200/200.jpg" alt="Gallery 4" class="gallery-image">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://picsum.photos/seed/gallery5/200/200.jpg" alt="Gallery 5" class="gallery-image">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://picsum.photos/seed/gallery6/200/200.jpg" alt="Gallery 6" class="gallery-image">
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h2>What is aspect-ratio?</h2>
+            <p>The <code>aspect-ratio</code> property allows you to set the preferred aspect ratio of an element, ensuring it maintains consistent proportions regardless of the viewport size.</p>
+            
+            <h3>Syntax:</h3>
+            <p><code>aspect-ratio: width / height;</code></p>
+            
+            <h3>Common Values:</h3>
+            <ul>
+                <li><code>16 / 9</code> - Widescreen video</li>
+                <li><code>4 / 3</code> - Traditional photography</li>
+                <li><code>3 / 2</code> - Classic photography</li>
+                <li><code>1 / 1</code> - Square images</li>
+                <li><code>21 / 9</code> - Cinema screen</li>
+            </ul>
+            
+            <h3>Benefits:</h3>
+            <ul>
+                <li>Maintains consistent proportions across different screen sizes</li>
+                <li>Prevents layout shifts when loading content</li>
+                <li>Reduces need for placeholder images</li>
+                <li>Improves page load performance</li>
+            </ul>
+            
+            <h3>Browser Support:</h3>
+            <table class="compatibility-table">
+                <thead>
+                    <tr>
+                        <th>Browser</th>
+                        <th>Support</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Chrome</td>
+                        <td class="support-yes">Supported (version 88+)</td>
+                    </tr>
+                    <tr>
+                        <td>Firefox</td>
+                        <td class="support-yes">Supported (version 89+)</td>
+                    </tr>
+                    <tr>
+                        <td>Safari</td>
+                        <td class="support-yes">Supported (version 15+)</td>
+                    </tr>
+                    <tr>
+                        <td>Edge</td>
+                        <td class="support-yes">Supported (version 88+)</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>Fallback for Older Browsers:</h3>
+            <p>For browsers that don't support <code>aspect-ratio</code>, you can use the padding-top technique:</p>
+            <p><code>padding-top: (height / width * 100)%;</code></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add some interactivity to demonstrate aspect-ratio
+            const aspectBoxes = document.querySelectorAll('.aspect-box');
+            
+            aspectBoxes.forEach(box => {
+                box.addEventListener('click', function() {
+                    // Toggle a highlight effect
+                    this.style.transform = 'scale(0.95)';
+                    this.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
+                    
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                        this.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.1)';
+                    }, 200);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
