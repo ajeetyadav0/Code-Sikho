@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Border Card</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f7fa;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            max-width: 1200px;
+            padding: 20px;
+        }
+        
+        .card {
+            width: 300px;
+            height: 400px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+        }
+        
+        /* Linear Gradient Border */
+        .gradient-border {
+            padding: 3px;
+            background: linear-gradient(45deg, #667eea, #764ba2, #6c5ce7, #a29bfe);
+            border-radius: 15px;
+        }
+        
+        .gradient-border .card-content {
+            height: calc(100% - 6px);
+            background-color: white;
+            border-radius: 12px;
+            padding: 27px;
+            box-sizing: border-box;
+        }
+        
+        /* Animated Gradient Border */
+        .animated-gradient {
+            background: white;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .animated-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #667eea, #764ba2, #6c5ce7, #a29bfe);
+            border-radius: 15px;
+            padding: 3px;
+            z-index: 1;
+            animation: gradientRotate 4s linear infinite;
+        }
+        
+        .animated-gradient .card-content {
+            position: relative;
+            z-index: 2;
+            padding: 30px;
+        }
+        
+        @keyframes gradientRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Rainbow Gradient Border */
+        .rainbow-gradient {
+            background: white;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .rainbow-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: conic-gradient(
+                from 0deg,
+                #ff0000 0deg,
+                #ff7f00 17.14%,
+                #ffff00 33.33%,
+                #00ff00 50%,
+                #00ff7f 66.67%,
+                #0000ff 83.33%,
+                #4b0082 100%,
+                #0000ff 116.67%,
+                #4b0082 133.33%,
+                #0000ff 150%,
+                #ff00ff 183.33%,
+                #ff7f00 216.67%,
+                #ffff00 250%,
+                #ff0000 283.33%,
+                #ff7f00 300%,
+                #0000ff 333.33%,
+                #4b0082 350%,
+                #0000ff 416.67%,
+                #4b0082 500%,
+                #0000ff 583.33%,
+                #ff00ff 650%,
+                #ff7f00 716.67%,
+                #ffff00 833.33%,
+                #00ff00 950%,
+                #00ff7f 1000deg
+            );
+            border-radius: 15px;
+            padding: 3px;
+            z-index: 1;
+            animation: rainbowRotate 8s linear infinite;
+        }
+        
+        .rainbow-gradient .card-content {
+            position: relative;
+            z-index: 2;
+            padding: 30px;
+        }
+        
+        @keyframes rainbowRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Pulsing Gradient Border */
+        .pulsing-gradient {
+            background: white;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pulsing-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+            border-radius: 15px;
+            padding: 3px;
+            z-index: 1;
+            animation: pulse 2s infinite alternate;
+        }
+        
+        .pulsing-gradient .card-content {
+            position: relative;
+            z-index: 2;
+            padding: 30px;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Multi-color Gradient Border */
+        .multi-gradient {
+            background: white;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .multi-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                #ff6b6b 0%, 
+                #4ecdc4 25%, 
+                #45b7d1 50%, 
+                #96ceb4 75%, 
+                #ffeaa7 100%);
+            border-radius: 15px;
+            padding: 3px;
+            z-index: 1;
+            animation: multiColorRotate 6s linear infinite;
+        }
+        
+        .multi-gradient .card-content {
+            position: relative;
+            z-index: 2;
+            padding: 30px;
+        }
+        
+        @keyframes multiColorRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Card Content */
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .card-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #666;
+            text-align: center;
+        }
+        
+        .card-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .card-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+        }
+        
+        /* Neon Gradient Border */
+        .neon-gradient {
+            background: white;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .neon-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #00ff00, #ffff00);
+            border-radius: 15px;
+            padding: 3px;
+            z-index: 1;
+            animation: neonPulse 3s infinite alternate;
+        }
+        
+        .neon-gradient .card-content {
+            position: relative;
+            z-index: 2;
+            padding: 30px;
+        }
+        
+        @keyframes neonPulse {
+            0% { 
+                box-shadow: 0 0 5px #ff00ff, 0 0 10px #00ffff, 0 0 15px #00ff00;
+            }
+            50% { 
+                box-shadow: 0 0 20px #ff00ff, 0 0 30px #00ffff, 0 0 40px #00ff00;
+            }
+            100% { 
+                box-shadow: 0 0 5px #ff00ff, 0 0 10px #00ffff, 0 0 15px #00ff00;
+            }
+        }
+        
+        /* Instructions */
+        .instructions {
+            max-width: 800px;
+            margin: 40px auto 0;
+            padding: 30px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .instructions h2 {
+            color: #6c5ce7;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        
+        .instructions p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .instructions code {
+            background-color: #f8f9fa;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #e83e8c;
+        }
+    </style>
+</head>
+<body>
+    <div class="card-container">
+        <!-- Linear Gradient Border -->
+        <div class="card gradient-border">
+            <div class="card-content">
+                <h3 class="card-title">Linear Gradient</h3>
+                <p class="card-description">Simple linear gradient border with smooth color transition.</p>
+                <button class="card-button">Learn More</button>
+            </div>
+        </div>
+        
+        <!-- Animated Gradient Border -->
+        <div class="card animated-gradient">
+            <div class="card-content">
+                <h3 class="card-title">Animated Gradient</h3>
+                <p class="card-description">Rotating gradient border with continuous animation.</p>
+                <button class="card-button">Learn More</button>
+            </div>
+        </div>
+        
+        <!-- Rainbow Gradient Border -->
+        <div class="card rainbow-gradient">
+            <div class="card-content">
+                <h3 class="card-title">Rainbow Gradient</h3>
+                <p class="card-description">Colorful rainbow gradient border with rotation animation.</p>
+                <button class="card-button">Learn More</button>
+            </div>
+        </div>
+        
+        <!-- Pulsing Gradient Border -->
+        <div class="card pulsing-gradient">
+            <div class="card-content">
+                <h3 class="card-title">Pulsing Gradient</h3>
+                <p class="card-description">Gradient border with pulsing animation effect.</p>
+                <button class="card-button">Learn More</button>
+            </div>
+        </div>
+        
+        <!-- Multi-color Gradient Border -->
+        <div class="card multi-gradient">
+            <div class="card-content">
+                <h3 class="card-title">Multi-color Gradient</h3>
+                <p class="card-description">Multi-color gradient border with rotation animation.</p>
+                <button class="card-button">Learn More</button>
+            </div>
+        </div>
+        
+        <!-- Neon Gradient Border -->
+        <div class="card neon-gradient">
+            <div class="card-content">
+                <h3 class="card-title">Neon Gradient</h3>
+                <p class="card-description">Neon-style gradient border with glowing effect.</p>
+                <button class="card-button">Learn More</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        <h2>Gradient Border Techniques</h2>
+        <p>These examples demonstrate various gradient border techniques using CSS:</p>
+        <ul>
+            <li><strong>Linear Gradient:</strong> Uses a linear gradient for a simple, clean look.</li>
+            <li><strong>Animated Gradient:</strong> The gradient rotates continuously, creating a dynamic effect.</li>
+            <li><strong>Rainbow Gradient:</strong> Uses a full-color spectrum for a vibrant, colorful border.</li>
+            <li><strong>Pulsing Gradient:</strong> The gradient pulses in and out for attention-grabbing effect.</li>
+            <li><strong>Multi-color Gradient:</strong> Combines multiple colors in a single gradient.</li>
+            <li><strong>Neon Gradient:</strong> Creates a neon-like glowing effect with box-shadow.</li>
+        </ul>
+        
+        <h3>Key CSS Properties:</h3>
+        <ul>
+            <li><code>linear-gradient()</code> - Creates a linear gradient.</li>
+            <li><code>conic-gradient()</code> - Creates a conic (circular) gradient.</li>
+            <li><code>border-radius:</code> - Rounds the corners of the border.</li>
+            <li><code>box-shadow:</code> - Adds shadow effects, can be animated for glowing effects.</li>
+            <li><code>animation:</code> - Controls the animation of the gradient.</li>
+            <li><code>transform: rotate()</code> - Rotates the gradient element.</li>
+        </ul>
+        
+        <h3>Tips for Great Gradient Borders:</h3>
+        <ul>
+            <li>Use contrasting colors for better visibility.</li>
+            <li>Adjust animation speed for the desired effect.</li>
+            <li>Combine with other effects like box-shadow for more impact.</li>
+            <li>Consider performance for complex animations.</li>
+            <li>Test on different browsers for compatibility.</li>
+        </ul>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add interactive feedback to cards
+            const cards = document.querySelectorAll('.card');
+            
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Add a subtle animation when clicked
+                    this.style.transform = 'scale(0.95)';
+                    
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 200);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
