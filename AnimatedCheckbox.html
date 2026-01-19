@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Checkbox</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f7fa;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 40px 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #6c5ce7;
+            margin-bottom: 40px;
+        }
+        
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .checkbox-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+        }
+        
+        .checkbox-input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: #333;
+            margin-left: 15px;
+            user-select: none;
+        }
+        
+        /* Custom Checkbox Styles */
+        .checkbox-custom {
+            position: relative;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #6c5ce7;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox-custom::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background-color: #6c5ce7;
+            border-radius: 4px;
+            transform: scale(0);
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox-input:checked + .checkbox-custom::after {
+            transform: scale(1);
+        }
+        
+        .checkbox-input:checked + .checkbox-label {
+            color: #6c5ce7;
+            font-weight: 600;
+        }
+        
+        /* Switch Style Checkbox */
+        .checkbox-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background-color: #e0e0e0;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background-color: white;
+            border-radius: 12px;
+            transform: translateX(0);
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox-input:checked + .checkbox-switch {
+            background-color: #6c5ce7;
+        }
+        
+        .checkbox-input:checked + .checkbox-switch::after {
+            transform: translateX(30px);
+        }
+        
+        /* Bounce Animation Checkbox */
+        .checkbox-bounce {
+            position: relative;
+            width: 30px;
+            height: 30px;
+            border: 2px solid #6c5ce7;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox-bounce::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background-color: #6c5ce7;
+            border-radius: 50%;
+            transform: scale(0);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .checkbox-input:checked + .checkbox-bounce::after {
+            transform: scale(1);
+        }
+        
+        /* Slide Animation Checkbox */
+        .checkbox-slide {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background-color: #e0e0e0;
+            border-radius: 13px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox-slide::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 24px;
+            height: 24px;
+            background-color: #6c5ce7;
+            border-radius: 12px;
+            transform: translateX(-26px);
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox-input:checked + .checkbox-slide {
+            background-color: #6c5ce7;
+        }
+        
+        .checkbox-input:checked + .checkbox-slide::after {
+            transform: translateX(0);
+        }
+        
+        /* Pulse Animation Checkbox */
+        .checkbox-pulse {
+            position: relative;
+            width: 30px;
+            height: 30px;
+            border: 2px solid #6c5ce7;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox-pulse::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background-color: #6c5ce7;
+            border-radius: 50%;
+            transform: scale(0);
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox-input:checked + .checkbox-pulse::after {
+            transform: scale(1);
+            animation: pulse 1s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Rotate Animation Checkbox */
+        .checkbox-rotate {
+            position: relative;
+            width: 30px;
+            height: 30px;
+            border: 2px solid #6c5ce7;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox-rotate::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg) scale(0);
+            color: #6c5ce7;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox-input:checked + .checkbox-rotate::after {
+            transform: translate(-50%, -50%) rotate(0deg) scale(1);
+        }
+        
+        /* Icon Checkbox */
+        .checkbox-icon {
+            position: relative;
+            width: 30px;
+            height: 30px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #999;
+            font-size: 16px;
+        }
+        
+        .checkbox-icon::after {
+            content: '✓';
+            position: absolute;
+            color: #6c5ce7;
+            transform: scale(0);
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox-input:checked + .checkbox-icon {
+            border-color: #6c5ce7;
+            color: #6c5ce7;
+        }
+        
+        .checkbox-input:checked + .checkbox-icon::after {
+            transform: scale(1);
+        }
+        
+        /* Label Styles */
+        .checkbox-text {
+            font-size: 1rem;
+            color: #333;
+            margin-left: 15px;
+        }
+        
+        .checkbox-input:checked + .checkbox-text {
+            color: #6c5ce7;
+            font-weight: 600;
+        }
+        
+        /* Disabled Checkbox */
+        .checkbox-disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .checkbox-disabled .checkbox-custom,
+        .checkbox-disabled .checkbox-custom::after,
+        .checkbox-disabled .checkbox-icon,
+        .checkbox-disabled .checkbox-icon::after {
+            background-color: #ccc;
+            border-color: #ccc;
+            color: #999;
+        }
+        
+        /* Instructions */
+        .instructions {
+            max-width: 800px;
+            margin: 40px auto 0;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .instructions h2 {
+            color: #6c5ce7;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        
+        .instructions p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .instructions code {
+            background-color: #f8f9fa;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #e83e8c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Animated Checkbox Examples</h1>
+        
+        <div class="checkbox-grid">
+            <!-- Custom Checkbox -->
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkbox1" class="checkbox-input">
+                <div class="checkbox-custom"></div>
+                <label for="checkbox1" class="checkbox-label">Custom Checkbox</label>
+            </div>
+            
+            <!-- Switch Style Checkbox -->
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkbox2" class="checkbox-input">
+                <div class="checkbox-switch"></div>
+                <label for="checkbox2" class="checkbox-label">Switch Style</label>
+            </div>
+            
+            <!-- Bounce Animation Checkbox -->
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkbox3" class="checkbox-input">
+                <div class="checkbox-bounce"></div>
+                <label for="checkbox3" class="checkbox-label">Bounce Animation</label>
+            </div>
+            
+            <!-- Slide Animation Checkbox -->
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkbox4" class="checkbox-input">
+                <div class="checkbox-slide"></div>
+                <label for="checkbox4" class="checkbox-label">Slide Animation</label>
+            </div>
+            
+            <!-- Pulse Animation Checkbox -->
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkbox5" class="checkbox-input">
+                <div class="checkbox-pulse"></div>
+                <label for="checkbox5" class="checkbox-label">Pulse Animation</label>
+            </div>
+            
+            <!-- Rotate Animation Checkbox -->
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkbox6" class="checkbox-input">
+                <div class="checkbox-rotate"></div>
+                <label for="checkbox6" class="checkbox-label">Rotate Animation</label>
+            </div>
+            
+            <!-- Icon Checkbox -->
+            <div class="checkbox-item">
+                <input type="checkbox" id="checkbox7" class="checkbox-input">
+                <div class="checkbox-icon"></div>
+                <label for="checkbox7" class="checkbox-label">Icon Checkbox</label>
+            </div>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        <h2>Checkbox Animation Techniques</h2>
+        <p>These examples demonstrate various checkbox animation techniques using CSS:</p>
+        <ul>
+            <li><strong>Custom Checkbox:</strong> Uses a custom-styled checkbox with a checkmark that scales in when checked.</li>
+            <li><strong>Switch Style:</strong> Creates a toggle switch-like appearance with a sliding animation.</li>
+            <li><strong>Bounce Animation:</strong> Adds a bouncing effect to the checkmark when checked.</li>
+            <li><strong>Slide Animation:</strong> The checkmark slides in from the left when checked.</li>
+            <li><strong>Pulse Animation:</strong> The checkmark pulses continuously when checked.</li>
+            <li><strong>Rotate Animation:</strong> The checkmark rotates in when checked.</li>
+            <li><strong>Icon Checkbox:</strong> Uses an icon instead of a standard checkbox.</li>
+        </ul>
+        
+        <h3>Key Techniques:</h3>
+        <ul>
+            <li><code>::after</code> pseudo-element to create the checkmark</li>
+            <li><code>transform: scale()</code> to animate the checkmark size</li>
+            <li><code>transition</code> for smooth animations</li>
+            <li><code>opacity: 0</code> and <code>pointer-events: none</code> to hide the default checkbox</li>
+            <li><code>animation</code> for continuous animations like pulse</li>
+            <li><code>cubic-bezier()</code> for custom animation timing functions</li>
+        </ul>
+        
+        <h3>Accessibility Considerations:</h3>
+        <ul>
+            <li>Always include proper labels for screen readers</li>
+            <li>Ensure sufficient color contrast for visibility</li>
+            <li>Provide keyboard navigation support</li>
+            <li>Consider focus states for keyboard users</li>
+            <li>Test with assistive technologies like screen readers</li>
+        </ul>
+        
+        <h3>JavaScript Enhancement:</h3>
+        <p>While these examples use pure CSS, you can enhance them with JavaScript for more complex interactions:</p>
+        <ul>
+            <li>Add ripple effects on click</li>
+            <li>Create indeterminate states</li>
+            <li>Implement custom validation logic</li>
+            <li>Add haptic feedback on mobile devices</li>
+        </ul>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add interactive feedback
+            const checkboxes = document.querySelectorAll('.checkbox-input');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    // Add a subtle animation to the parent when checked
+                    const parent = this.closest('.checkbox-item');
+                    parent.style.transform = 'scale(0.98)';
+                    
+                    setTimeout(() => {
+                        parent.style.transform = 'scale(1)';
+                    }, 200);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
