@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table vs Div Layout</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { margin-bottom: 30px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .div-table { display: table; width: 100%; }
+        .div-row { display: table-row; }
+        .div-cell { display: table-cell; border: 1px solid #ddd; padding: 8px; }
+        .div-header { background-color: #f2f2f2; font-weight: bold; }
+        .note { background-color: #fffacd; padding: 10px; border-radius: 5px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Table vs Div Layout</h1>
+    
+    <div class="container">
+        <h2>HTML Table</h2>
+        <table>
+            <tr>
+                <th>Header 1</th>
+                <th>Header 2</th>
+                <th>Header 3</th>
+            </tr>
+            <tr>
+                <td>Cell 1</td>
+                <td>Cell 2</td>
+                <td>Cell 3</td>
+            </tr>
+            <tr>
+                <td>Cell 4</td>
+                <td>Cell 5</td>
+                <td>Cell 6</td>
+            </tr>
+        </table>
+        <div class="note">✅ Best for tabular data</div>
+    </div>
+    
+    <div class="container">
+        <h2>Div Table Layout</h2>
+        <div class="div-table">
+            <div class="div-row">
+                <div class="div-cell div-header">Header 1</div>
+                <div class="div-cell div-header">Header 2</div>
+                <div class="div-cell div-header">Header 3</div>
+            </div>
+            <div class="div-row">
+                <div class="div-cell">Cell 1</div>
+                <div class="div-cell">Cell 2</div>
+                <div class="div-cell">Cell 3</div>
+            </div>
+            <div class="div-row">
+                <div class="div-cell">Cell 4</div>
+                <div class="div-cell">Cell 5</div>
+                <div class="div-cell">Cell 6</div>
+            </div>
+        </div>
+        <div class="note">✅ Better for responsive layouts</div>
+    </div>
+</body>
+</html>

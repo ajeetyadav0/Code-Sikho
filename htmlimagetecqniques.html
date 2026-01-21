@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Image Optimization</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .example { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .good { background-color: #e6f7e6; }
+        .bad { background-color: #ffe6e6; }
+        img { max-width: 100%; height: auto; display: block; margin: 10px 0; }
+        .comparison { display: flex; gap: 20px; }
+        .comparison > div { flex: 1; }
+    </style>
+</head>
+<body>
+    <h1>HTML Image Optimization</h1>
+    
+    <div class="comparison">
+        <div class="example bad">
+            <h3>❌ Not Optimized</h3>
+            <img src="https://picsum.photos/seed/unoptimized/1200/800.jpg" alt="Unoptimized image">
+            <p>Large file size, no dimensions, no lazy loading</p>
+        </div>
+        
+        <div class="example good">
+            <h3>✅ Optimized</h3>
+            <img src="https://picsum.photos/seed/optimized/600/400.jpg" 
+                 alt="Optimized image" 
+                 width="600" 
+                 height="400" 
+                 loading="lazy">
+            <p>Smaller file size, defined dimensions, lazy loading</p>
+        </div>
+    </div>
+    
+    <div class="example good">
+        <h3>Responsive Images with srcset</h3>
+        <img src="https://picsum.photos/seed/responsive/400/300.jpg"
+             srcset="https://picsum.photos/seed/responsive/400/300.jpg 400w,
+                     https://picsum.photos/seed/responsive/800/600.jpg 800w,
+                     https://picsum.photos/seed/responsive/1200/900.jpg 1200w"
+             sizes="(max-width: 600px) 400px, (max-width: 900px) 800px, 1200px"
+             alt="Responsive image">
+        <p>Automatically serves appropriate image size based on viewport</p>
+    </div>
+    
+    <div class="example good">
+        <h3>Modern Image Formats</h3>
+        <picture>
+            <source srcset="https://picsum.photos/seed/webp/600/400.webp" type="image/webp">
+            <source srcset="https://picsum.photos/seed/jp2/600/400.jp2" type="image/jp2">
+            <img src="https://picsum.photos/seed/fallback/600/400.jpg" alt="Modern formats">
+        </picture>
+        <p>Uses WebP or JPEG 2000 if supported, falls back to JPEG</p>
+    </div>
+</body>
+</html>
