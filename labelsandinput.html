@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Labels and Accessibility</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input { padding: 8px; width: 200px; border: 1px solid #ddd; border-radius: 4px; }
+        .good { background-color: #e6f7e6; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
+        .bad { background-color: #ffe6e6; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <h1>HTML Labels and Accessibility</h1>
+    
+    <div class="good">
+        <h3>✅ Good Practice</h3>
+        <div class="form-group">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+    </div>
+    
+    <div class="bad">
+        <h3>❌ Bad Practice</h3>
+        <div class="form-group">
+            <input type="text" placeholder="Full Name">
+        </div>
+    </div>
+    
+    <div class="good">
+        <h3>✅ Checkbox with Label</h3>
+        <div class="form-group">
+            <input type="checkbox" id="subscribe" name="subscribe">
+            <label for="subscribe">Subscribe to newsletter</label>
+        </div>
+    </div>
+</body>
+</html>
