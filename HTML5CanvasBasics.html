@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML5 Canvas Basics</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .canvas-container { margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        canvas { border: 1px solid #000; background-color: #fff; }
+        .code-example { background-color: #f5f5f5; padding: 10px; border-radius: 5px; margin: 10px 0; font-family: monospace; white-space: pre; }
+        button { background-color: #4CAF50; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>HTML5 Canvas Basics</h1>
+    
+    <div class="canvas-container">
+        <h2>Drawing Shapes</h2>
+        <canvas id="shapesCanvas" width="300" height="200"></canvas>
+        <div style="margin-top: 10px;">
+            <button onclick="drawRectangle()">Rectangle</button>
+            <button onclick="drawCircle()">Circle</button>
+            <button onclick="drawTriangle()">Triangle</button>
+            <button onclick="clearCanvas()">Clear</button>
+        </div>
+        
+        <div class="code-example">var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+
+// Rectangle
+ctx.fillStyle = "#FF0000";
+ctx.fillRect(10, 10, 50, 50);
+
+// Circle
+ctx.beginPath();
+ctx.arc(100, 60, 20, 0, 2 * Math.PI);
+ctx.fillStyle = "#00FF00";
+ctx.fill();</div>
+    </div>
+    
+    <div class="canvas-container">
+        <h2>Drawing Text</h2>
+        <canvas id="textCanvas" width="300" height="100"></canvas>
+        <div style="margin-top: 10px;">
+            <button onclick="drawText()">Draw Text</button>
+            <button onclick="clearTextCanvas()">Clear</button>
+        </div>
+        
+        <div class="code-example">ctx.font = "30px Arial";
+ctx.fillStyle = "blue";
+ctx.fillText("Hello World", 10, 50);</div>
+    </div>
+    
+    <div class="canvas-container">
+        <h2>Drawing Lines</h2>
+        <canvas id="linesCanvas" width="300" height="200"></canvas>
+        <div style="margin-top: 10px;">
+            <button onclick="drawLines()">Draw Lines</button>
+            <button onclick="clearLinesCanvas()">Clear</button>
+        </div>
+        
+        <div class="code-example">ctx.beginPath();
+ctx.moveTo(20, 20);
+ctx.lineTo(200, 100);
+ctx.strokeStyle = "red";
+ctx.stroke();</div>
+    </div>
+    
+    <script>
+        // Shapes Canvas
+        var shapesCanvas = document.getElementById("shapesCanvas");
+        var shapesCtx = shapesCanvas.getContext("2d");
+        
+        function drawRectangle() {
+            shapesCtx.fillStyle = "#FF0000";
+            shapesCtx.fillRect(10, 10, 50, 50);
+        }
+        
+        function drawCircle() {
+            shapesCtx.beginPath();
+            shapesCtx.arc(100, 60, 20, 0, 2 * Math.PI);
+            shapesCtx.fillStyle = "#00FF00";
+            shapesCtx.fill();
+        }
+        
+        function drawTriangle() {
+            shapesCtx.beginPath();
+            shapesCtx.moveTo(150, 10);
+            shapesCtx.lineTo(200, 90);
+            shapesCtx.lineTo(100, 90);
+            shapesCtx.closePath();
+            shapesCtx.fillStyle = "#0000FF";
+            shapesCtx.fill();
+        }
+        
+        function clearCanvas() {
+            shapesCtx.clearRect(0, 0, shapesCanvas.width, shapesCanvas.height);
+        }
+        
+        // Text Canvas
+        var textCanvas = document.getElementById("textCanvas");
+        var textCtx = textCanvas.getContext("2d");
+        
+        function drawText() {
+            textCtx.font = "30px Arial";
+            textCtx.fillStyle = "blue";
+            textCtx.fillText("Hello Canvas", 10, 50);
+        }
+        
+        function clearTextCanvas() {
+            textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
+        }
+        
+        // Lines Canvas
+        var linesCanvas = document.getElementById("linesCanvas");
+        var linesCtx = linesCanvas.getContext("2d");
+        
+        function drawLines() {
+            // Line 1
+            linesCtx.beginPath();
+            linesCtx.moveTo(20, 20);
+            linesCtx.lineTo(200, 100);
+            linesCtx.strokeStyle = "red";
+            linesCtx.stroke();
+            
+            // Line 2
+            linesCtx.beginPath();
+            linesCtx.moveTo(20, 100);
+            linesCtx.lineTo(200, 20);
+            linesCtx.strokeStyle = "green";
+            linesCtx.stroke();
+        }
+        
+        function clearLinesCanvas() {
+            linesCtx.clearRect(0, 0, linesCanvas.width, linesCanvas.height);
+        }
+    </script>
+</body>
+</html>
