@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML5 Local Storage</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, textarea { padding: 8px; width: 100%; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px; }
+        .note { background-color: #f0f8ff; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .storage-display { background-color: #f5f5f5; padding: 10px; border-radius: 5px; margin: 10px 0; min-height: 100px; }
+        .code-example { background-color: #f5f5f5; padding: 10px; border-radius: 5px; margin: 10px 0; font-family: monospace; white-space: pre; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HTML5 Local Storage Explained</h1>
+        
+        <div class="note">
+            <h3>What is Local Storage?</h3>
+            <p>Local Storage allows web applications to store data locally within the user's browser with no expiration date.</p>
+        </div>
+        
+        <div class="code-example">// Save data
+localStorage.setItem("key", "value");
+
+// Retrieve data
+var value = localStorage.getItem("key");
+
+// Remove data
+localStorage.removeItem("key");
+
+// Clear all data
+localStorage.clear();</div>
+        
+        <h2>Try It Yourself</h2>
+        
+        <div class="form-group">
+            <label for="key">Key:</label>
+            <input type="text" id="key" placeholder="Enter a key">
+        </div>
+        
+        <div class="form-group">
+            <label for="value">Value:</label>
+            <input type="text" id="value" placeholder="Enter a value">
+        </div>
+        
+        <button onclick="saveData()">Save</button>
+        <button onclick="retrieveData()">Retrieve</button>
+        <button onclick="removeData()">Remove</button>
+        <button onclick="clearAllData()">Clear All</button>
+        
+        <h3>Current Local Storage:</h3>
+        <div class="storage-display" id="storageDisplay">
+            <p>No data in local storage yet.</p>
+        </div>
+        
+        <h2>Practical Example: To-Do List</h2>
+        
+        <div class="form-group">
+            <label for="task">Task:</label>
+            <input type="text" id="task" placeholder="Enter a task">
+        </div>
+        
+        <button onclick="addTask()">Add Task</button>
+        <button onclick="clearTasks()">Clear Tasks</button>
+        
+        <div id="taskList"></div>
+    </div>
+    
+    <script>
+        // Basic Local Storage Functions
+        function saveData() {
+            const key = document.getElementById("key").value;
+            const value = document.getElementById("value").value;
+            
+            if (key && value) {
+                localStorage.setItem(key, value);
+                displayStorage();
+                document.getElementById("key").value = "";
+                document.getElementById("value").value = "";
+            }
+        }
+        
+        function retrieveData() {
+            const key = document.getElementById("key").value;
+            
+            if (key) {
+                const value = localStorage.getItem(key);
+                if (value) {
+                    document.getElementById("value").value = value;
+                } else {
+                    document.getElementById("value").value = "No value found for this key";
+                }
+            }
+        }
+        
+        function removeData() {
+            const key = document.getElementById("key").value;
+            
+            if (key) {
+                localStorage.removeItem(key);
+                displayStorage();
+                document.getElementById("key").value = "";
+                document.getElementById("value").value = "";
+            }
+        }
+        
+        function clearAllData() {
+            localStorage.clear();
+            displayStorage();
+        }
+        
+        function displayStorage() {
+            const storageDisplay = document.getElementById("storageDisplay");
+            
+            if (localStorage.length === 0) {
+                storageDisplay.innerHTML = "<p>No data in local storage.</p>";
+            } else {
+                let html = "<ul>";
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    const value = localStorage.getItem(key);
+                    html += `<li><strong>${key}:</strong> ${value}</li>`;
+                }
+                html += "</ul>";
+                storageDisplay.innerHTML = html;
+            }
+        }
+        
+        // To-Do List Example
+        function addTask() {
+            const taskInput = document.getElementById("task");
+            const task = taskInput.value.trim();
+            
+            if (task) {
+                // Get existing tasks
+                let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+                
+                // Add new task
+                tasks.push({
+                    id: Date.now(),
+                    text: task,
+                    completed: false
+                });
+                
+                // Save updated tasks
+                localStorage.setItem("tasks", JSON.stringify(tasks));
+                
+                // Clear input
+                taskInput.value = "";
+                
+                // Display tasks
+                displayTasks();
+            }
+        }
+        
+        function toggleTask(id) {
+            // Get existing tasks
+            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            
+            // Find and update task
+            tasks = tasks.map(task => {
+                if (task.id === id) {
+                    task.completed = !task.completed;
+                }
+                return task;
+            });
+            
+            // Save updated tasks
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+            
+            // Display tasks
+            displayTasks();
+        }
+        
+        function deleteTask(id) {
+            // Get existing tasks
+            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            
+            // Remove task
+            tasks = tasks.filter(task => task.id !== id);
+            
+            // Save updated tasks
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+            
+            // Display tasks
+            displayTasks();
+        }
+        
+        function clearTasks() {
+            localStorage.removeItem("tasks");
+            displayTasks();
+        }
+        
+        function displayTasks() {
+            const taskList = document.getElementById("taskList");
+            
+            // Get tasks
+            const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            
+            if (tasks.length === 0) {
+                taskList.innerHTML = "<p>No tasks yet. Add one above!</p>";
+            } else {
+                let html = "<ul>";
+                tasks.forEach(task => {
+                    html += `
+                        <li style="margin: 10px 0; padding: 10px; background-color: #f5f5f5; border-radius: 5px;">
+                            <input type="checkbox" ${task.completed ? "checked" : ""} 
+                                   onchange="toggleTask(${task.id})" 
+                                   style="margin-right: 10px;">
+                            <span style="${task.completed ? "text-decoration: line-through;" : ""}">${task.text}</span>
+                            <button onclick="deleteTask(${task.id})" 
+                                    style="background-color: #f44336; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;">
+                                Delete
+                            </button>
+                        </li>
+                    `;
+                });
+                html += "</ul>";
+                taskList.innerHTML = html;
+            }
+        }
+        
+        // Initialize
+        displayStorage();
+        displayTasks();
+    </script>
+</body>
+</html>

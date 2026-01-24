@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML5 Geolocation API</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        button { background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        .location-display { background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 15px 0; min-height: 100px; }
+        .code-example { background-color: #f5f5f5; padding: 10px; border-radius: 5px; margin: 10px 0; font-family: monospace; white-space: pre; }
+        .note { background-color: #f0f8ff; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .map-container { height: 300px; background-color: #e6e6e6; border-radius: 5px; margin: 15px 0; display: flex; align-items: center; justify-content: center; color: #666; }
+        .error { background-color: #ffe6e6; padding: 10px; border-radius: 5px; margin: 10px 0; color: #d32f2f; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HTML5 Geolocation API</h1>
+        
+        <div class="note">
+            <h3>What is Geolocation?</h3>
+            <p>The Geolocation API allows web applications to access the user's geographical location.</p>
+        </div>
+        
+        <div class="code-example">// Get current position
+navigator.geolocation.getCurrentPosition(success, error);
+
+// Watch position changes
+var watchId = navigator.geolocation.watchPosition(success, error);
+
+// Stop watching
+navigator.geolocation.clearWatch(watchId);</div>
+        
+        <h2>Try It Yourself</h2>
+        
+        <button onclick="getLocation()">Get My Location</button>
+        <button onclick="watchLocation()">Watch My Location</button>
+        <button onclick="stopWatching()">Stop Watching</button>
+        
+        <div class="location-display" id="locationDisplay">
+            <p>Click "Get My Location" to see your coordinates.</p>
+        </div>
+        
+        <div class="map-container" id="mapContainer">
+            Map will appear here after getting location
+        </div>
+        
+        <h2>Location-Based Features</h2>
+        
+        <button onclick="calculateDistance()">Calculate Distance to New York</button>
+        <button onclick="getWeather()">Get Weather Info</button>
+        <button onclick="findNearbyPlaces()">Find Nearby Places</button>
+        
+        <div class="location-display" id="featureDisplay">
+            <p>Click a button above to see location-based features.</p>
+        </div>
+    </div>
+    
+    <script>
+        let watchId = null;
+        let currentPosition = null;
+        
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                document.getElementById("locationDisplay").innerHTML = "<div class='error'>Geolocation is not supported by this browser.</div>";
+            }
+        }
+        
+        function watchLocation() {
+            if (navigator.geolocation) {
+                watchId = navigator.geolocation.watchPosition(showPosition, showError);
+                document.getElementById("locationDisplay").innerHTML = "<p>Watching your location...</p>";
+            } else {
+                document.getElementById("locationDisplay").innerHTML = "<div class='error'>Geolocation is not supported by this browser.</div>";
+            }
+        }
+        
+        function stopWatching() {
+            if (watchId !== null) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+                document.getElementById("locationDisplay").innerHTML = "<p>Stopped watching your location.</p>";
+            }
+        }
+        
+        function showPosition(position) {
+            currentPosition = position;
+            
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+            
+            let html = `
+                <h3>Your Current Position:</h3>
+                <p><strong>Latitude:</strong> ${latitude.toFixed(6)}</p>
+                <p><strong>Longitude:</strong> ${longitude.toFixed(6)}</p>
+                <p><strong>Accuracy:</strong> ${accuracy.toFixed(2)} meters</p>
+            `;
+            
+            // Add timestamp if watching
+            if (watchId !== null) {
+                const timestamp = new Date(position.timestamp);
+                html += `<p><strong>Last Updated:</strong> ${timestamp.toLocaleString()}</p>`;
+            }
+            
+            document.getElementById("locationDisplay").innerHTML = html;
+            
+            // Update map (simulated)
+            updateMap(latitude, longitude);
+        }
+        
+        function showError(error) {
+            let errorMessage = "";
+            
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMessage = "User denied the request for Geolocation.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMessage = "Location information is unavailable.";
+                    break;
+                case error.TIMEOUT:
+                    errorMessage = "The request to get user location timed out.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    errorMessage = "An unknown error occurred.";
+                    break;
+            }
+            
+            document.getElementById("locationDisplay").innerHTML = `<div class='error'>Error: ${errorMessage}</div>`;
+        }
+        
+        function updateMap(lat, lng) {
+            // Simulated map - in a real app, you'd use a mapping service like Google Maps
+            const mapContainer = document.getElementById("mapContainer");
+            mapContainer.innerHTML = `
+                <div style="text-align: center;">
+                    <p>Map Centered at:</p>
+                    <p><strong>${lat.toFixed(4)}, ${lng.toFixed(4)}</strong></p>
+                    <p><em>(In a real app, this would show an interactive map)</em></p>
+                </div>
+            `;
+        }
+        
+        function calculateDistance() {
+            if (!currentPosition) {
+                document.getElementById("featureDisplay").innerHTML = "<p>Please get your location first.</p>";
+                return;
+            }
+            
+            // New York coordinates
+            const nyLat = 40.7128;
+            const nyLng = -74.0060;
+            
+            // Calculate distance using Haversine formula
+            const distance = getDistance(
+                currentPosition.coords.latitude,
+                currentPosition.coords.longitude,
+                nyLat,
+                nyLng
+            );
+            
+            document.getElementById("featureDisplay").innerHTML = `
+                <h3>Distance to New York City</h3>
+                <p><strong>${distance.toFixed(2)} km</strong></p>
+                <p>Calculated using the Haversine formula</p>
+            `;
+        }
+        
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of the earth in km
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const d = R * c; // Distance in km
+            return d;
+        }
+        
+        function deg2rad(deg) {
+            return deg * (Math.PI/180);
+        }
+        
+        function getWeather() {
+            if (!currentPosition) {
+                document.getElementById("featureDisplay").innerHTML = "<p>Please get your location first.</p>";
+                return;
+            }
+            
+            // Simulated weather data
+            const weatherConditions = ["Sunny", "Cloudy", "Rainy", "Partly Cloudy", "Windy"];
+            const randomWeather = weatherConditions[Math.floor(Math.random() * weatherConditions.length)];
+            const randomTemp = Math.floor(Math.random() * 30) + 10;
+            
+            document.getElementById("featureDisplay").innerHTML = `
+                <h3>Weather at Your Location</h3>
+                <p><strong>Condition:</strong> ${randomWeather}</p>
+                <p><strong>Temperature:</strong> ${randomTemp}°C</p>
+                <p><em>(In a real app, this would fetch data from a weather API)</em></p>
+            `;
+        }
+        
+        function findNearbyPlaces() {
+            if (!currentPosition) {
+                document.getElementById("featureDisplay").innerHTML = "<p>Please get your location first.</p>";
+                return;
+            }
+            
+            // Simulated nearby places
+            const places = [
+                { name: "Coffee Shop", distance: 0.2, type: "cafe" },
+                { name: "Restaurant", distance: 0.5, type: "restaurant" },
+                { name: "Gas Station", distance: 0.8, type: "gas_station" },
+                { name: "Park", distance: 1.2, type: "park" },
+                { name: "Hospital", distance: 2.5, type: "hospital" }
+            ];
+            
+            let html = "<h3>Nearby Places</h3><ul>";
+            places.forEach(place => {
+                html += `<li><strong>${place.name}</strong> - ${place.distance} km</li>`;
+            });
+            html += "</ul><p><em>(In a real app, this would use a places API)</em></p>";
+            
+            document.getElementById("featureDisplay").innerHTML = html;
+        }
+    </script>
+</body>
+</html>
