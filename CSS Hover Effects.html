@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Hover Effects</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .example { margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .hover-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .hover-item {
+            width: 150px;
+            height: 150px;
+            background-color: #4CAF50;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .code-example { background-color: #f5f5f5; padding: 10px; border-radius: 5px; margin: 10px 0; font-family: monospace; white-space: pre; }
+        .note { background-color: #f0f8ff; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        button { background-color: #4CAF50; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        .tabs { display: flex; border-bottom: 1px solid #ddd; margin-bottom: 15px; }
+        .tab { padding: 10px 15px; cursor: pointer; border: none; background: none; }
+        .tab.active { border-bottom: 2px solid #4CAF50; font-weight: bold; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Hover Effects */
+        .grow:hover {
+            transform: scale(1.1);
+        }
+        
+        .shrink:hover {
+            transform: scale(0.9);
+        }
+        
+        .rotate:hover {
+            transform: rotate(180deg);
+        }
+        
+        .color-change:hover {
+            background-color: #2196F3;
+        }
+        
+        .shadow:hover {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .border:hover {
+            border: 5px solid #FF9800;
+        }
+        
+        .slide-up {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide-up::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background-color: rgba(33, 150, 243, 0.7);
+            transition: height 0.3s ease;
+        }
+        
+        .slide-up:hover::after {
+            height: 100%;
+        }
+        
+        .overlay {
+            position: relative;
+        }
+        
+        .overlay-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .overlay:hover .overlay-text {
+            opacity: 1;
+        }
+        
+        .overlay:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        
+        .flip {
+            perspective: 1000px;
+        }
+        
+        .flip-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip:hover .flip-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-front, .flip-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+        
+        .flip-back {
+            background-color: #2196F3;
+            transform: rotateY(180deg);
+        }
+        
+        .glow:hover {
+            box-shadow: 0 0 20px #4CAF50;
+        }
+        
+        .blur:hover {
+            filter: blur(5px);
+        }
+        
+        .grayscale:hover {
+            filter: grayscale(100%);
+        }
+        
+        .sepia:hover {
+            filter: sepia(100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSS Hover Effects</h1>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('transform')">Transform</button>
+            <button class="tab" onclick="showTab('visual')">Visual</button>
+            <button class="tab" onclick="showTab('advanced')">Advanced</button>
+            <button class="tab" onclick="showTab('filter')">Filter</button>
+        </div>
+        
+        <div id="transform" class="tab-content active">
+            <h2>Transform Effects</h2>
+            
+            <div class="example">
+                <h3>Scale Effects</h3>
+                <div class="hover-container">
+                    <div class="hover-item grow">Grow</div>
+                    <div class="hover-item shrink">Shrink</div>
+                </div>
+                <div class="code-example">.grow:hover {
+    transform: scale(1.1);
+}
+
+.shrink:hover {
+    transform: scale(0.9);
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Rotation</h3>
+                <div class="hover-container">
+                    <div class="hover-item rotate">Rotate 180°</div>
+                </div>
+                <div class="code-example">.rotate:hover {
+    transform: rotate(180deg);
+}</div>
+            </div>
+        </div>
+        
+        <div id="visual" class="tab-content">
+            <h2>Visual Effects</h2>
+            
+            <div class="example">
+                <h3>Color Change</h3>
+                <div class="hover-container">
+                    <div class="hover-item color-change">Color Change</div>
+                </div>
+                <div class="code-example">.color-change:hover {
+    background-color: #2196F3;
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Shadow</h3>
+                <div class="hover-container">
+                    <div class="hover-item shadow">Shadow</div>
+                </div>
+                <div class="code-example">.shadow:hover {
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Border</h3>
+                <div class="hover-container">
+                    <div class="hover-item border">Border</div>
+                </div>
+                <div class="code-example">.border:hover {
+    border: 5px solid #FF9800;
+}</div>
+            </div>
+        </div>
+        
+        <div id="advanced" class="tab-content">
+            <h2>Advanced Effects</h2>
+            
+            <div class="example">
+                <h3>Slide Up</h3>
+                <div class="hover-container">
+                    <div class="hover-item slide-up">Slide Up</div>
+                </div>
+                <div class="code-example">.slide-up {
+    position: relative;
+    overflow: hidden;
+}
+
+.slide-up::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background-color: rgba(33, 150, 243, 0.7);
+    transition: height 0.3s ease;
+}
+
+.slide-up:hover::after {
+    height: 100%;
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Text Overlay</h3>
+                <div class="hover-container">
+                    <div class="hover-item overlay">
+                        Overlay
+                        <div class="overlay-text">Hover Text</div>
+                    </div>
+                </div>
+                <div class="code-example">.overlay {
+    position: relative;
+}
+
+.overlay-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.overlay:hover .overlay-text {
+    opacity: 1;
+}
+
+.overlay:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Flip Card</h3>
+                <div class="hover-container">
+                    <div class="hover-item flip">
+                        <div class="flip-inner">
+                            <div class="flip-front">Front</div>
+                            <div class="flip-back">Back</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-example">.flip {
+    perspective: 1000px;
+}
+
+.flip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.flip:hover .flip-inner {
+    transform: rotateY(180deg);
+}
+
+.flip-front, .flip-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.flip-back {
+    transform: rotateY(180deg);
+}</div>
+            </div>
+        </div>
+        
+        <div id="filter" class="tab-content">
+            <h2>Filter Effects</h2>
+            
+            <div class="example">
+                <h3>Glow</h3>
+                <div class="hover-container">
+                    <div class="hover-item glow">Glow</div>
+                </div>
+                <div class="code-example">.glow:hover {
+    box-shadow: 0 0 20px #4CAF50;
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Blur</h3>
+                <div class="hover-container">
+                    <div class="hover-item blur">Blur</div>
+                </div>
+                <div class="code-example">.blur:hover {
+    filter: blur(5px);
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Grayscale</h3>
+                <div class="hover-container">
+                    <div class="hover-item grayscale">Grayscale</div>
+                </div>
+                <div class="code-example">.grayscale:hover {
+    filter: grayscale(100%);
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Sepia</h3>
+                <div class="hover-container">
+                    <div class="hover-item sepia">Sepia</div>
+                </div>
+                <div class="code-example">.sepia:hover {
+    filter: sepia(100%);
+}</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Tab switching
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

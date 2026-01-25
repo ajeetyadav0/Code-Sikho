@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Grid Layout Explained</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .example { margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .grid-container {
+            display: grid;
+            border: 2px solid #ccc;
+            padding: 10px;
+            margin: 15px 0;
+            gap: 10px;
+        }
+        .grid-item {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 4px;
+        }
+        .code-example { background-color: #f5f5f5; padding: 10px; border-radius: 5px; margin: 10px 0; font-family: monospace; white-space: pre; }
+        .note { background-color: #f0f8ff; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        button { background-color: #4CAF50; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        .controls { margin-bottom: 15px; }
+        .active { background-color: #2196F3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSS Grid Layout Explained</h1>
+        
+        <div class="note">
+            <h3>What is CSS Grid?</h3>
+            <p>CSS Grid is a two-dimensional layout system for creating complex web layouts.</p>
+        </div>
+        
+        <div class="code-example">.container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 10px;
+}</div>
+        
+        <h2>Basic Grid</h2>
+        <div class="grid-container" id="basic-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+            <div class="grid-item">4</div>
+            <div class="grid-item">5</div>
+            <div class="grid-item">6</div>
+        </div>
+        
+        <h2>Grid Template Columns</h2>
+        <div class="controls">
+            <button onclick="setGridColumns('repeat(3, 1fr)')" class="active" id="btn-equal">Equal Columns</button>
+            <button onclick="setGridColumns('2fr 1fr 1fr')" id="btn-first-large">First Large</button>
+            <button onclick="setGridColumns('100px 1fr 100px')" id="btn-fixed-fluid">Fixed-Fluid-Fixed</button>
+            <button onclick="setGridColumns('repeat(auto-fit, minmax(150px, 1fr))')" id="btn-responsive">Responsive</button>
+        </div>
+        
+        <div class="grid-container" id="columns-example" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+            <div class="grid-item">4</div>
+            <div class="grid-item">5</div>
+            <div class="grid-item">6</div>
+        </div>
+        
+        <h2>Grid Template Rows</h2>
+        <div class="controls">
+            <button onclick="setGridRows('auto')" class="active" id="btn-auto">Auto</button>
+            <button onclick="setGridRows('100px 200px')" id="btn-fixed">Fixed Heights</button>
+            <button onclick="setGridRows('1fr 2fr')" id="btn-ratio">Ratio Heights</button>
+            <button onclick="setGridRows('minmax(100px, auto)')" id="btn-minmax">Minmax</button>
+        </div>
+        
+        <div class="grid-container" id="rows-example" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: auto;">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+            <div class="grid-item">4</div>
+            <div class="grid-item">5</div>
+            <div class="grid-item">6</div>
+        </div>
+        
+        <h2>Grid Gap</h2>
+        <div class="controls">
+            <button onclick="setGridGap('0')" class="active" id="btn-no-gap">No Gap</button>
+            <button onclick="setGridGap('5px')" id="btn-small-gap">Small Gap</button>
+            <button onclick="setGridGap('10px')" id="btn-medium-gap">Medium Gap</button>
+            <button onclick="setGridGap('20px')" id="btn-large-gap">Large Gap</button>
+        </div>
+        
+        <div class="grid-container" id="gap-example" style="grid-template-columns: repeat(3, 1fr); gap: 0;">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+            <div class="grid-item">4</div>
+            <div class="grid-item">5</div>
+            <div class="grid-item">6</div>
+        </div>
+        
+        <h2>Grid Item Placement</h2>
+        <div class="controls">
+            <button onclick="resetPlacement()" class="active">Default</button>
+            <button onclick="spanItem()">Span Item</button>
+            <button onclick="placeItem()">Place Item</button>
+            <button onclick="namedAreas()">Named Areas</button>
+        </div>
+        
+        <div class="grid-container" id="placement-example" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 100px);">
+            <div class="grid-item" id="place-item-1">1</div>
+            <div class="grid-item" id="place-item-2">2</div>
+            <div class="grid-item" id="place-item-3">3</div>
+            <div class="grid-item" id="place-item-4">4</div>
+            <div class="grid-item" id="place-item-5">5</div>
+            <div class="grid-item" id="place-item-6">6</div>
+            <div class="grid-item" id="place-item-7">7</div>
+            <div class="grid-item" id="place-item-8">8</div>
+            <div class="grid-item" id="place-item-9">9</div>
+        </div>
+        
+        <h2>Grid Areas Layout</h2>
+        <div class="grid-container" id="areas-example" style="grid-template-columns: repeat(4, 1fr); grid-template-rows: 80px 1fr 60px; grid-template-areas: 'header header header header' 'sidebar main main main' 'footer footer footer footer';">
+            <div class="grid-item" style="grid-area: header;">Header</div>
+            <div class="grid-item" style="grid-area: sidebar;">Sidebar</div>
+            <div class="grid-item" style="grid-area: main;">Main Content</div>
+            <div class="grid-item" style="grid-area: footer;">Footer</div>
+        </div>
+    </div>
+    
+    <script>
+        // Grid Template Columns
+        function setGridColumns(columns) {
+            document.getElementById('columns-example').style.gridTemplateColumns = columns;
+            
+            // Update active button
+            document.querySelectorAll('[id^="btn-equal"], [id^="btn-first"], [id^="btn-fixed"], [id^="btn-responsive"]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            if (columns === 'repeat(3, 1fr)') document.getElementById('btn-equal').classList.add('active');
+            else if (columns === '2fr 1fr 1fr') document.getElementById('btn-first-large').classList.add('active');
+            else if (columns === '100px 1fr 100px') document.getElementById('btn-fixed-fluid').classList.add('active');
+            else if (columns === 'repeat(auto-fit, minmax(150px, 1fr))') document.getElementById('btn-responsive').classList.add('active');
+        }
+        
+        // Grid Template Rows
+        function setGridRows(rows) {
+            document.getElementById('rows-example').style.gridTemplateRows = rows;
+            
+            // Update active button
+            document.querySelectorAll('[id^="btn-auto"], [id^="btn-fixed"], [id^="btn-ratio"], [id^="btn-minmax"]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            if (rows === 'auto') document.getElementById('btn-auto').classList.add('active');
+            else if (rows === '100px 200px') document.getElementById('btn-fixed').classList.add('active');
+            else if (rows === '1fr 2fr') document.getElementById('btn-ratio').classList.add('active');
+            else if (rows === 'minmax(100px, auto)') document.getElementById('btn-minmax').classList.add('active');
+        }
+        
+        // Grid Gap
+        function setGridGap(gap) {
+            document.getElementById('gap-example').style.gap = gap;
+            
+            // Update active button
+            document.querySelectorAll('[id^="btn-no-gap"], [id^="btn-small-gap"], [id^="btn-medium-gap"], [id^="btn-large-gap"]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            if (gap === '0') document.getElementById('btn-no-gap').classList.add('active');
+            else if (gap === '5px') document.getElementById('btn-small-gap').classList.add('active');
+            else if (gap === '10px') document.getElementById('btn-medium-gap').classList.add('active');
+            else if (gap === '20px') document.getElementById('btn-large-gap').classList.add('active');
+        }
+        
+        // Grid Item Placement
+        function resetPlacement() {
+            const items = document.querySelectorAll('#placement-example .grid-item');
+            items.forEach(item => {
+                item.style.gridColumn = '';
+                item.style.gridRow = '';
+            });
+        }
+        
+        function spanItem() {
+            resetPlacement();
+            document.getElementById('place-item-2').style.gridColumn = 'span 2';
+            document.getElementById('place-item-5').style.gridRow = 'span 2';
+        }
+        
+        function placeItem() {
+            resetPlacement();
+            document.getElementById('place-item-1').style.gridColumn = '2 / 4';
+            document.getElementById('place-item-1').style.gridRow = '2 / 4';
+        }
+        
+        function namedAreas() {
+            resetPlacement();
+            const grid = document.getElementById('placement-example');
+            grid.style.gridTemplateAreas = 
+                'a a b b' +
+                'a c c b' +
+                'd c c e';
+            
+            document.getElementById('place-item-1').style.gridArea = 'a';
+            document.getElementById('place-item-2').style.gridArea = 'b';
+            document.getElementById('place-item-3').style.gridArea = 'c';
+            document.getElementById('place-item-4').style.gridArea = 'd';
+            document.getElementById('place-item-5').style.gridArea = 'e';
+        }
+    </script>
+</body>
+</html>

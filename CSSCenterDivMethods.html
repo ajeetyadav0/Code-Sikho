@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Center Div Methods</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .example { margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .center-container {
+            height: 200px;
+            border: 2px dashed #ccc;
+            margin: 15px 0;
+            position: relative;
+        }
+        .center-div {
+            width: 150px;
+            height: 80px;
+            background-color: #4CAF50;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+        .code-example { background-color: #f5f5f5; padding: 10px; border-radius: 5px; margin: 10px 0; font-family: monospace; white-space: pre; }
+        .note { background-color: #f0f8ff; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        button { background-color: #4CAF50; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        .controls { margin-bottom: 15px; }
+        .active { background-color: #2196F3; }
+        .tabs { display: flex; border-bottom: 1px solid #ddd; margin-bottom: 15px; }
+        .tab { padding: 10px 15px; cursor: pointer; border: none; background: none; }
+        .tab.active { border-bottom: 2px solid #4CAF50; font-weight: bold; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSS Center Div Methods</h1>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('horizontal')">Horizontal Center</button>
+            <button class="tab" onclick="showTab('vertical')">Vertical Center</button>
+            <button class="tab" onclick="showTab('both')">Both</button>
+        </div>
+        
+        <div id="horizontal" class="tab-content active">
+            <h2>Horizontal Centering Methods</h2>
+            
+            <div class="example">
+                <h3>Method 1: Margin Auto</h3>
+                <div class="controls">
+                    <button onclick="showHorizontalMethod('margin')" class="active">Show Code</button>
+                </div>
+                <div class="center-container">
+                    <div class="center-div" id="margin-center" style="margin: 0 auto;">Centered</div>
+                </div>
+                <div class="code-example" id="margin-code">.center-div {
+    width: 150px;
+    margin: 0 auto;
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Method 2: Text Align</h3>
+                <div class="controls">
+                    <button onclick="showHorizontalMethod('text-align')">Show Code</button>
+                </div>
+                <div class="center-container" style="text-align: center;">
+                    <div class="center-div" id="text-align-center" style="display: inline-block;">Centered</div>
+                </div>
+                <div class="code-example" id="text-align-code" style="display: none;">.center-container {
+    text-align: center;
+}
+
+.center-div {
+    display: inline-block;
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Method 3: Flexbox</h3>
+                <div class="controls">
+                    <button onclick="showHorizontalMethod('flex')">Show Code</button>
+                </div>
+                <div class="center-container" id="flex-horizontal-container" style="display: flex; justify-content: center;">
+                    <div class="center-div">Centered</div>
+                </div>
+                <div class="code-example" id="flex-code" style="display: none;">.center-container {
+    display: flex;
+    justify-content: center;
+}</div>
+            </div>
+        </div>
+        
+        <div id="vertical" class="tab-content">
+            <h2>Vertical Centering Methods</h2>
+            
+            <div class="example">
+                <h3>Method 1: Position Absolute & Transform</h3>
+                <div class="controls">
+                    <button onclick="showVerticalMethod('position')" class="active">Show Code</button>
+                </div>
+                <div class="center-container">
+                    <div class="center-div" id="position-center" style="position: absolute; top: 50%; transform: translateY(-50%); left: 0; right: 0; margin: 0 auto;">Centered</div>
+                </div>
+                <div class="code-example" id="position-code">.center-div {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Method 2: Flexbox</h3>
+                <div class="controls">
+                    <button onclick="showVerticalMethod('flex-vertical')">Show Code</button>
+                </div>
+                <div class="center-container" id="flex-vertical-container" style="display: flex; align-items: center;">
+                    <div class="center-div">Centered</div>
+                </div>
+                <div class="code-example" id="flex-vertical-code" style="display: none;">.center-container {
+    display: flex;
+    align-items: center;
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Method 3: Grid</h3>
+                <div class="controls">
+                    <button onclick="showVerticalMethod('grid-vertical')">Show Code</button>
+                </div>
+                <div class="center-container" id="grid-vertical-container" style="display: grid; place-items: center;">
+                    <div class="center-div">Centered</div>
+                </div>
+                <div class="code-example" id="grid-vertical-code" style="display: none;">.center-container {
+    display: grid;
+    place-items: center;
+}</div>
+            </div>
+        </div>
+        
+        <div id="both" class="tab-content">
+            <h2>Both Horizontal & Vertical Centering</h2>
+            
+            <div class="example">
+                <h3>Method 1: Position Absolute & Transform</h3>
+                <div class="controls">
+                    <button onclick="showBothMethod('position-both')" class="active">Show Code</button>
+                </div>
+                <div class="center-container">
+                    <div class="center-div" id="position-both-center" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">Centered</div>
+                </div>
+                <div class="code-example" id="position-both-code">.center-div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Method 2: Flexbox</h3>
+                <div class="controls">
+                    <button onclick="showBothMethod('flex-both')">Show Code</button>
+                </div>
+                <div class="center-container" id="flex-both-container" style="display: flex; justify-content: center; align-items: center;">
+                    <div class="center-div">Centered</div>
+                </div>
+                <div class="code-example" id="flex-both-code" style="display: none;">.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Method 3: Grid</h3>
+                <div class="controls">
+                    <button onclick="showBothMethod('grid-both')">Show Code</button>
+                </div>
+                <div class="center-container" id="grid-both-container" style="display: grid; place-items: center;">
+                    <div class="center-div">Centered</div>
+                </div>
+                <div class="code-example" id="grid-both-code" style="display: none;">.center-container {
+    display: grid;
+    place-items: center;
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Method 4: Table Cell</h3>
+                <div class="controls">
+                    <button onclick="showBothMethod('table')">Show Code</button>
+                </div>
+                <div class="center-container" id="table-container" style="display: table-cell; vertical-align: middle; text-align: center;">
+                    <div class="center-div" style="display: inline-block;">Centered</div>
+                </div>
+                <div class="code-example" id="table-code" style="display: none;">.center-container {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.center-div {
+    display: inline-block;
+}</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Tab switching
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+        
+        // Horizontal centering methods
+        function showHorizontalMethod(method) {
+            // Hide all code examples
+            document.querySelectorAll('[id$="-code"]').forEach(code => {
+                if (code.id.includes('margin') || code.id.includes('text-align') || code.id.includes('flex')) {
+                    code.style.display = 'none';
+                }
+            });
+            
+            // Show selected code example
+            document.getElementById(method + '-code').style.display = 'block';
+        }
+        
+        // Vertical centering methods
+        function showVerticalMethod(method) {
+            // Hide all code examples
+            document.querySelectorAll('[id$="-code"]').forEach(code => {
+                if (code.id.includes('position') || code.id.includes('flex-vertical') || code.id.includes('grid-vertical')) {
+                    code.style.display = 'none';
+                }
+            });
+            
+            // Show selected code example
+            document.getElementById(method + '-code').style.display = 'block';
+        }
+        
+        // Both centering methods
+        function showBothMethod(method) {
+            // Hide all code examples
+            document.querySelectorAll('[id$="-code"]').forEach(code => {
+                if (code.id.includes('position-both') || code.id.includes('flex-both') || 
+                    code.id.includes('grid-both') || code.id.includes('table')) {
+                    code.style.display = 'none';
+                }
+            });
+            
+            // Show selected code example
+            document.getElementById(method + '-code').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
