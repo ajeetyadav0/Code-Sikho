@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Animation Properties</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .example { margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .animation-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .animation-item {
+            width: 120px;
+            height: 120px;
+            background-color: #4CAF50;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .code-example { background-color: #f5f5f5; padding: 10px; border-radius: 5px; margin: 10px 0; font-family: monospace; white-space: pre; }
+        .note { background-color: #f0f8ff; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        button { background-color: #4CAF50; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        .controls { margin-bottom: 15px; }
+        .active { background-color: #2196F3; }
+        
+        /* Base Animation */
+        @keyframes move {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(100px); }
+        }
+        
+        @keyframes colorChange {
+            0% { background-color: #4CAF50; }
+            100% { background-color: #2196F3; }
+        }
+        
+        .base-animation {
+            animation-name: move;
+            animation-duration: 2s;
+            animation-timing-function: ease;
+            animation-delay: 0s;
+            animation-iteration-count: 1;
+            animation-direction: normal;
+            animation-fill-mode: none;
+        }
+        
+        .duration-slow { animation-duration: 5s; }
+        .duration-fast { animation-duration: 0.5s; }
+        
+        .timing-linear { animation-timing-function: linear; }
+        .timing-ease-in { animation-timing-function: ease-in; }
+        .timing-ease-out { animation-timing-function: ease-out; }
+        .timing-ease-in-out { animation-timing-function: ease-in-out; }
+        
+        .delay-1s { animation-delay: 1s; }
+        .delay-2s { animation-delay: 2s; }
+        
+        .iteration-2 { animation-iteration-count: 2; }
+        .iteration-infinite { animation-iteration-count: infinite; }
+        
+        .direction-reverse { animation-direction: reverse; }
+        .direction-alternate { animation-direction: alternate; }
+        
+        .fill-forwards { animation-fill-mode: forwards; }
+        .fill-backwards { animation-fill-mode: backwards; }
+        .fill-both { animation-fill-mode: both; }
+        
+        .paused { animation-play-state: paused; }
+        .running { animation-play-state: running; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSS Animation Properties</h1>
+        
+        <div class="note">
+            <h3>Animation Properties</h3>
+            <p>CSS provides various properties to control animations: duration, timing function, delay, iteration count, direction, fill mode, and play state.</p>
+        </div>
+        
+        <div class="code-example">.element {
+    animation-name: move;
+    animation-duration: 2s;
+    animation-timing-function: ease;
+    animation-delay: 0s;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+    animation-fill-mode: none;
+    animation-play-state: running;
+}</div>
+        
+        <h2>Animation Duration</h2>
+        <div class="controls">
+            <button onclick="setDuration('2s')" class="active">Normal (2s)</button>
+            <button onclick="setDuration('5s')">Slow (5s)</button>
+            <button onclick="setDuration('0.5s')">Fast (0.5s)</button>
+        </div>
+        
+        <div class="animation-container">
+            <div class="animation-item base-animation" id="duration-demo">Duration</div>
+        </div>
+        
+        <h2>Animation Timing Function</h2>
+        <div class="controls">
+            <button onclick="setTiming('ease')" class="active">Ease</button>
+            <button onclick="setTiming('linear')">Linear</button>
+            <button onclick="setTiming('ease-in')">Ease In</button>
+            <button onclick="setTiming('ease-out')">Ease Out</button>
+            <button onclick="setTiming('ease-in-out')">Ease In Out</button>
+        </div>
+        
+        <div class="animation-container">
+            <div class="animation-item base-animation" id="timing-demo">Timing</div>
+        </div>
+        
+        <h2>Animation Delay</h2>
+        <div class="controls">
+            <button onclick="setDelay('0s')" class="active">No Delay</button>
+            <button onclick="setDelay('1s')">1s Delay</button>
+            <button onclick="setDelay('2s')">2s Delay</button>
+        </div>
+        
+        <div class="animation-container">
+            <div class="animation-item base-animation" id="delay-demo">Delay</div>
+        </div>
+        
+        <h2>Animation Iteration Count</h2>
+        <div class="controls">
+            <button onclick="setIteration('1')" class="active">Once</button>
+            <button onclick="setIteration('2')">Twice</button>
+            <button onclick="setIteration('infinite')">Infinite</button>
+        </div>
+        
+        <div class="animation-container">
+            <div class="animation-item base-animation" id="iteration-demo">Iteration</div>
+        </div>
+        
+        <h2>Animation Direction</h2>
+        <div class="controls">
+            <button onclick="setDirection('normal')" class="active">Normal</button>
+            <button onclick="setDirection('reverse')">Reverse</button>
+            <button onclick="setDirection('alternate')">Alternate</button>
+        </div>
+        
+        <div class="animation-container">
+            <div class="animation-item base-animation" id="direction-demo" style="animation-iteration-count: 2;">Direction</div>
+        </div>
+        
+        <h2>Animation Fill Mode</h2>
+        <div class="controls">
+            <button onclick="setFillMode('none')" class="active">None</button>
+            <button onclick="setFillMode('forwards')">Forwards</button>
+            <button onclick="setFillMode('backwards')">Backwards</button>
+            <button onclick="setFillMode('both')">Both</button>
+        </div>
+        
+        <div class="animation-container">
+            <div class="animation-item base-animation" id="fill-demo" style="animation-delay: 1s;">Fill Mode</div>
+        </div>
+        
+        <h2>Animation Play State</h2>
+        <div class="controls">
+            <button onclick="setPlayState('running')" class="active">Running</button>
+            <button onclick="setPlayState('paused')">Paused</button>
+        </div>
+        
+        <div class="animation-container">
+            <div class="animation-item base-animation" id="playstate-demo" style="animation-iteration-count: infinite;">Play State</div>
+        </div>
+    </div>
+    
+    <script>
+        // Animation Duration
+        function setDuration(duration) {
+            const demo = document.getElementById('duration-demo');
+            demo.style.animationDuration = duration;
+            
+            // Reset animation
+            demo.style.animation = 'none';
+            setTimeout(() => {
+                demo.style.animation = '';
+                demo.style.animationDuration = duration;
+            }, 10);
+            
+            // Update active button
+            updateActiveButton(event.target, 'duration');
+        }
+        
+        // Animation Timing Function
+        function setTiming(timing) {
+            const demo = document.getElementById('timing-demo');
+            demo.style.animationTimingFunction = timing;
+            
+            // Reset animation
+            demo.style.animation = 'none';
+            setTimeout(() => {
+                demo.style.animation = '';
+                demo.style.animationTimingFunction = timing;
+            }, 10);
+            
+            // Update active button
+            updateActiveButton(event.target, 'timing');
+        }
+        
+        // Animation Delay
+        function setDelay(delay) {
+            const demo = document.getElementById('delay-demo');
+            demo.style.animationDelay = delay;
+            
+            // Reset animation
+            demo.style.animation = 'none';
+            setTimeout(() => {
+                demo.style.animation = '';
+                demo.style.animationDelay = delay;
+            }, 10);
+            
+            // Update active button
+            updateActiveButton(event.target, 'delay');
+        }
+        
+        // Animation Iteration Count
+        function setIteration(count) {
+            const demo = document.getElementById('iteration-demo');
+            demo.style.animationIterationCount = count;
+            
+            // Reset animation
+            demo.style.animation = 'none';
+            setTimeout(() => {
+                demo.style.animation = '';
+                demo.style.animationIterationCount = count;
+            }, 10);
+            
+            // Update active button
+            updateActiveButton(event.target, 'iteration');
+        }
+        
+        // Animation Direction
+        function setDirection(direction) {
+            const demo = document.getElementById('direction-demo');
+            demo.style.animationDirection = direction;
+            
+            // Reset animation
+            demo.style.animation = 'none';
+            setTimeout(() => {
+                demo.style.animation = '';
+                demo.style.animationDirection = direction;
+            }, 10);
+            
+            // Update active button
+            updateActiveButton(event.target, 'direction');
+        }
+        
+        // Animation Fill Mode
+        function setFillMode(fillMode) {
+            const demo = document.getElementById('fill-demo');
+            demo.style.animationFillMode = fillMode;
+            
+            // Reset animation
+            demo.style.animation = 'none';
+            setTimeout(() => {
+                demo.style.animation = '';
+                demo.style.animationFillMode = fillMode;
+            }, 10);
+            
+            // Update active button
+            updateActiveButton(event.target, 'fill');
+        }
+        
+        // Animation Play State
+        function setPlayState(playState) {
+            const demo = document.getElementById('playstate-demo');
+            demo.style.animationPlayState = playState;
+            
+            // Update active button
+            updateActiveButton(event.target, 'playstate');
+        }
+        
+        // Update active button
+        function updateActiveButton(activeBtn, group) {
+            // Remove active class from all buttons in the group
+            if (group === 'duration') {
+                document.querySelectorAll('.controls button').forEach(btn => {
+                    if (btn.textContent.includes('Normal') || btn.textContent.includes('Slow') || btn.textContent.includes('Fast')) {
+                        btn.classList.remove('active');
+                    }
+                });
+            } else if (group === 'timing') {
+                document.querySelectorAll('.controls button').forEach(btn => {
+                    if (['Ease', 'Linear', 'Ease In', 'Ease Out', 'Ease In Out'].includes(btn.textContent)) {
+                        btn.classList.remove('active');
+                    }
+                });
+            } else if (group === 'delay') {
+                document.querySelectorAll('.controls button').forEach(btn => {
+                    if (btn.textContent.includes('Delay') || btn.textContent.includes('No Delay')) {
+                        btn.classList.remove('active');
+                    }
+                });
+            } else if (group === 'iteration') {
+                document.querySelectorAll('.controls button').forEach(btn => {
+                    if (['Once', 'Twice', 'Infinite'].includes(btn.textContent)) {
+                        btn.classList.remove('active');
+                    }
+                });
+            } else if (group === 'direction') {
+                document.querySelectorAll('.controls button').forEach(btn => {
+                    if (['Normal', 'Reverse', 'Alternate'].includes(btn.textContent)) {
+                        btn.classList.remove('active');
+                    }
+                });
+            } else if (group === 'fill') {
+                document.querySelectorAll('.controls button').forEach(btn => {
+                    if (['None', 'Forwards', 'Backwards', 'Both'].includes(btn.textContent)) {
+                        btn.classList.remove('active');
+                    }
+                });
+            } else if (group === 'playstate') {
+                document.querySelectorAll('.controls button').forEach(btn => {
+                    if (['Running', 'Paused'].includes(btn.textContent)) {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Add active class to clicked button
+            activeBtn.classList.add('active');
+        }
+    </script>
+</body>
+</html>

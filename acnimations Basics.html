@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Animations Basics</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .example { margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .animation-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .animation-item {
+            width: 150px;
+            height: 150px;
+            background-color: #4CAF50;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .code-example { background-color: #f5f5f5; padding: 10px; border-radius: 5px; margin: 10px 0; font-family: monospace; white-space: pre; }
+        .note { background-color: #f0f8ff; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        button { background-color: #4CAF50; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        .controls { margin-bottom: 15px; }
+        .tabs { display: flex; border-bottom: 1px solid #ddd; margin-bottom: 15px; }
+        .tab { padding: 10px 15px; cursor: pointer; border: none; background: none; }
+        .tab.active { border-bottom: 2px solid #4CAF50; font-weight: bold; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Animation Examples */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-30px); }
+            60% { transform: translateY(-15px); }
+        }
+        
+        @keyframes colorChange {
+            0% { background-color: #4CAF50; }
+            25% { background-color: #2196F3; }
+            50% { background-color: #FF9800; }
+            75% { background-color: #9C27B0; }
+            100% { background-color: #4CAF50; }
+        }
+        
+        .fade-in {
+            animation: fadeIn 2s infinite alternate;
+        }
+        
+        .slide-in {
+            animation: slideIn 2s infinite alternate;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .rotate {
+            animation: rotate 3s linear infinite;
+        }
+        
+        .bounce {
+            animation: bounce 2s infinite;
+        }
+        
+        .color-change {
+            animation: colorChange 5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSS Animations Basics</h1>
+        
+        <div class="note">
+            <h3>What are CSS Animations?</h3>
+            <p>CSS animations allow you to transition between CSS styles over time, creating motion and visual effects without JavaScript.</p>
+        </div>
+        
+        <div class="code-example">@keyframes animationName {
+    from { /* Start styles */ }
+    to { /* End styles */ }
+}
+
+.element {
+    animation: animationName 2s infinite;
+}</div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('basic')">Basic</button>
+            <button class="tab" onclick="showTab('properties')">Properties</button>
+            <button class="tab" onclick="showTab('examples')">Examples</button>
+        </div>
+        
+        <div id="basic" class="tab-content active">
+            <h2>Animation Basics</h2>
+            
+            <div class="example">
+                <h3>Fade In Animation</h3>
+                <div class="animation-container">
+                    <div class="animation-item fade-in">Fade In</div>
+                </div>
+                <div class="code-example">@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 2s infinite alternate;
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Slide In Animation</h3>
+                <div class="animation-container">
+                    <div class="animation-item slide-in">Slide In</div>
+                </div>
+                <div class="code-example">@keyframes slideIn {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+}
+
+.slide-in {
+    animation: slideIn 2s infinite alternate;
+}</div>
+            </div>
+        </div>
+        
+        <div id="properties" class="tab-content">
+            <h2>Animation Properties</h2>
+            
+            <div class="example">
+                <h3>Animation Shorthand</h3>
+                <div class="code-example">.element {
+    animation: name duration timing-function delay iteration-count direction fill-mode;
+}
+
+/* Example */
+.element {
+    animation: slideIn 2s ease-in-out 1s infinite alternate forwards;
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Individual Properties</h3>
+                <div class="code-example">.element {
+    animation-name: slideIn;
+    animation-duration: 2s;
+    animation-timing-function: ease-in-out;
+    animation-delay: 1s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-fill-mode: forwards;
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Timing Functions</h3>
+                <div class="code-example">/* Common timing functions */
+animation-timing-function: ease; /* Default */
+animation-timing-function: ease-in;
+animation-timing-function: ease-out;
+animation-timing-function: ease-in-out;
+animation-timing-function: linear;
+animation-timing-function: cubic-bezier(0.1, 0.7, 1.0, 0.1);</div>
+            </div>
+        </div>
+        
+        <div id="examples" class="tab-content">
+            <h2>Animation Examples</h2>
+            
+            <div class="example">
+                <h3>Pulse Animation</h3>
+                <div class="animation-container">
+                    <div class="animation-item pulse">Pulse</div>
+                </div>
+                <div class="code-example">@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Rotate Animation</h3>
+                <div class="animation-container">
+                    <div class="animation-item rotate">Rotate</div>
+                </div>
+                <div class="code-example">@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.rotate {
+    animation: rotate 3s linear infinite;
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Bounce Animation</h3>
+                <div class="animation-container">
+                    <div class="animation-item bounce">Bounce</div>
+                </div>
+                <div class="code-example">@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-30px); }
+    60% { transform: translateY(-15px); }
+}
+
+.bounce {
+    animation: bounce 2s infinite;
+}</div>
+            </div>
+            
+            <div class="example">
+                <h3>Color Change Animation</h3>
+                <div class="animation-container">
+                    <div class="animation-item color-change">Color</div>
+                </div>
+                <div class="code-example">@keyframes colorChange {
+    0% { background-color: #4CAF50; }
+    25% { background-color: #2196F3; }
+    50% { background-color: #FF9800; }
+    75% { background-color: #9C27B0; }
+    100% { background-color: #4CAF50; }
+}
+
+.color-change {
+    animation: colorChange 5s infinite;
+}</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Tab switching
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
