@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Media Queries Explained</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .example { margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .demo-container {
+            border: 2px solid #ccc;
+            padding: 20px;
+            margin: 15px 0;
+            min-height: 200px;
+            text-align: center;
+        }
+        .code-example { background-color: #f5f5f5; padding: 10px; border-radius: 5px; margin: 10px 0; font-family: monospace; white-space: pre; }
+        .note { background-color: #f0f8ff; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        button { background-color: #4CAF50; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        
+        /* Media Query Examples */
+        .width-demo {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .height-demo {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .orientation-demo {
+            background-color: #e8f5e9;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .resolution-demo {
+            background-color: #fff3e0;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        /* Width-based Media Queries */
+        @media (max-width: 576px) {
+            .width-demo {
+                background-color: #ffebee;
+                font-size: 14px;
+            }
+        }
+        
+        @media (min-width: 577px) and (max-width: 768px) {
+            .width-demo {
+                background-color: #e8f5e9;
+                font-size: 16px;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .width-demo {
+                background-color: #e3f2fd;
+                font-size: 18px;
+            }
+        }
+        
+        /* Height-based Media Queries */
+        @media (max-height: 400px) {
+            .height-demo {
+                background-color: #ffebee;
+                padding: 10px;
+            }
+        }
+        
+        @media (min-height: 401px) and (max-height: 600px) {
+            .height-demo {
+                background-color: #fff3e0;
+                padding: 15px;
+            }
+        }
+        
+        @media (min-height: 601px) {
+            .height-demo {
+                background-color: #e8f5e9;
+                padding: 20px;
+            }
+        }
+        
+        /* Orientation Media Queries */
+        @media (orientation: portrait) {
+            .orientation-demo {
+                background-color: #e3f2fd;
+            }
+        }
+        
+        @media (orientation: landscape) {
+            .orientation-demo {
+                background-color: #fff3e0;
+            }
+        }
+        
+        /* Resolution Media Queries */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .resolution-demo {
+                background-color: #f3e5f5;
+                font-weight: bold;
+            }
+        }
+        
+        /* Combined Media Queries */
+        .combined-demo {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        @media (min-width: 768px) and (orientation: landscape) {
+            .combined-demo {
+                background-color: #e8f5e9;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+            }
+        }
+        
+        /* Dark Mode Media Query */
+        .dark-mode-demo {
+            background-color: #ffffff;
+            color: #000000;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .dark-mode-demo {
+                background-color: #121212;
+                color: #ffffff;
+                border-color: #333333;
+            }
+        }
+        
+        /* Reduced Motion Media Query */
+        .motion-demo {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .animated-box {
+            width: 100px;
+            height: 100px;
+            background-color: #4CAF50;
+            margin: 20px auto;
+            border-radius: 4px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            .animated-box {
+                animation: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSS Media Queries Explained</h1>
+        
+        <div class="note">
+            <h3>What are Media Queries?</h3>
+            <p>Media queries allow you to apply CSS styles based on device characteristics like screen width, height, orientation, and resolution.</p>
+        </div>
+        
+        <div class="code-example">/* Basic Media Query Syntax */
+@media (condition) {
+    /* CSS rules to apply when condition is true */
+}
+
+/* Example */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+}</div>
+        
+        <h2>Width-based Media Queries</h2>
+        
+        <div class="example">
+            <div class="width-demo">
+                <p>This box changes color based on viewport width:</p>
+                <p id="width-info">Current width: Loading...</p>
+            </div>
+            
+            <div class="code-example">/* Mobile */
+@media (max-width: 576px) {
+    .width-demo {
+        background-color: #ffebee;
+        font-size: 14px;
+    }
+}
+
+/* Tablet */
+@media (min-width: 577px) and (max-width: 768px) {
+    .width-demo {
+        background-color: #e8f5e9;
+        font-size: 16px;
+    }
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+    .width-demo {
+        background-color: #e3f2fd;
+        font-size: 18px;
+    }
+}</div>
+        </div>
+        
+        <h2>Height-based Media Queries</h2>
+        
+        <div class="example">
+            <div class="height-demo">
+                <p>This box changes based on viewport height:</p>
+                <p id="height-info">Current height: Loading...</p>
+            </div>
+            
+            <div class="code-example">/* Short screens */
+@media (max-height: 400px) {
+    .height-demo {
+        background-color: #ffebee;
+        padding: 10px;
+    }
+}
+
+/* Medium screens */
+@media (min-height: 401px) and (max-height: 600px) {
+    .height-demo {
+        background-color: #fff3e0;
+        padding: 15px;
+    }
+}
+
+/* Tall screens */
+@media (min-height: 601px) {
+    .height-demo {
+        background-color: #e8f5e9;
+        padding: 20px;
+    }
+}</div>
+        </div>
+        
+        <h2>Orientation Media Queries</h2>
+        
+        <div class="example">
+            <div class="orientation-demo">
+                <p>This box changes based on device orientation:</p>
+                <p id="orientation-info">Current orientation: Loading...</p>
+            </div>
+            
+            <div class="code-example">/* Portrait orientation */
+@media (orientation: portrait) {
+    .orientation-demo {
+        background-color: #e3f2fd;
+    }
+}
+
+/* Landscape orientation */
+@media (orientation: landscape) {
+    .orientation-demo {
+        background-color: #fff3e0;
+    }
+}</div>
+        </div>
+        
+        <h2>Resolution Media Queries</h2>
+        
+        <div class="example">
+            <div class="resolution-demo">
+                <p>This box changes based on device resolution:</p>
+                <p id="resolution-info">Current resolution: Loading...</p>
+            </div>
+            
+            <div class="code-example">/* High DPI screens (Retina displays) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .resolution-demo {
+        background-color: #f3e5f5;
+        font-weight: bold;
+    }
+}</div>
+        </div>
+        
+        <h2>Combined Media Queries</h2>
+        
+        <div class="example">
+            <div class="combined-demo">
+                <div>
+                    <p>Combined Query Demo</p>
+                    <p>Min-width: 768px AND Landscape</p>
+                </div>
+                <div>
+                    <p>Try resizing your browser</p>
+                    <p>and changing orientation</p>
+                </div>
+            </div>
+            
+            <div class="code-example">/* Combined conditions */
+@media (min-width: 768px) and (orientation: landscape) {
+    .combined-demo {
+        background-color: #e8f5e9;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+}</div>
+        </div>
+        
+        <h2>Dark Mode Media Query</h2>
+        
+        <div class="example">
+            <div class="dark-mode-demo">
+                <p>This box adapts to your system's color scheme:</p>
+                <p id="color-scheme-info">Current theme: Loading...</p>
+            </div>
+            
+            <div class="code-example">/* Light mode (default) */
+.dark-mode-demo {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #ddd;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    .dark-mode-demo {
+        background-color: #121212;
+        color: #ffffff;
+        border-color: #333333;
+    }
+}</div>
+        </div>
+        
+        <h2>Reduced Motion Media Query</h2>
+        
+        <div class="example">
+            <div class="motion-demo">
+                <p>This box respects user's motion preferences:</p>
+                <div class="animated-box">Animated</div>
+                <p id="motion-info">Motion preference: Loading...</p>
+            </div>
+            
+            <div class="code-example">.animated-box {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .animated-box {
+        animation: none;
+    }
+}</div>
+        </div>
+        
+        <h2>Common Media Query Features</h2>
+        
+        <div class="example">
+            <div class="code-example">/* Width */
+@media (min-width: 768px) { }
+@media (max-width: 1024px) { }
+
+/* Height */
+@media (min-height: 500px) { }
+@media (max-height: 800px) { }
+
+/* Orientation */
+@media (orientation: portrait) { }
+@media (orientation: landscape) { }
+
+/* Resolution */
+@media (min-resolution: 2dppx) { }
+@media (-webkit-min-device-pixel-ratio: 2) { }
+
+/* Aspect Ratio */
+@media (min-aspect-ratio: 16/9) { }
+@media (max-aspect-ratio: 4/3) { }
+
+/* Color Scheme */
+@media (prefers-color-scheme: dark) { }
+@media (prefers-color-scheme: light) { }
+
+/* Motion */
+@media (prefers-reduced-motion: reduce) { }</div>
+        </div>
+    </div>
+    
+    <script>
+        // Update viewport information
+        function updateViewportInfo() {
+            // Width
+            document.getElementById('width-info').textContent = `Current width: ${window.innerWidth}px`;
+            
+            // Height
+            document.getElementById('height-info').textContent = `Current height: ${window.innerHeight}px`;
+            
+            // Orientation
+            const orientation = window.innerWidth > window.innerHeight ? 'Landscape' : 'Portrait';
+            document.getElementById('orientation-info').textContent = `Current orientation: ${orientation}`;
+            
+            // Resolution
+            const dpr = window.devicePixelRatio || 1;
+            document.getElementById('resolution-info').textContent = `Current DPR: ${dpr} (${dpr >= 2 ? 'High DPI' : 'Standard DPI'})`;
+            
+            // Color Scheme
+            const colorScheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'Dark' : 'Light';
+            document.getElementById('color-scheme-info').textContent = `Current theme: ${colorScheme}`;
+            
+            // Motion Preference
+            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            document.getElementById('motion-info').textContent = `Motion preference: ${reducedMotion ? 'Reduced' : 'Normal'}`;
+        }
+        
+        // Initial update
+        updateViewportInfo();
+        
+        // Update on resize
+        window.addEventListener('resize', updateViewportInfo);
+        
+        // Listen for color scheme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateViewportInfo);
+        
+        // Listen for motion preference changes
+        window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', updateViewportInfo);
+    </script>
+</body>
+</html>
