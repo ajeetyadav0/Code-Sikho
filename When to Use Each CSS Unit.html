@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When to Use Each CSS Unit</title>
+    <style>
+        :root {
+            font-size: 62.5%; /* Makes 1rem = 10px for easier calculations */
+        }
+        
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            font-size: 1.6rem; /* 16px */
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        .example { margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .demo-container {
+            border: 2px solid #ccc;
+            padding: 20px;
+            margin: 15px 0;
+            min-height: 200px;
+        }
+        .code-example { background-color: #f5f5f5; padding: 10px; border-radius: 5px; margin: 10px 0; font-family: monospace; white-space: pre; font-size: 1.4rem; }
+        .note { background-color: #f0f8ff; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .warning { background-color: #fff3cd; padding: 10px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #ffc107; }
+        .success { background-color: #d4edda; padding: 10px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #28a745; }
+        button { background-color: #4CAF50; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; font-size: 1.4rem; }
+        
+        /* Use Case Examples */
+        .use-case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .use-case-card {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .use-case-card h3 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        
+        /* Typography Examples */
+        .typography-demo {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        
+        .heading-1 {
+            font-size: clamp(2.4rem, 6vw, 4rem);
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .heading-2 {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            margin-bottom: 0.8rem;
+            color: #555;
+        }
+        
+        .body-text {
+            font-size: 1.6rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .small-text {
+            font-size: 1.4rem;
+            color: #666;
+        }
+        
+        /* Layout Examples */
+        .layout-demo {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .main-content {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            min-height: 200px;
+        }
+        
+        .sidebar {
+            background-color: #f3e5f5;
+            padding: 20px;
+            border-radius: 8px;
+            min-height: 200px;
+        }
+        
+        /* Component Examples */
+        .button-demo {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.6rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: #2196F3;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 1.4rem;
+        }
+        
+        .btn-large {
+            padding: 16px 32px;
+            font-size: 1.8rem;
+        }
+        
+        /* Icon Examples */
+        .icon-demo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .icon {
+            width: 2.4rem;
+            height: 2.4rem;
+            background-color: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.4rem;
+        }
+        
+        .icon-large {
+            width: 3.2rem;
+            height: 3.2rem;
+            font-size: 1.8rem;
+        }
+        
+        /* Border Examples */
+        .border-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .border-box {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .border-thin {
+            border: 1px solid #ddd;
+        }
+        
+        .border-medium {
+            border: 2px solid #2196F3;
+        }
+        
+        .border-thick {
+            border: 4px solid #4CAF50;
+        }
+        
+        /* Spacing Examples */
+        .spacing-demo {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .spacing-item {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .spacing-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Media Query Examples */
+        @media (max-width: 768px) {
+            .layout-demo {
+                grid-template-columns: 1fr;
+            }
+            
+            .heading-1 {
+                font-size: clamp(2rem, 8vw, 3rem);
+            }
+            
+            .heading-2 {
+                font-size: clamp(1.6rem, 6vw, 2.4rem);
+            }
+        }
+        
+        /* Decision Tree */
+        .decision-tree {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        
+        .decision-node {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .decision-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .decision-option {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .decision-option h4 {
+            margin-top: 0;
+            color: #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>When to Use Each CSS Unit</h1>
+        
+        <div class="note">
+            <h3>Choose the Right Unit for the Right Job</h3>
+            <p>Different CSS units serve different purposes. Understanding when to use each one is key to creating maintainable and responsive designs.</p>
+        </div>
+        
+        <h2>Quick Decision Guide</h2>
+        
+        <div class="example">
+            <div class="decision-tree">
+                <div class="decision-node">
+                    <h3>What are you styling?</h3>
+                </div>
+                
+                <div class="decision-options">
+                    <div class="decision-option">
+                        <h4>Typography</h4>
+                        <p>Use <strong>rem</strong> for consistency</p>
+                        <p>Use <strong>em</strong> for component-relative sizing</p>
+                        <p>Use <strong>clamp()</strong> for responsive text</p>
+                    </div>
+                    
+                    <div class="decision-option">
+                        <h4>Layout & Spacing</h4>
+                        <p>Use <strong>rem</strong> for consistent spacing</p>
+                        <p>Use <strong>%</strong> for fluid layouts</p>
+                        <p>Use <strong>vh/vw</strong> for viewport-based sizing</p>
+                    </div>
+                    
+                    <div class="decision-option">
+                        <h4>Borders & Outlines</h4>
+                        <p>Use <strong>px</strong> for precision</p>
+                        <p>Typically 1px, 2px, or 3px</p>
+                        <p>Never use relative units</p>
+                    </div>
+                    
+                    <div class="decision-option">
+                        <h4>Components</h4>
+                        <p>Use <strong>rem</strong> for overall sizing</p>
+                        <p>Use <strong>em</strong> for internal scaling</p>
+                        <p>Use <strong>px</strong> for fine details</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h2>Typography: Use rem & clamp()</h2>
+        
+        <div class="example">
+            <div class="typography-demo">
+                <h1 class="heading-1">Main Heading with clamp()</h1>
+                <h2 class="heading-2">Subheading with clamp()</h2>
+                <p class="body-text">Body text uses rem units for consistent sizing across the site.</p>
+                <p class="small-text">Small text also uses rem units for accessibility.</p>
+            </div>
+            
+            <div class="code-example">/* Responsive Typography */
+h1 {
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    /* Min: 24px, Preferred: 6vw, Max: 40px */
+}
+
+h2 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    /* Min: 20px, Preferred: 5vw, Max: 32px */
+}
+
+body {
+    font-size: 1.6rem; /* 16px base size */
+}
+
+.small-text {
+    font-size: 1.4rem; /* 14px */
+}</div>
+            
+            <div class="success">
+                <p>✅ rem ensures consistency across components</p>
+                <p>✅ clamp() provides responsive scaling without media queries</p>
+                <p>✅ Respects user's font-size preferences</p>
+            </div>
+        </div>
+        
+        <h2>Layout: Use rem, %, and vh/vw</h2>
+        
+        <div class="example">
+            <div class="layout-demo">
+                <div class="main-content">
+                    <h3>Main Content</h3>
+                    <p>Uses rem for padding and margins.</p>
+                </div>
+                <div class="sidebar">
+                    <h3>Sidebar</h3>
+                    <p>Also uses rem for consistency.</p>
+                </div>
+            </div>
+            
+            <div class="code-example">/* Layout with Mixed Units */
+.layout-demo {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* % based */
+    gap: 2rem; /* rem for spacing */
+}
+
+.main-content, .sidebar {
+    padding: 2rem; /* rem for consistent padding */
+    border-radius: 0.8rem; /* rem for consistent radius */
+}
+
+/* Full viewport sections */
+.hero-section {
+    height: 100vh; /* Full viewport height */
+    padding: 4rem 2rem; /* rem for padding */
+}</div>
+            
+            <div class="success">
+                <p>✅ rem for consistent spacing and sizing</p>
+                <p>✅ % for flexible grid layouts</p>
+                <p>✅ vh/vw for viewport-based sections</p>
+            </div>
+        </div>
+        
+        <h2>Components: Use em for Internal Scaling</h2>
+        
+        <div class="example">
+            <div class="button-demo">
+                <button class="btn btn-primary">Normal Button</button>
+                <button class="btn btn-secondary">Secondary Button</button>
+                <button class="btn btn-primary btn-small">Small Button</button>
+                <button class="btn btn-primary btn-large">Large Button</button>
+            </div>
+            
+            <div class="code-example">/* Button Component */
+.btn {
+    padding: 1.2rem 2.4rem; /* rem for base size */
+    font-size: 1.6rem; /* rem for text */
+    border-radius: 0.4rem; /* rem for radius */
+}
+
+.btn-small {
+    padding: 0.8em 1.6em; /* em for relative scaling */
+    font-size: 0.875em; /* em for relative text */
+}
+
+.btn-large {
+    padding: 1.2em 2.4em; /* em for relative scaling */
+    font-size: 1.25em; /* em for relative text */
+}</div>
+            
+            <div class="success">
+                <p>✅ rem for base component sizing</p>
+                <p>✅ em for variations within the component</p>
+                <p>✅ Maintains proportional relationships</p>
+            </div>
+        </div>
+        
+        <h2>Icons: Use em for Proportional Scaling</h2>
+        
+        <div class="example">
+            <div class="icon-demo">
+                <div class="icon">✓</div>
+                <span>Default Icon</span>
+            </div>
+            <div class="icon-demo">
+                <div class="icon icon-large">✓</div>
+                <span>Large Icon</span>
+            </div>
+            
+            <div class="code-example">/* Icon Component */
+.icon {
+    width: 2.4rem; /* rem for base size */
+    height: 2.4rem;
+    font-size: 1.4rem; /* rem for icon size */
+}
+
+.icon-large {
+    width: 1.33em; /* em for proportional scaling */
+    height: 1.33em;
+    font-size: 1.33em; /* em for proportional icon */
+}</div>
+            
+            <div class="success">
+                <p>✅ em ensures icons scale with their container</p>
+                <p>✅ Maintains aspect ratio and proportions</p>
+                <p>✅ Perfect for icon systems</p>
+            </div>
+        </div>
+        
+        <h2>Borders: Always Use px</h2>
+        
+        <div class="example">
+            <div class="border-demo">
+                <div class="border-box border-thin">
+                    <h4>Thin Border</h4>
+                    <p>1px border</p>
+                </div>
+                <div class="border-box border-medium">
+                    <h4>Medium Border</h4>
+                    <p>2px border</p>
+                </div>
+                <div class="border-box border-thick">
+                    <h4>Thick Border</h4>
+                    <p>4px border</p>
+                </div>
+            </div>
+            
+            <div class="code-example">/* Borders - Always Use px */
+.border-thin {
+    border: 1px solid #ddd; /* Precise 1px */
+}
+
+.border-medium {
+    border: 2px solid #2196F3; /* Precise 2px */
+}
+
+.border-thick {
+    border: 4px solid #4CAF50; /* Precise 4px */
+}
+
+/* Never do this */
+.bad-border {
+    border: 0.0625rem solid #ddd; /* Don't convert px to rem */
+}</div>
+            
+            <div class="success">
+                <p>✅ px provides precise control</p>
+                <p>✅ Consistent across all zoom levels</p>
+                <p>✅ No rounding issues</p>
+            </div>
+        </div>
+        
+        <h2>Spacing System: Use rem</h2>
+        
+        <div class="example">
+            <div class="spacing-demo">
+                <div class="spacing-item">
+                    <h4>Item 1</h4>
+                    <p>20px margin bottom (2rem)</p>
+                </div>
+                <div class="spacing-item">
+                    <h4>Item 2</h4>
+                    <p>20px margin bottom (2rem)</p>
+                </div>
+                <div class="spacing-item">
+                    <h4>Item 3</h4>
+                    <p>No margin bottom (last item)</p>
+                </div>
+            </div>
+            
+            <div class="code-example">/* Spacing System with rem */
+.spacing-item {
+    margin-bottom: 2rem; /* 20px consistent spacing */
+    padding: 1.5rem; /* 15px consistent padding */
+}
+
+.spacing-item:last-child {
+    margin-bottom: 0; /* Remove last margin */
+}
+
+/* Spacing Scale */
+:root {
+    --space-xs: 0.4rem;   /* 4px */
+    --space-sm: 0.8rem;   /* 8px */
+    --space-md: 1.6rem;   /* 16px */
+    --space-lg: 2.4rem;   /* 24px */
+    --space-xl: 3.2rem;   /* 32px */
+}</div>
+            
+            <div class="success">
+                <p>✅ Consistent spacing across the design</p>
+                <p>✅ Easy to maintain and adjust</p>
+                <p>✅ Scales with user preferences</p>
+            </div>
+        </div>
+        
+        <h2>Use Case Summary</h2>
+        
+        <div class="example">
+            <div class="use-case-grid">
+                <div class="use-case-card">
+                    <h3>📏 Use px When:</h3>
+                    <ul>
+                        <li>Borders and outlines</li>
+                        <li>Box shadows (blur radius)</li>
+                        <li>Media query breakpoints</li>
+                        <li>Minimum/maximum values in clamp()</li>
+                        <li>Very small precise values</li>
+                    </ul>
+                </div>
+                
+                <div class="use-case-card">
+                    <h3>📐 Use rem When:</h3>
+                    <ul>
+                        <li>Font sizes for body text</li>
+                        <li>Component dimensions</li>
+                        <li>Spacing and margins</li>
+                        <li>Border radius</li>
+                        <li>Most sizing needs</li>
+                    </ul>
+                </div>
+                
+                <div class="use-case-card">
+                    <h3>🔄 Use em When:</h3>
+                    <ul>
+                        <li>Component variations</li>
+                        <li>Icon sizing</li>
+                        <li>Elements that should scale with parent</li>
+                        <li>Media queries within components</li>
+                        <li>Relative padding/margins</li>
+                    </ul>
+                </div>
+                
+                <div class="use-case-card">
+                    <h3>🖥️ Use vh/vw When:</h3>
+                    <ul>
+                        <li>Full-screen sections</li>
+                        <li>Hero images</li>
+                        <li>Responsive typography</li>
+                        <li>Viewport-based animations</li>
+                        <li>Fluid grid layouts</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <h2>Modern CSS Unit Strategy</h2>
+        
+        <div class="example">
+            <div class="code-example">/* Modern CSS Unit Strategy */
+:root {
+    /* Base sizing */
+    font-size: 62.5%; /* Makes 1rem = 10px */
+    
+    /* Spacing scale */
+    --space-xs: 0.4rem;   /* 4px */
+    --space-sm: 0.8rem;   /* 8px */
+    --space-md: 1.6rem;   /* 16px */
+    --space-lg: 2.4rem;   /* 24px */
+    --space-xl: 3.2rem;   /* 32px */
+    
+    /* Border scale */
+    --border-sm: 1px;
+    --border-md: 2px;
+    --border-lg: 4px;
+}
+
+/* Typography */
+body {
+    font-size: 1.6rem; /* 16px */
+}
+
+h1 { font-size: clamp(2.4rem, 6vw, 4rem); }
+h2 { font-size: clamp(2rem, 5vw, 3.2rem); }
+
+/* Components */
+.card {
+    padding: var(--space-lg);
+    border: var(--border-sm) solid #ddd;
+    border-radius: 0.8rem;
+    margin-bottom: var(--space-md);
+}
+
+/* Layout */
+.container {
+    max-width: 120rem;
+    padding: 0 var(--space-md);
+    margin: 0 auto;
+}
+
+.grid {
+    display: grid;
+    gap: var(--space-lg);
+}
+
+/* Full viewport sections */
+.hero {
+    height: 100vh;
+    padding: var(--space-xl) var(--space-md);
+}</div>
+            
+            <div class="success">
+                <p>✅ Consistent system using appropriate units</p>
+                <p>✅ CSS variables for maintainability</p>
+                <p>✅ Responsive and accessible</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
