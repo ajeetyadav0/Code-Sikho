@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glassmorphism Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Animated background shapes */
+        .bg-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.6;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            bottom: -150px;
+            right: -150px;
+            animation-delay: 5s;
+        }
+
+        .shape-3 {
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            top: 50%;
+            left: 50%;
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            33% {
+                transform: translate(30px, -30px) rotate(120deg);
+            }
+            66% {
+                transform: translate(-20px, 20px) rotate(240deg);
+            }
+        }
+
+        .dashboard {
+            width: 90%;
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            padding: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            color: white;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .menu-icon {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .menu-line {
+            width: 100%;
+            height: 3px;
+            background: white;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-icon:hover .menu-line:nth-child(1) {
+            transform: translateY(8px);
+        }
+
+        .menu-icon:hover .menu-line:nth-child(3) {
+            transform: translateY(-8px);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .stat-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .stat-title {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .stat-change {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .positive {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+        }
+
+        .negative {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart {
+            display: flex;
+            align-items: flex-end;
+            height: 250px;
+            gap: 15px;
+        }
+
+        .bar {
+            flex: 1;
+            background: linear-gradient(to top, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.6));
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            animation: grow 1.5s ease-out forwards;
+            transform-origin: bottom;
+        }
+
+        @keyframes grow {
+            from {
+                transform: scaleY(0);
+            }
+            to {
+                transform: scaleY(1);
+            }
+        }
+
+        .bar:nth-child(1) { height: 70%; animation-delay: 0.1s; }
+        .bar:nth-child(2) { height: 85%; animation-delay: 0.2s; }
+        .bar:nth-child(3) { height: 60%; animation-delay: 0.3s; }
+        .bar:nth-child(4) { height: 90%; animation-delay: 0.4s; }
+        .bar:nth-child(5) { height: 75%; animation-delay: 0.5s; }
+        .bar:nth-child(6) { height: 65%; animation-delay: 0.6s; }
+        .bar:nth-child(7) { height: 80%; animation-delay: 0.7s; }
+
+        .bar::after {
+            content: attr(data-value);
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 0.8rem;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .notification {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(244, 67, 54, 0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(244, 67, 54, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(244, 67, 54, 0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated background shapes -->
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+    <div class="bg-shape shape-3"></div>
+
+    <div class="dashboard">
+        <div class="header">
+            <h1 class="title">Analytics Dashboard</h1>
+            <div class="menu-icon">
+                <span class="menu-line"></span>
+                <span class="menu-line"></span>
+                <span class="menu-line"></span>
+            </div>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-title">Total Revenue</div>
+                <div class="stat-value">$48,574</div>
+                <span class="stat-change positive">+12.5%</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Active Users</div>
+                <div class="stat-value">8,247</div>
+                <span class="stat-change positive">+5.2%</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Conversion Rate</div>
+                <div class="stat-value">3.48%</div>
+                <span class="stat-change negative">-2.1%</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Avg. Session</div>
+                <div class="stat-value">5m 42s</div>
+                <span class="stat-change positive">+18.3%</span>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart">
+                <div class="bar" data-value="Mon"></div>
+                <div class="bar" data-value="Tue"></div>
+                <div class="bar" data-value="Wed"></div>
+                <div class="bar" data-value="Thu"></div>
+                <div class="bar" data-value="Fri"></div>
+                <div class="bar" data-value="Sat"></div>
+                <div class="bar" data-value="Sun"></div>
+            </div>
+            <div class="notification">3</div>
+        </div>
+    </div>
+
+    <script>
+        // Add interactive animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate stat values counting up
+            const statValues = document.querySelectorAll('.stat-value');
+            
+            statValues.forEach(stat => {
+                const finalValue = stat.textContent;
+                const isNumeric = /^\$?[\d,]+\.?\d*$/.test(finalValue);
+                
+                if (isNumeric) {
+                    const numericValue = parseFloat(finalValue.replace(/[^0-9.]/g, ''));
+                    const prefix = finalValue.match(/^[^\d]*/)[0];
+                    const suffix = finalValue.match(/[^\d]*$/)[0];
+                    let currentValue = 0;
+                    const increment = numericValue / 50;
+                    
+                    const updateValue = () => {
+                        currentValue += increment;
+                        if (currentValue < numericValue) {
+                            stat.textContent = prefix + currentValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + suffix;
+                            requestAnimationFrame(updateValue);
+                        } else {
+                            stat.textContent = finalValue;
+                        }
+                    };
+                    
+                    updateValue();
+                }
+            });
+            
+            // Add interactive notification
+            const notification = document.querySelector('.notification');
+            notification.addEventListener('click', function() {
+                this.style.animation = 'none';
+                setTimeout(() => {
+                    this.style.animation = 'pulse 2s infinite';
+                }, 10);
+            });
+        });
+    </script>
+</body>
+</html>
