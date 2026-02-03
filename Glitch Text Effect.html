@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glitch Text Effect</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+        
+        body {
+            font-family: 'Bebas Neue', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #000;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .glitch-wrapper {
+            position: relative;
+            margin: 2rem 0;
+        }
+
+        .glitch {
+            font-size: 8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            position: relative;
+            color: white;
+            letter-spacing: 0.05em;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            animation: glitch-1 0.5s infinite;
+            color: #00ffff;
+            z-index: -1;
+        }
+
+        .glitch::after {
+            animation: glitch-2 0.5s infinite;
+            color: #ff00ff;
+            z-index: -2;
+        }
+
+        @keyframes glitch-1 {
+            0% {
+                clip-path: inset(0 0 0 0);
+                transform: translate(0);
+            }
+            20% {
+                clip-path: inset(20% 0 30% 0);
+                transform: translate(-5px, 5px);
+            }
+            40% {
+                clip-path: inset(50% 0 20% 0);
+                transform: translate(5px, -5px);
+            }
+            60% {
+                clip-path: inset(10% 0 60% 0);
+                transform: translate(-5px, 5px);
+            }
+            80% {
+                clip-path: inset(70% 0 10% 0);
+                transform: translate(5px, -5px);
+            }
+            100% {
+                clip-path: inset(0 0 0 0);
+                transform: translate(0);
+            }
+        }
+
+        @keyframes glitch-2 {
+            0% {
+                clip-path: inset(0 0 0 0);
+                transform: translate(0);
+            }
+            20% {
+                clip-path: inset(60% 0 10% 0);
+                transform: translate(5px, -5px);
+            }
+            40% {
+                clip-path: inset(10% 0 70% 0);
+                transform: translate(-5px, 5px);
+            }
+            60% {
+                clip-path: inset(40% 0 30% 0);
+                transform: translate(5px, -5px);
+            }
+            80% {
+                clip-path: inset(20% 0 50% 0);
+                transform: translate(-5px, 5px);
+            }
+            100% {
+                clip-path: inset(0 0 0 0);
+                transform: translate(0);
+            }
+        }
+
+        .code-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            max-width: 100%;
+            text-align: left;
+        }
+
+        .code-container pre {
+            color: white;
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .controls {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 15px;
+            margin: 0 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 16px;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .control-btn.active {
+            background: rgba(255, 255, 255, 0.4);
+            border-color: white;
+        }
+
+        .text-input {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .text-input input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 16px;
+            width: 300px;
+        }
+
+        .text-input button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="glitch-wrapper">
+            <h1 class="glitch" data-text="GLITCH">GLITCH</h1>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn active" onclick="setGlitchSpeed('0.5s')">Normal</button>
+            <button class="control-btn" onclick="setGlitchSpeed('0.2s')">Fast</button>
+            <button class="control-btn" onclick="setGlitchSpeed('1s')">Slow</button>
+            <button class="control-btn" onclick="toggleGlitch()">Toggle</button>
+        </div>
+        
+        <div class="text-input">
+            <input type="text" id="glitchText" placeholder="Enter custom text" value="GLITCH">
+            <button onclick="updateGlitchText()">Update</button>
+        </div>
+        
+        <div class="code-container">
+            <pre>.glitch {
+    font-size: 8rem;
+    font-weight: bold;
+    position: relative;
+    color: white;
+}
+
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.glitch::before {
+    animation: glitch-1 0.5s infinite;
+    color: #00ffff;
+    z-index: -1;
+}
+
+.glitch::after {
+    animation: glitch-2 0.5s infinite;
+    color: #ff00ff;
+    z-index: -2;
+}
+
+@keyframes glitch-1 {
+    0% {
+        clip-path: inset(0 0 0 0);
+        transform: translate(0);
+    }
+    20% {
+        clip-path: inset(20% 0 30% 0);
+        transform: translate(-5px, 5px);
+    }
+    /* More keyframes... */
+}</pre>
+        </div>
+    </div>
+
+    <script>
+        let glitchActive = true;
+        
+        function setGlitchSpeed(speed) {
+            const style = document.createElement('style');
+            style.textContent = `
+                .glitch::before {
+                    animation: glitch-1 ${speed} infinite;
+                }
+                .glitch::after {
+                    animation: glitch-2 ${speed} infinite;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Update active button
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        function toggleGlitch() {
+            const glitch = document.querySelector('.glitch');
+            glitchActive = !glitchActive;
+            
+            if (glitchActive) {
+                glitch.style.animationPlayState = 'running';
+            } else {
+                glitch.style.animationPlayState = 'paused';
+            }
+        }
+        
+        function updateGlitchText() {
+            const newText = document.getElementById('glitchText').value;
+            const glitch = document.querySelector('.glitch');
+            glitch.textContent = newText;
+            glitch.setAttribute('data-text', newText);
+        }
+        
+        // Add random glitch on hover
+        document.querySelector('.glitch').addEventListener('mouseover', () => {
+            if (glitchActive) {
+                const glitch = document.querySelector('.glitch');
+                glitch.style.animation = 'none';
+                
+                setTimeout(() => {
+                    glitch.style.animation = '';
+                }, 10);
+            }
+        });
+    </script>
+</body>
+</html>

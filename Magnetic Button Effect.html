@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magnetic Button Effect</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 {
+            color: white;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+
+        .magnetic-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 2rem;
+        }
+
+        .magnetic-btn {
+            position: relative;
+            padding: 15px 30px;
+            font-size: 18px;
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid white;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .magnetic-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .code-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            max-width: 100%;
+            text-align: left;
+        }
+
+        .code-container pre {
+            color: white;
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .controls {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 15px;
+            margin: 0 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .control-btn.active {
+            background: rgba(255, 255, 255, 0.4);
+            border-color: white;
+        }
+
+        .magnetic-strength {
+            margin-top: 1rem;
+            color: white;
+        }
+
+        .magnetic-strength input {
+            width: 60px;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Magnetic Button Effect</h1>
+        
+        <div class="magnetic-buttons">
+            <button class="magnetic-btn">Button 1</button>
+            <button class="magnetic-btn">Button 2</button>
+            <button class="magnetic-btn">Button 3</button>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn active" onclick="setMagneticMode('move')">Move</button>
+            <button class="control-btn" onclick="setMagneticMode('scale')">Scale</button>
+            <button class="control-btn" onclick="setMagneticMode('both')">Both</button>
+        </div>
+        
+        <div class="magnetic-strength">
+            <label>Magnetic Strength:</label>
+            <input type="range" id="strength" min="0.1" max="1" step="0.1" value="0.3" onchange="updateMagneticStrength()">
+            <span id="strengthValue">0.3</span>
+        </div>
+        
+        <div class="code-container">
+            <pre>// Magnetic Button Effect
+document.querySelectorAll('.magnetic-btn').forEach(btn => {
+    btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        
+        // Apply magnetic effect
+        btn.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
+    });
+    
+    btn.addEventListener('mouseleave', () => {
+        // Reset button position
+        btn.style.transform = '';
+    });
+});</pre>
+        </div>
+    </div>
+
+    <script>
+        let magneticMode = 'move';
+        let magneticStrength = 0.3;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const buttons = document.querySelectorAll('.magnetic-btn');
+            
+            buttons.forEach(btn => {
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    
+                    // Apply magnetic effect based on mode
+                    if (magneticMode === 'move') {
+                        btn.style.transform = `translate(${x * magneticStrength}px, ${y * magneticStrength}px)`;
+                    } else if (magneticMode === 'scale') {
+                        const distance = Math.sqrt(x * x + y * y);
+                        const scale = 1 + (1 - distance / 200) * magneticStrength;
+                        btn.style.transform = `scale(${scale})`;
+                    } else if (magneticMode === 'both') {
+                        const distance = Math.sqrt(x * x + y * y);
+                        const scale = 1 + (1 - distance / 200) * magneticStrength;
+                        btn.style.transform = `translate(${x * magneticStrength}px, ${y * magneticStrength}px) scale(${scale})`;
+                    }
+                });
+                
+                btn.addEventListener('mouseleave', () => {
+                    // Reset button position
+                    btn.style.transform = '';
+                });
+            });
+        });
+        
+        function setMagneticMode(mode) {
+            magneticMode = mode;
+            
+            // Update active button
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        function updateMagneticStrength() {
+            magneticStrength = parseFloat(document.getElementById('strength').value);
+            document.getElementById('strengthValue').textContent = magneticStrength;
+        }
+    </script>
+</body>
+</html>
