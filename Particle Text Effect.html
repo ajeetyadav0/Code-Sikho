@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particle Text Effect</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #000;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .particle-text {
+            font-size: 5rem;
+            font-weight: bold;
+            color: transparent;
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .particle-text::before {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff006e, #8338ec, #3a86ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background-color: #fff;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 2;
+        }
+
+        .code-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            max-width: 100%;
+            text-align: left;
+        }
+
+        .code-container pre {
+            color: white;
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .controls {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 15px;
+            margin: 0 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .control-btn.active {
+            background: rgba(255, 255, 255, 0.4);
+            border-color: white;
+        }
+
+        .particle-settings {
+            margin-top: 1rem;
+            color: white;
+            font-size: 14px;
+        }
+
+        .particle-settings label {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .particle-settings input {
+            width: 60px;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="particle-text" data-text="PARTICLES">PARTICLES</h1>
+        
+        <div class="controls">
+            <button class="control-btn active" onclick="setParticleType('circle')">Circle</button>
+            <button class="control-btn" onclick="setParticleType('square')">Square</button>
+            <button class="control-btn" onclick="setParticleType('triangle')">Triangle</button>
+            <button class="control-btn" onclick="setParticleType('star')">Star</button>
+        </div>
+        
+        <div class="particle-settings">
+            <label>Particle Size:</label>
+            <input type="range" id="particleSize" min="1" max="10" value="3" onchange="updateParticleSettings()">
+            
+            <label>Particle Count:</label>
+            <input type="range" id="particleCount" min="10" max="100" value="50" onchange="updateParticleSettings()">
+        </div>
+        
+        <div class="code-container">
+            <pre>/* Particle Text Effect */
+.particle-text {
+    font-size: 5rem;
+    font-weight: bold;
+    color: transparent;
+    position: relative;
+}
+
+.particle-text::before {
+    content: attr(data-text);
+    position: absolute;
+    background: linear-gradient(45deg, #ff006e, #8338ec, #3a86ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* JavaScript creates particles that explode from text */
+function createParticles(x, y) {
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        // Random size and direction
+        const size = Math.random() * particleSize + 1;
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = Math.random() * 5 + 2;
+        
+        // Set particle properties
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${x}px`;
+        particle.style.top = `${y}px`;
+        
+        // Animate particle
+        animateParticle(particle, angle, velocity);
+    }
+}</pre>
+        </div>
+    </div>
+
+    <script>
+        let particleType = 'circle';
+        let particleSize = 3;
+        let particleCount = 50;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const textElement = document.querySelector('.particle-text');
+            
+            textElement.addEventListener('mousemove', (e) => {
+                const rect = textElement.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                createParticles(x, y);
+            });
+        });
+        
+        function createParticles(x, y) {
+            const container = document.querySelector('.container');
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size and direction
+                const size = Math.random() * particleSize + 1;
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 5 + 2;
+                
+                // Set particle properties
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                
+                // Set particle type
+                setParticleShape(particle, size);
+                
+                // Random color
+                const colors = ['#ff006e', '#8338ec', '#3a86ff', '#06c', '#ffbe0b'];
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                container.appendChild(particle);
+                
+                // Animate particle
+                animateParticle(particle, angle, velocity);
+            }
+        }
+        
+        function setParticleShape(particle, size) {
+            switch(particleType) {
+                case 'circle':
+                    particle.style.borderRadius = '50%';
+                    break;
+                case 'square':
+                    particle.style.borderRadius = '0';
+                    break;
+                case 'triangle':
+                    particle.style.width = '0';
+                    particle.style.height = '0';
+                    particle.style.borderLeft = `${size/2}px solid transparent`;
+                    particle.style.borderRight = `${size/2}px solid transparent`;
+                    particle.style.borderBottom = `${size}px solid`;
+                    particle.style.backgroundColor = 'transparent';
+                    break;
+                case 'star':
+                    particle.style.clipPath = 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)';
+                    break;
+            }
+        }
+        
+        function animateParticle(particle, angle, velocity) {
+            const duration = Math.random() * 1000 + 500;
+            const startTime = Date.now();
+            
+            particle.style.opacity = '1';
+            
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                const progress = elapsed / duration;
+                
+                if (progress < 1) {
+                    const distance = velocity * elapsed * 0.1;
+                    const x = parseFloat(particle.style.left) + Math.cos(angle) * distance;
+                    const y = parseFloat(particle.style.top) + Math.sin(angle) * distance;
+                    
+                    particle.style.left = `${x}px`;
+                    particle.style.top = `${y}px`;
+                    particle.style.opacity = 1 - progress;
+                    
+                    requestAnimationFrame(animate);
+                } else {
+                    particle.remove();
+                }
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        function setParticleType(type) {
+            particleType = type;
+            
+            // Update active button
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        function updateParticleSettings() {
+            particleSize = parseInt(document.getElementById('particleSize').value);
+            particleCount = parseInt(document.getElementById('particleCount').value);
+        }
+    </script>
+</body>
+</html>
