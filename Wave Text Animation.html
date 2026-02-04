@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wave Text Animation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+        
+        body {
+            font-family: 'Audiowide', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 1000px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .wave-text {
+            font-size: 5rem;
+            color: white;
+            margin-bottom: 2rem;
+            display: inline-block;
+        }
+
+        .wave-text span {
+            display: inline-block;
+            animation: wave 2s ease-in-out infinite;
+            animation-delay: calc(0.1s * var(--i));
+        }
+
+        @keyframes wave {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .rainbow-text {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            background: linear-gradient(to right, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+
+        .rainbow-text span {
+            display: inline-block;
+            animation: rainbow-wave 3s ease-in-out infinite;
+            animation-delay: calc(0.1s * var(--i));
+        }
+
+        @keyframes rainbow-wave {
+            0%, 100% {
+                transform: translateY(0) rotateZ(0);
+                filter: hue-rotate(0deg);
+            }
+            50% {
+                transform: translateY(-15px) rotateZ(5deg);
+                filter: hue-rotate(180deg);
+            }
+        }
+
+        .glitch-text {
+            font-size: 4rem;
+            font-weight: bold;
+            color: white;
+            position: relative;
+            margin-bottom: 2rem;
+            display: inline-block;
+        }
+
+        .glitch-text span {
+            display: inline-block;
+            animation: glitch-wave 2s ease-in-out infinite;
+            animation-delay: calc(0.05s * var(--i));
+        }
+
+        @keyframes glitch-wave {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            }
+            25% {
+                transform: translateY(-5px) translateX(-2px);
+                text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff;
+            }
+            50% {
+                transform: translateY(0) translateX(0);
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            }
+            75% {
+                transform: translateY(-5px) translateX(2px);
+                text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff;
+            }
+        }
+
+        .code-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            max-width: 100%;
+            margin-top: 2rem;
+        }
+
+        .code-container pre {
+            color: white;
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .controls {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 15px;
+            margin: 0 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Audiowide', cursive;
+            font-size: 14px;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .control-btn.active {
+            background: rgba(255, 255, 255, 0.4);
+            border-color: white;
+        }
+
+        .text-input {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .text-input input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-family: 'Audiowide', cursive;
+            font-size: 16px;
+            width: 300px;
+        }
+
+        .text-input button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Audiowide', cursive;
+            font-size: 16px;
+        }
+
+        .animation-controls {
+            margin-top: 1rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .animation-controls label {
+            font-size: 14px;
+        }
+
+        .animation-controls input {
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="wave-text" id="waveText">WAVE ANIMATION</h1>
+        
+        <h2 class="rainbow-text" id="rainbowText">RAINBOW EFFECT</h2>
+        
+        <h3 class="glitch-text" id="glitchText">GLITCH WAVE</h3>
+        
+        <div class="controls">
+            <button class="control-btn active" onclick="setAnimationType('wave')">Wave</button>
+            <button class="control-btn" onclick="setAnimationType('rainbow')">Rainbow</button>
+            <button class="control-btn" onclick="setAnimationType('glitch')">Glitch</button>
+            <button class="control-btn" onclick="toggleAnimation()">Toggle</button>
+        </div>
+        
+        <div class="text-input">
+            <input type="text" id="customText" placeholder="Enter custom text" value="WAVE ANIMATION">
+            <button onclick="updateText()">Update</button>
+        </div>
+        
+        <div class="animation-controls">
+            <div>
+                <label>Wave Height:</label>
+                <input type="range" id="waveHeight" min="5" max="50" value="20" onchange="updateWaveHeight()">
+                <span id="waveHeightValue">20px</span>
+            </div>
+            
+            <div>
+                <label>Animation Speed:</label>
+                <input type="range" id="animSpeed" min="0.5" max="5" step="0.5" value="2" onchange="updateAnimationSpeed()">
+                <span id="animSpeedValue">2s</span>
+            </div>
+            
+            <div>
+                <label>Letter Delay:</label>
+                <input type="range" id="letterDelay" min="0.05" max="0.5" step="0.05" value="0.1" onchange="updateLetterDelay()">
+                <span id="letterDelayValue">0.1s</span>
+            </div>
+        </div>
+        
+        <div class="code-container">
+            <pre>/* Wave Text Animation */
+.wave-text span {
+    display: inline-block;
+    animation: wave 2s ease-in-out infinite;
+    animation-delay: calc(0.1s * var(--i));
+}
+
+@keyframes wave {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+/* JavaScript to create spans */
+const text = "WAVE ANIMATION";
+const waveElement = document.querySelector('.wave-text');
+waveElement.innerHTML = '';
+
+text.split('').forEach((letter, i) => {
+    const span = document.createElement('span');
+    span.textContent = letter;
+    span.style.setProperty('--i', i);
+    waveElement.appendChild(span);
+});</pre>
+        </div>
+    </div>
+
+    <script>
+        let animationActive = true;
+        let currentAnimationType = 'wave';
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize text animations
+            initTextAnimation('waveText');
+            initTextAnimation('rainbowText');
+            initTextAnimation('glitchText');
+        });
+        
+        function initTextAnimation(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            element.innerHTML = '';
+            
+            text.split('').forEach((letter, i) => {
+                const span = document.createElement('span');
+                span.textContent = letter;
+                span.style.setProperty('--i', i);
+                element.appendChild(span);
+            });
+        }
+        
+        function setAnimationType(type) {
+            currentAnimationType = type;
+            
+            // Update active button
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update text input value
+            const textInput = document.getElementById('customText');
+            switch(type) {
+                case 'wave':
+                    textInput.value = 'WAVE ANIMATION';
+                    break;
+                case 'rainbow':
+                    textInput.value = 'RAINBOW EFFECT';
+                    break;
+                case 'glitch':
+                    textInput.value = 'GLITCH WAVE';
+                    break;
+            }
+            
+            updateText();
+        }
+        
+        function updateText() {
+            const text = document.getElementById('customText').value;
+            
+            // Update all text elements
+            document.getElementById('waveText').textContent = text;
+            document.getElementById('rainbowText').textContent = text;
+            document.getElementById('glitchText').textContent = text;
+            
+            // Reinitialize animations
+            initTextAnimation('waveText');
+            initTextAnimation('rainbowText');
+            initTextAnimation('glitchText');
+        }
+        
+        function toggleAnimation() {
+            animationActive = !animationActive;
+            
+            // Update active button
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Toggle animation play state
+            const spans = document.querySelectorAll('.wave-text span, .rainbow-text span, .glitch-text span');
+            spans.forEach(span => {
+                span.style.animationPlayState = animationActive ? 'running' : 'paused';
+            });
+        }
+        
+        function updateWaveHeight() {
+            const height = document.getElementById('waveHeight').value;
+            document.getElementById('waveHeightValue').textContent = height + 'px';
+            
+            // Update keyframes
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes wave {
+                    0%, 100% {
+                        transform: translateY(0);
+                    }
+                    50% {
+                        transform: translateY(-${height}px);
+                    }
+                }
+                
+                @keyframes rainbow-wave {
+                    0%, 100% {
+                        transform: translateY(0) rotateZ(0);
+                    }
+                    50% {
+                        transform: translateY(-${height/2}px) rotateZ(5deg);
+                    }
+                }
+                
+                @keyframes glitch-wave {
+                    0%, 100% {
+                        transform: translateY(0) translateX(0);
+                    }
+                    25% {
+                        transform: translateY(-${height/4}px) translateX(-2px);
+                    }
+                    75% {
+                        transform: translateY(-${height/4}px) translateX(2px);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        function updateAnimationSpeed() {
+            const speed = document.getElementById('animSpeed').value;
+            document.getElementById('animSpeedValue').textContent = speed + 's';
+            
+            // Update animation duration
+            const spans = document.querySelectorAll('.wave-text span, .rainbow-text span, .glitch-text span');
+            spans.forEach(span => {
+                span.style.animationDuration = speed + 's';
+            });
+        }
+        
+        function updateLetterDelay() {
+            const delay = document.getElementById('letterDelay').value;
+            document.getElementById('letterDelayValue').textContent = delay + 's';
+            
+            // Reinitialize animations with new delay
+            initTextAnimation('waveText');
+            initTextAnimation('rainbowText');
+            initTextAnimation('glitchText');
+        }
+    </script>
+</body>
+</html>

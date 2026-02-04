@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magnetic Cursor Effect</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+            cursor: none;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .magnetic-elements {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 2rem;
+        }
+
+        .magnetic-element {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .magnetic-element h3 {
+            font-size: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .magnetic-element p {
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+            z-index: 9999;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-follower {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            transition: width 0.5s ease, height 0.5s ease;
+            z-index: 9998;
+        }
+
+        .cursor.hover {
+            width: 40px;
+            height: 40px;
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .cursor-follower.hover {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .code-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            max-width: 100%;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .code-container pre {
+            color: white;
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 100;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 15px;
+            margin: 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .control-btn.active {
+            background: rgba(255, 255, 255, 0.4);
+            border-color: white;
+        }
+
+        .magnetic-strength {
+            margin-top: 10px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .magnetic-strength input {
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+    
+    <div class="container">
+        <h1>Magnetic Cursor Effect</h1>
+        
+        <div class="magnetic-elements">
+            <div class="magnetic-element" data-strength="0.3">
+                <h3>Element 1</h3>
+                <p>This element follows your cursor with a magnetic effect</p>
+            </div>
+            
+            <div class="magnetic-element" data-strength="0.5">
+                <h3>Element 2</h3>
+                <p>This element has a stronger magnetic pull</p>
+            </div>
+            
+            <div class="magnetic-element" data-strength="0.2">
+                <h3>Element 3</h3>
+                <p>This element has a weaker magnetic pull</p>
+            </div>
+        </div>
+        
+        <div class="code-container">
+            <pre>// Magnetic Cursor Effect
+const cursor = document.querySelector('.cursor');
+const follower = document.querySelector('.cursor-follower');
+
+document.addEventListener('mousemove', (e) => {
+    // Position cursor
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    
+    // Position follower with delay
+    setTimeout(() => {
+        follower.style.left = e.clientX + 'px';
+        follower.style.top = e.clientY + 'px';
+    }, 100);
+});
+
+// Magnetic elements
+document.querySelectorAll('.magnetic-element').forEach(elem => {
+    elem.addEventListener('mousemove', (e) => {
+        const rect = elem.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        
+        const strength = elem.dataset.strength || 0.3;
+        
+        elem.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
+    });
+    
+    elem.addEventListener('mouseleave', () => {
+        elem.style.transform = '';
+    });
+});</pre>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <button class="control-btn active" onclick="setCursorStyle('default')">Default</button>
+        <button class="control-btn" onclick="setCursorStyle('expand')">Expand</button>
+        <button class="control-btn" onclick="setCursorStyle('rotate')">Rotate</button>
+        <button class="control-btn" onclick="toggleCursor()">Toggle</button>
+        
+        <div class="magnetic-strength">
+            <label>Magnetic Strength:</label>
+            <input type="range" id="strength" min="0.1" max="1" step="0.1" value="0.3" onchange="updateMagneticStrength()">
+            <span id="strengthValue">0.3</span>
+        </div>
+    </div>
+
+    <script>
+        const cursor = document.querySelector('.cursor');
+        const follower = document.querySelector('.cursor-follower');
+        let cursorStyle = 'default';
+        let cursorVisible = true;
+        let magneticStrength = 0.3;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize magnetic elements
+            initMagneticElements();
+            
+            // Initialize cursor
+            document.addEventListener('mousemove', moveCursor);
+            
+            // Show/hide cursor on enter/leave
+            document.addEventListener('mouseenter', () => {
+                cursorVisible = true;
+                cursor.style.display = 'block';
+                follower.style.display = 'block';
+            });
+            
+            document.addEventListener('mouseleave', () => {
+                cursorVisible = false;
+                cursor.style.display = 'none';
+                follower.style.display = 'none';
+            });
+        });
+        
+        function moveCursor(e) {
+            if (!cursorVisible) return;
+            
+            // Position cursor
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            // Apply cursor style
+            applyCursorStyle(e);
+            
+            // Position follower with delay
+            setTimeout(() => {
+                if (!cursorVisible) return;
+                follower.style.left = e.clientX + 'px';
+                follower.style.top = e.clientY + 'px';
+            }, 100);
+        }
+        
+        function applyCursorStyle(e) {
+            switch(cursorStyle) {
+                case 'expand':
+                    const targetElements = document.querySelectorAll('.magnetic-element, button, a');
+                    let hovering = false;
+                    
+                    targetElements.forEach(elem => {
+                        const rect = elem.getBoundingClientRect();
+                        if (
+                            e.clientX >= rect.left &&
+                            e.clientX <= rect.right &&
+                            e.clientY >= rect.top &&
+                            e.clientY <= rect.bottom
+                        ) {
+                            hovering = true;
+                        }
+                    });
+                    
+                    if (hovering) {
+                        cursor.classList.add('hover');
+                        follower.classList.add('hover');
+                    } else {
+                        cursor.classList.remove('hover');
+                        follower.classList.remove('hover');
+                    }
+                    break;
+                    
+                case 'rotate':
+                    const rotateAmount = (e.clientX / window.innerWidth - 0.5) * 30;
+                    cursor.style.transform = `translate(-50%, -50%) rotate(${rotateAmount}deg)`;
+                    break;
+                    
+                default:
+                    cursor.style.transform = 'translate(-50%, -50%)';
+            }
+        }
+        
+        function initMagneticElements() {
+            document.querySelectorAll('.magnetic-element').forEach(elem => {
+                // Use custom strength if defined, otherwise use default
+                const strength = elem.dataset.strength || magneticStrength;
+                
+                elem.addEventListener('mousemove', (e) => {
+                    const rect = elem.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    
+                    elem.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
+                });
+                
+                elem.addEventListener('mouseleave', () => {
+                    elem.style.transform = '';
+                });
+            });
+        }
+        
+        function setCursorStyle(style) {
+            cursorStyle = style;
+            
+            // Update active button
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Reset cursor classes
+            cursor.classList.remove('hover');
+            follower.classList.remove('hover');
+        }
+        
+        function toggleCursor() {
+            cursorVisible = !cursorVisible;
+            
+            // Update active button
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            if (cursorVisible) {
+                document.body.style.cursor = 'none';
+                cursor.style.display = 'block';
+                follower.style.display = 'block';
+            } else {
+                document.body.style.cursor = 'auto';
+                cursor.style.display = 'none';
+                follower.style.display = 'none';
+            }
+        }
+        
+        function updateMagneticStrength() {
+            magneticStrength = parseFloat(document.getElementById('strength').value);
+            document.getElementById('strengthValue').textContent = magneticStrength;
+            
+            // Reinitialize magnetic elements with new strength
+            initMagneticElements();
+        }
+    </script>
+</body>
+</html>

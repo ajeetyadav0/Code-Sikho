@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Card Flip Effect</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            perspective: 1000px;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 {
+            color: white;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 2rem;
+        }
+
+        .card-3d {
+            width: 300px;
+            height: 400px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s;
+            cursor: pointer;
+        }
+
+        .card-3d.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .card-front {
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .card-back {
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .card-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .code-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            max-width: 100%;
+            text-align: left;
+        }
+
+        .code-container pre {
+            color: white;
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .controls {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 15px;
+            margin: 0 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .control-btn.active {
+            background: rgba(255, 255, 255, 0.4);
+            border-color: white;
+        }
+
+        .flip-duration {
+            margin-top: 1rem;
+            color: white;
+        }
+
+        .flip-duration input {
+            width: 60px;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>3D Card Flip Effect</h1>
+        
+        <div class="card-container">
+            <div class="card-3d" id="card1" onclick="flipCard('card1')">
+                <div class="card-face card-front">
+                    <div class="card-icon">🎨</div>
+                    <h3 class="card-title">Design</h3>
+                    <p class="card-description">Click to see more details about our design services and capabilities.</p>
+                </div>
+                <div class="card-face card-back">
+                    <div class="card-icon">✨</div>
+                    <h3 class="card-title">Design Details</h3>
+                    <p class="card-description">We offer comprehensive design solutions including UI/UX, branding, and visual identity creation.</p>
+                </div>
+            </div>
+            
+            <div class="card-3d" id="card2" onclick="flipCard('card2')">
+                <div class="card-face card-front">
+                    <div class="card-icon">💻</div>
+                    <h3 class="card-title">Development</h3>
+                    <p class="card-description">Click to see more details about our development services and technologies.</p>
+                </div>
+                <div class="card-face card-back">
+                    <div class="card-icon">🚀</div>
+                    <h3 class="card-title">Development Details</h3>
+                    <p class="card-description">We specialize in modern web technologies, responsive design, and performance optimization.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn active" onclick="setFlipDirection('Y')">Flip Y</button>
+            <button class="control-btn" onclick="setFlipDirection('X')">Flip X</button>
+            <button class="control-btn" onclick="flipAllCards()">Flip All</button>
+            <button class="control-btn" onclick="resetAllCards()">Reset All</button>
+        </div>
+        
+        <div class="flip-duration">
+            <label>Flip Duration (seconds):</label>
+            <input type="range" id="duration" min="0.3" max="2" step="0.1" value="0.8" onchange="updateFlipDuration()">
+            <span id="durationValue">0.8</span>
+        </div>
+        
+        <div class="code-container">
+            <pre>.card-3d {
+    width: 300px;
+    height: 400px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.8s;
+    cursor: pointer;
+}
+
+.card-3d.flipped {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card-back {
+    transform: rotateY(180deg);
+}</pre>
+        </div>
+    </div>
+
+    <script>
+        let flipDirection = 'Y';
+        
+        function flipCard(cardId) {
+            const card = document.getElementById(cardId);
+            card.classList.toggle('flipped');
+        }
+        
+        function setFlipDirection(direction) {
+            flipDirection = direction;
+            
+            // Update active button
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update all cards
+            document.querySelectorAll('.card-3d').forEach(card => {
+                if (card.classList.contains('flipped')) {
+                    card.style.transform = `rotate${direction}(180deg)`;
+                } else {
+                    card.style.transform = '';
+                }
+            });
+            
+            // Update CSS for future flips
+            const style = document.createElement('style');
+            style.textContent = `
+                .card-3d.flipped {
+                    transform: rotate${direction}(180deg);
+                }
+                .card-back {
+                    transform: rotate${direction}(180deg);
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        function flipAllCards() {
+            document.querySelectorAll('.card-3d').forEach(card => {
+                card.classList.add('flipped');
+            });
+        }
+        
+        function resetAllCards() {
+            document.querySelectorAll('.card-3d').forEach(card => {
+                card.classList.remove('flipped');
+            });
+        }
+        
+        function updateFlipDuration() {
+            const duration = document.getElementById('duration').value;
+            document.getElementById('durationValue').textContent = duration;
+            
+            // Update all cards
+            document.querySelectorAll('.card-3d').forEach(card => {
+                card.style.transition = `transform ${duration}s`;
+            });
+        }
+    </script>
+</body>
+</html>
