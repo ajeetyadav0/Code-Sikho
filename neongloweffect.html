@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Glow Effect</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
+        
+        body {
+            font-family: 'Russo One', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #0a0a0a;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .neon-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .neon-text {
+            font-size: 5rem;
+            color: #fff;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        .neon-text.blue {
+            color: #00d4ff;
+            text-shadow: 
+                0 0 10px #00d4ff,
+                0 0 20px #00d4ff,
+                0 0 40px #00d4ff,
+                0 0 80px #00d4ff;
+        }
+
+        .neon-text.pink {
+            color: #ff00de;
+            text-shadow: 
+                0 0 10px #ff00de,
+                0 0 20px #ff00de,
+                0 0 40px #ff00de,
+                0 0 80px #ff00de;
+        }
+
+        .neon-text.green {
+            color: #00ff88;
+            text-shadow: 
+                0 0 10px #00ff88,
+                0 0 20px #00ff88,
+                0 0 40px #00ff88,
+                0 0 80px #00ff88;
+        }
+
+        .neon-button {
+            position: relative;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            color: #fff;
+            background: transparent;
+            border: 2px solid #00d4ff;
+            border-radius: 5px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .neon-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #00d4ff;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.3s ease;
+        }
+
+        .neon-button:hover {
+            color: #0a0a0a;
+            box-shadow: 
+                0 0 10px #00d4ff,
+                0 0 20px #00d4ff,
+                0 0 40px #00d4ff,
+                inset 0 0 10px #00d4ff;
+        }
+
+        .neon-button:hover:before {
+            opacity: 1;
+        }
+
+        .neon-card {
+            width: 300px;
+            height: 200px;
+            background: transparent;
+            border: 2px solid #ff00de;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #ff00de;
+            box-shadow: 
+                0 0 10px #ff00de,
+                0 0 20px #ff00de,
+                inset 0 0 10px #ff00de;
+            transition: all 0.3s ease;
+        }
+
+        .neon-card:hover {
+            box-shadow: 
+                0 0 20px #ff00de,
+                0 0 40px #ff00de,
+                inset 0 0 20px #ff00de;
+            transform: translateY(-5px);
+        }
+
+        .neon-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.5rem;
+        }
+
+        .neon-card p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .code-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            max-width: 100%;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .code-container pre {
+            color: #fff;
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .controls {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 15px;
+            margin: 0 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Russo One', sans-serif;
+            font-size: 14px;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .control-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: white;
+        }
+
+        .intensity-control {
+            margin-top: 1rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .intensity-control input {
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="neon-container">
+            <h1 class="neon-text blue">NEON</h1>
+            <h1 class="neon-text pink">GLOW</h1>
+            <h1 class="neon-text green">EFFECT</h1>
+            
+            <button class="neon-button">Neon Button</button>
+            
+            <div class="neon-card">
+                <h3>Neon Card</h3>
+                <p>Hover for effect</p>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn active" onclick="setNeonColor('blue')">Blue</button>
+            <button class="control-btn" onclick="setNeonColor('pink')">Pink</button>
+            <button class="control-btn" onclick="setNeonColor('green')">Green</button>
+            <button class="control-btn" onclick="toggleAnimation()">Toggle Animation</button>
+        </div>
+        
+        <div class="intensity-control">
+            <label>Glow Intensity:</label>
+            <input type="range" id="intensity" min="1" max="5" step="0.5" value="3" onchange="updateIntensity()">
+            <span id="intensityValue">3</span>
+        </div>
+        
+        <div class="code-container">
+            <pre>.neon-text {
+    color: #00d4ff;
+    text-shadow: 
+        0 0 10px #00d4ff,
+        0 0 20px #00d4ff,
+        0 0 40px #00d4ff,
+        0 0 80px #00d4ff;
+}
+
+.neon-button:hover {
+    box-shadow: 
+        0 0 10px #00d4ff,
+        0 0 20px #00d4ff,
+        0 0 40px #00d4ff,
+        inset 0 0 10px #00d4ff;
+}
+
+.neon-card {
+    border: 2px solid #ff00de;
+    box-shadow: 
+        0 0 10px #ff00de,
+        0 0 20px #ff00de,
+        inset 0 0 10px #ff00de;
+}</pre>
+        </div>
+    </div>
+
+    <script>
+        let animationActive = false;
+        let currentColor = 'blue';
+        
+        function setNeonColor(color) {
+            currentColor = color;
+            
+            // Update active button
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update neon elements
+            const neonTexts = document.querySelectorAll('.neon-text');
+            neonTexts.forEach(text => {
+                text.className = `neon-text ${color}`;
+            });
+            
+            const neonButton = document.querySelector('.neon-button');
+            neonButton.style.borderColor = getNeonColorHex(color);
+            neonButton.style.boxShadow = getNeonBoxShadow(color);
+            
+            const neonCard = document.querySelector('.neon-card');
+            neonCard.style.borderColor = getNeonColorHex(color, 'pink');
+            neonCard.style.color = getNeonColorHex(color, 'pink');
+            neonCard.style.boxShadow = getNeonBoxShadow(color, 'pink');
+        }
+        
+        function getNeonColorHex(color, fallback = 'blue') {
+            const colors = {
+                'blue': '#00d4ff',
+                'pink': '#ff00de',
+                'green': '#00ff88'
+            };
+            return colors[color] || colors[fallback];
+        }
+        
+        function getNeonBoxShadow(color, fallback = 'blue') {
+            const colorHex = getNeonColorHex(color, fallback);
+            const intensity = document.getElementById('intensity').value;
+            
+            return `
+                0 0 ${10 * intensity}px ${colorHex},
+                0 0 ${20 * intensity}px ${colorHex},
+                0 0 ${40 * intensity}px ${colorHex},
+                inset 0 0 ${10 * intensity}px ${colorHex}
+            `;
+        }
+        
+        function toggleAnimation() {
+            animationActive = !animationActive;
+            
+            const style = document.createElement('style');
+            
+            if (animationActive) {
+                style.textContent = `
+                    .neon-text {
+                        animation: neon-flicker 1.5s infinite alternate;
+                    }
+                    
+                    @keyframes neon-flicker {
+                        0%, 100% {
+                            text-shadow: 
+                                0 0 10px ${getNeonColorHex(currentColor)},
+                                0 0 20px ${getNeonColorHex(currentColor)},
+                                0 0 40px ${getNeonColorHex(currentColor)},
+                                0 0 80px ${getNeonColorHex(currentColor)};
+                        }
+                        50% {
+                            text-shadow: 
+                                0 0 5px ${getNeonColorHex(currentColor)},
+                                0 0 10px ${getNeonColorHex(currentColor)},
+                                0 0 20px ${getNeonColorHex(currentColor)},
+                                0 0 40px ${getNeonColorHex(currentColor)};
+                        }
+                    }
+                `;
+            } else {
+                style.textContent = `
+                    .neon-text {
+                        animation: none;
+                    }
+                `;
+            }
+            
+            document.head.appendChild(style);
+        }
+        
+        function updateIntensity() {
+            const intensity = document.getElementById('intensity').value;
+            document.getElementById('intensityValue').textContent = intensity;
+            
+            // Update neon elements with new intensity
+            const neonTexts = document.querySelectorAll('.neon-text');
+            neonTexts.forEach(text => {
+                const color = text.classList.contains('blue') ? 'blue' : 
+                            text.classList.contains('pink') ? 'pink' : 'green';
+                text.style.textShadow = getNeonTextShadow(color);
+            });
+            
+            const neonButton = document.querySelector('.neon-button');
+            neonButton.style.boxShadow = getNeonBoxShadow(currentColor);
+            
+            const neonCard = document.querySelector('.neon-card');
+            neonCard.style.boxShadow = getNeonBoxShadow(currentColor, 'pink');
+        }
+        
+        function getNeonTextShadow(color) {
+            const colorHex = getNeonColorHex(color);
+            const intensity = document.getElementById('intensity').value;
+            
+            return `
+                0 0 ${10 * intensity}px ${colorHex},
+                0 0 ${20 * intensity}px ${colorHex},
+                0 0 ${40 * intensity}px ${colorHex},
+                0 0 ${80 * intensity}px ${colorHex}
+            `;
+        }
+    </script>
+</body>
+</html>

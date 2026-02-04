@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parallax Scrolling Effect</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .parallax-container {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .parallax-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .bg-layer {
+            background: linear-gradient(to bottom, #1e3c72, #2a5298);
+            z-index: 1;
+        }
+
+        .mountain-layer {
+            background: url('https://picsum.photos/seed/mountain/1920/1080.jpg') no-repeat center center;
+            background-size: cover;
+            z-index: 2;
+        }
+
+        .cloud-layer {
+            background: url('https://picsum.photos/seed/clouds/1920/1080.jpg') no-repeat center center;
+            background-size: cover;
+            z-index: 3;
+        }
+
+        .content-layer {
+            z-index: 4;
+            text-align: center;
+            color: white;
+        }
+
+        .content-layer h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .content-layer p {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 5;
+        }
+
+        .scroll-indicator span {
+            display: block;
+            width: 30px;
+            height: 50px;
+            border: 2px solid white;
+            border-radius: 25px;
+            position: relative;
+        }
+
+        .scroll-indicator span::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            margin-left: -3px;
+            background-color: white;
+            border-radius: 50%;
+            animation: scroll-animation 2s infinite;
+        }
+
+        @keyframes scroll-animation {
+            0% {
+                transform: translateY(0);
+                opacity: 0;
+            }
+            40% {
+                opacity: 1;
+            }
+            80% {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .content-section {
+            padding: 80px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .content-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .content-section p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 2rem;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 3rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card-img {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .card-content p {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 0;
+        }
+
+        .code-container {
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .code-container pre {
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .control-btn {
+            background: #2a5298;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: #1e3c72;
+        }
+
+        .control-btn.active {
+            background: #ff6b6b;
+        }
+
+        .speed-control {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .speed-control label {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .speed-control input {
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="parallax-container">
+        <div class="parallax-layer bg-layer"></div>
+        <div class="parallax-layer mountain-layer" data-speed="0.5"></div>
+        <div class="parallax-layer cloud-layer" data-speed="0.2"></div>
+        <div class="parallax-layer content-layer">
+            <h1>Parallax Scrolling</h1>
+            <p>Create depth and visual interest with multi-layer scrolling effects</p>
+        </div>
+        <div class="scroll-indicator">
+            <span></span>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>How Parallax Works</h2>
+        <p>Parallax scrolling creates an illusion of depth by moving background layers at different speeds than the foreground. As you scroll, the elements appear to move at different rates, creating a 3D effect.</p>
+        
+        <div class="cards-container">
+            <div class="card">
+                <div class="card-img" style="background-image: url('https://picsum.photos/seed/card1/400/200.jpg')"></div>
+                <div class="card-content">
+                    <h3>Background Layer</h3>
+                    <p>The background layer moves at the slowest speed, creating a sense of distance.</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-img" style="background-image: url('https://picsum.photos/seed/card2/400/200.jpg')"></div>
+                <div class="card-content">
+                    <h3>Middle Layer</h3>
+                    <p>The middle layer moves at a medium speed, creating depth between foreground and background.</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-img" style="background-image: url('https://picsum.photos/seed/card3/400/200.jpg')"></div>
+                <div class="card-content">
+                    <h3>Foreground Layer</h3>
+                    <p>The foreground layer moves at the fastest speed, appearing closest to the viewer.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="code-container">
+            <pre>// Parallax Scrolling Effect
+window.addEventListener('scroll', () => {
+    const scrolled = window.pageYOffset;
+    
+    // Get all parallax elements
+    const parallaxElements = document.querySelectorAll('[data-speed]');
+    
+    parallaxElements.forEach(element => {
+        const speed = element.dataset.speed || 0.5;
+        const yPos = -(scrolled * speed);
+        
+        element.style.transform = `translateY(${yPos}px)`;
+    });
+});
+
+// HTML Structure
+&lt;div class="parallax-container"&gt;
+    &lt;div class="parallax-layer bg-layer"&gt;&lt;/div&gt;
+    &lt;div class="parallax-layer mountain-layer" data-speed="0.5"&gt;&lt;/div&gt;
+    &lt;div class="parallax-layer cloud-layer" data-speed="0.2"&gt;&lt;/div&gt;
+    &lt;div class="parallax-layer content-layer"&gt;
+        &lt;h1&gt;Parallax Scrolling&lt;/h1&gt;
+        &lt;p&gt;Content here&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</pre>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn active" onclick="setParallaxSpeed('normal')">Normal</button>
+        <button class="control-btn" onclick="setParallaxSpeed('slow')">Slow</button>
+        <button class="control-btn" onclick="setParallaxSpeed('fast')">Fast</button>
+        <button class="control-btn" onclick="toggleParallax()">Toggle</button>
+        
+        <div class="speed-control">
+            <label>Custom Speed:</label>
+            <input type="range" id="customSpeed" min="0.1" max="2" step="0.1" value="1" onchange="setCustomSpeed()">
+            <span id="speedValue">1</span>
+        </div>
+    </div>
+
+    <script>
+        let parallaxEnabled = true;
+        let speedMultiplier = 1;
+        
+        // Parallax scrolling effect
+        window.addEventListener('scroll', () => {
+            if (!parallaxEnabled) return;
+            
+            const scrolled = window.pageYOffset;
+            
+            // Get all parallax elements
+            const parallaxElements = document.querySelectorAll('[data-speed]');
+            
+            parallaxElements.forEach(element => {
+                const speed = parseFloat(element.dataset.speed) * speedMultiplier;
+                const yPos = -(scrolled * speed);
+                
+                element.style.transform = `translateY(${yPos}px)`;
+            });
+        });
+        
+        function setParallaxSpeed(speed) {
+            // Update active button
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            switch(speed) {
+                case 'slow':
+                    speedMultiplier = 0.5;
+                    break;
+                case 'fast':
+                    speedMultiplier = 1.5;
+                    break;
+                default:
+                    speedMultiplier = 1;
+            }
+            
+            // Update custom speed slider
+            document.getElementById('customSpeed').value = speedMultiplier;
+            document.getElementById('speedValue').textContent = speedMultiplier;
+        }
+        
+        function toggleParallax() {
+            parallaxEnabled = !parallaxEnabled;
+            
+            // Update active button
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            if (!parallaxEnabled) {
+                // Reset all parallax elements
+                document.querySelectorAll('[data-speed]').forEach(element => {
+                    element.style.transform = '';
+                });
+            }
+        }
+        
+        function setCustomSpeed() {
+            speedMultiplier = parseFloat(document.getElementById('customSpeed').value);
+            document.getElementById('speedValue').textContent = speedMultiplier;
+            
+            // Update active button
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+        }
+        
+        // Add parallax effect to cards
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all cards
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
