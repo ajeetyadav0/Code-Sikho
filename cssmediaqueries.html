@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Query Example</title>
+    <style>
+        body{
+            font-family: Arial;
+            background-color: lightgray;
+            text-align: center;
+        }
+         @media (max-width:1024px){
+            body{
+                background-color: red;
+            }
+        }
+        @media (max-width:768px){
+            body{
+                background-color: lightblue;
+            }
+        }
+        @media(max-width:480px){
+            body{
+                background-color: lightgreen;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Responsive Website</h1>
+    <p>This text will change on different screen sizes.</p>
+</body>
+</html>
