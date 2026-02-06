@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glassmorphism UI Design</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .background-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .shape:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            right: -150px;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .shape:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            left: -100px;
+            animation: float 15s infinite ease-in-out reverse;
+        }
+
+        .shape:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            top: 50%;
+            left: 10%;
+            animation: float 25s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            color: white;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            margin-bottom: 30px;
+        }
+
+        .glass-card h1 {
+            font-size: 2.5rem;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .glass-card p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+
+        .glass-form {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            color: white;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            margin-bottom: 30px;
+        }
+
+        .glass-form h2 {
+            font-size: 1.8rem;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .glass-button {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            padding: 12px 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .glass-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .glass-card-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 25px;
+            color: white;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            transition: transform 0.3s ease;
+        }
+
+        .glass-card-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .glass-card-item h3 {
+            font-size: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .glass-card-item p {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+
+        .glass-navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .glass-navbar .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .glass-navbar .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .glass-navbar .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .glass-navbar .nav-links a:hover {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .code-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            color: white;
+        }
+
+        .code-container pre {
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            z-index: 10;
+            color: white;
+            width: 250px;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .control-group input {
+            width: 100%;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .control-btn {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .glass-navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .glass-navbar .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    
+    <div class="container">
+        <div class="glass-navbar">
+            <div class="logo">GlassUI</div>
+            <div class="nav-links">
+                <a href="#">Home</a>
+                <a href="#">About</a>
+                <a href="#">Services</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+        
+        <div class="glass-card">
+            <h1>Glassmorphism UI Design</h1>
+            <p>Glassmorphism is a design trend that emphasizes light or dark objects placed on top of colorful backgrounds. The objects have a frosted glass effect with transparency and blur.</p>
+        </div>
+        
+        <div class="glass-cards">
+            <div class="glass-card-item">
+                <h3>Transparency</h3>
+                <p>Semi-transparent backgrounds with rgba colors create the glass effect.</p>
+            </div>
+            
+            <div class="glass-card-item">
+                <h3>Backdrop Blur</h3>
+                <p>The backdrop-filter property with blur creates the frosted glass appearance.</p>
+            </div>
+            
+            <div class="glass-card-item">
+                <h3>Border & Shadow</h3>
+                <p>Subtle borders and shadows enhance the depth and separation of elements.</p>
+            </div>
+        </div>
+        
+        <div class="glass-form">
+            <h2>Contact Form</h2>
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" placeholder="Your name">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Your email">
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" rows="4" placeholder="Your message"></textarea>
+            </div>
+            <button class="glass-button">Send Message</button>
+        </div>
+        
+        <div class="code-container">
+            <pre>/* Glassmorphism CSS */
+.glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+.glass-button {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    color: white;
+    padding: 12px 25px;
+    transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}</pre>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <div class="control-group">
+            <label>Opacity: <span id="opacityValue">0.1</span></label>
+            <input type="range" id="opacity" min="0.05" max="0.3" step="0.05" value="0.1" onchange="updateOpacity()">
+        </div>
+        
+        <div class="control-group">
+            <label>Blur: <span id="blurValue">10px</span></label>
+            <input type="range" id="blur" min="0" max="20" value="10" onchange="updateBlur()">
+        </div>
+        
+        <div class="control-group">
+            <label>Border: <span id="borderValue">1px</span></label>
+            <input type="range" id="border" min="0" max="3" step="0.5" value="1" onchange="updateBorder()">
+        </div>
+        
+        <div class="control-buttons">
+            <button class="control-btn" onclick="resetGlassmorphism()">Reset</button>
+            <button class="control-btn" onclick="randomizeColors()">Random</button>
+        </div>
+    </div>
+
+    <script>
+        function updateOpacity() {
+            const opacity = document.getElementById('opacity').value;
+            document.getElementById('opacityValue').textContent = opacity;
+            
+            // Update all glass elements
+            const glassElements = document.querySelectorAll('.glass-card, .glass-form, .glass-card-item, .glass-navbar');
+            glassElements.forEach(element => {
+                const currentBg = window.getComputedStyle(element).backgroundColor;
+                const rgbValues = currentBg.match(/\d+/g);
+                
+                if (rgbValues && rgbValues.length >= 3) {
+                    element.style.background = `rgba(${rgbValues[0]}, ${rgbValues[1]}, ${rgbValues[2]}, ${opacity})`;
+                }
+            });
+        }
+        
+        function updateBlur() {
+            const blur = document.getElementById('blur').value;
+            document.getElementById('blurValue').textContent = blur + 'px';
+            
+            // Update all glass elements
+            const glassElements = document.querySelectorAll('.glass-card, .glass-form, .glass-card-item, .glass-navbar, .glass-button');
+            glassElements.forEach(element => {
+                element.style.backdropFilter = `blur(${blur}px)`;
+            });
+        }
+        
+        function updateBorder() {
+            const border = document.getElementById('border').value;
+            document.getElementById('borderValue').textContent = border + 'px';
+            
+            // Update all glass elements
+            const glassElements = document.querySelectorAll('.glass-card, .glass-form, .glass-card-item, .glass-navbar');
+            glassElements.forEach(element => {
+                element.style.borderWidth = border + 'px';
+            });
+        }
+        
+        function resetGlassmorphism() {
+            // Reset all controls
+            document.getElementById('opacity').value = 0.1;
+            document.getElementById('blur').value = 10;
+            document.getElementById('border').value = 1;
+            
+            // Update displays
+            document.getElementById('opacityValue').textContent = '0.1';
+            document.getElementById('blurValue').textContent = '10px';
+            document.getElementById('borderValue').textContent = '1px';
+            
+            // Reset all glass elements
+            const glassElements = document.querySelectorAll('.glass-card, .glass-form, .glass-card-item, .glass-navbar');
+            glassElements.forEach(element => {
+                element.style.background = '';
+                element.style.backdropFilter = '';
+                element.style.borderWidth = '';
+            });
+            
+            // Reset form inputs
+            const formInputs = document.querySelectorAll('.form-group input, .form-group textarea');
+            formInputs.forEach(input => {
+                input.style.background = '';
+            });
+        }
+        
+        function randomizeColors() {
+            // Generate random gradient
+            const color1 = '#' + Math.floor(Math.random()*16777215).toString(16);
+            const color2 = '#' + Math.floor(Math.random()*16777215).toString(16);
+            
+            // Apply gradient to body
+            document.body.style.background = `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
+            
+            // Generate random shape positions
+            const shapes = document.querySelectorAll('.shape');
+            shapes.forEach(shape => {
+                const size = Math.random() * 300 + 100;
+                const top = Math.random() * 100 - 50;
+                const left = Math.random() * 100 - 50;
+                
+                shape.style.width = `${size}px`;
+                shape.style.height = `${size}px`;
+                shape.style.top = `${top}%`;
+                shape.style.left = `${left}%`;
+            });
+        }
+        
+        // Add floating animation to shapes
+        document.addEventListener('DOMContentLoaded', () => {
+            const shapes = document.querySelectorAll('.shape');
+            shapes.forEach((shape, index) => {
+                const duration = 15 + index * 5;
+                const delay = index * 2;
+                
+                shape.style.animation = `float ${duration}s infinite ease-in-out ${delay}s`;
+            });
+        });
+    </script>
+</body>
+</html>
