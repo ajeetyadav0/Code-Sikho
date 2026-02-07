@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split Text Animation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 1000px;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .split-text-container {
+            margin-bottom: 3rem;
+        }
+
+        .split-text {
+            font-size: 4rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .split-text span {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .split-text.animate span {
+            animation: fadeInUp 0.8s forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .word-split {
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            margin: 0 0 2rem 0;
+        }
+
+        .word-split span {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(30px) rotateZ(10deg);
+        }
+
+        .word-split.animate span {
+            animation: wordAnimation 0.8s forwards;
+        }
+
+        @keyframes wordAnimation {
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateZ(0);
+            }
+        }
+
+        .char-reveal {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            margin: 0 0 2rem 0;
+        }
+
+        .char-reveal span {
+            display: inline-block;
+            opacity: 0;
+            transform: scale(0) rotate(180deg);
+        }
+
+        .char-reveal.animate span {
+            animation: charReveal 0.8s forwards;
+        }
+
+        @keyframes charReveal {
+            to {
+                opacity: 1;
+                transform: scale(1) rotate(0);
+            }
+        }
+
+        .glitch-text {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            margin: 0 0 2rem 0;
+            position: relative;
+        }
+
+        .glitch-text span {
+            display: inline-block;
+            opacity: 0;
+            position: relative;
+        }
+
+        .glitch-text.animate span {
+            animation: glitchReveal 0.8s forwards;
+        }
+
+        @keyframes glitchReveal {
+            0% {
+                opacity: 0;
+                transform: translateX(10px);
+            }
+            20% {
+                opacity: 1;
+                transform: translateX(-5px);
+            }
+            40% {
+                transform: translateX(5px);
+            }
+            60% {
+                transform: translateX(-3px);
+            }
+            80% {
+                transform: translateX(2px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .typewriter {
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            margin: 0 0 2rem 0;
+            height: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .typewriter span {
+            border-right: 3px solid white;
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% {
+                border-color: white;
+            }
+            51%, 100% {
+                border-color: transparent;
+            }
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .control-btn.active {
+            background: rgba(255, 255, 255, 0.4);
+            border-color: white;
+        }
+
+        .text-input {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .text-input input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            width: 300px;
+        }
+
+        .text-input button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .animation-controls {
+            margin-top: 2rem;
+            color: white;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .animation-controls label {
+            font-size: 16px;
+        }
+
+        .animation-controls input {
+            width: 120px;
+        }
+
+        .code-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 100%;
+        }
+
+        .code-container pre {
+            color: white;
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .split-text, .word-split, .char-reveal, .glitch-text, .typewriter {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="split-text-container">
+            <h1 class="split-text">SPLIT TEXT ANIMATION</h1>
+        </div>
+        
+        <h2 class="word-split">WORD BY WORD ANIMATION</h2>
+        
+        <h3 class="char-reveal">CHARACTER REVEAL</h3>
+        
+        <h4 class="glitch-text">GLITCH EFFECT</h4>
+        
+        <div class="typewriter">
+            <span id="typewriterText"></span>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn active" onclick="setAnimationType('split')">Split</button>
+            <button class="control-btn" onclick="setAnimationType('word')">Word</button>
+            <button class="control-btn" onclick="setAnimationType('char')">Character</button>
+            <button class="control-btn" onclick="setAnimationType('glitch')">Glitch</button>
+            <button class="control-btn" onclick="setAnimationType('typewriter')">Typewriter</button>
+            <button class="control-btn" onclick="playAll()">Play All</button>
+        </div>
+        
+        <div class="text-input">
+            <input type="text" id="customText" placeholder="Enter custom text" value="SPLIT TEXT ANIMATION">
+            <button onclick="updateText()">Update</button>
+        </div>
+        
+        <div class="animation-controls">
+            <div>
+                <label>Animation Speed:</label>
+                <input type="range" id="animSpeed" min="0.1" max="2" step="0.1" value="0.8" onchange="updateAnimationSpeed()">
+                <span id="speedValue">0.8s</span>
+            </div>
+            
+            <div>
+                <label>Stagger Delay:</label>
+                <input type="range" id="staggerDelay" min="10" max="200" step="10" value="50" onchange="updateStaggerDelay()">
+                <span id="delayValue">50ms</span>
+            </div>
+        </div>
+        
+        <div class="code-container">
+            <pre>// Split Text Animation
+function splitTextAnimation(element) {
+    const text = element.textContent;
+    element.innerHTML = '';
+    
+    // Split into characters
+    const chars = text.split('');
+    
+    chars.forEach((char, i) => {
+        const span = document.createElement('span');
+        span.textContent = char;
+        span.style.opacity = '0';
+        span.style.transform = 'translateY(50px)';
+        element.appendChild(span);
+        
+        // Animate with stagger
+        setTimeout(() => {
+            span.style.transition = 'all 0.8s ease';
+            span.style.opacity = '1';
+            span.style.transform = 'translateY(0)';
+        }, i * 50);
+    });
+}
+
+// Word Animation
+function wordAnimation(element) {
+    const text = element.textContent;
+    const words = text.split(' ');
+    element.innerHTML = '';
+    
+    words.forEach((word, i) => {
+        const span = document.createElement('span');
+        span.textContent = word + ' ';
+        span.style.opacity = '0';
+        span.style.transform = 'translateY(30px) rotateZ(10deg)';
+        element.appendChild(span);
+        
+        setTimeout(() => {
+            span.style.transition = 'all 0.8s ease';
+            span.style.opacity = '1';
+            span.style.transform = 'translateY(0) rotateZ(0)';
+        }, i * 200);
+    });
+}</pre>
+        </div>
+    </div>
+
+    <script>
+        let animationSpeed = 0.8;
+        let staggerDelay = 50;
+        let currentAnimationType = 'split';
+        let typewriterInterval;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize all text animations
+            initSplitText();
+            initWordSplit();
+            initCharReveal();
+            initGlitchText();
+            initTypewriter();
+        });
+        
+        function initSplitText() {
+            const element = document.querySelector('.split-text');
+            const text = element.textContent;
+            element.innerHTML = '';
+            
+            text.split('').forEach((char, i) => {
+                const span = document.createElement('span');
+                span.textContent = char;
+                span.style.transitionDelay = `${i * staggerDelay}ms`;
+                element.appendChild(span);
+            });
+        }
+        
+        function initWordSplit() {
+            const element = document.querySelector('.word-split');
+            const text = element.textContent;
+            element.innerHTML = '';
+            
+            text.split(' ').forEach((word, i) => {
+                const span = document.createElement('span');
+                span.textContent = word + ' ';
+                span.style.transitionDelay = `${i * staggerDelay * 2}ms`;
+                element.appendChild(span);
+            });
+        }
+        
+        function initCharReveal() {
+            const element = document.querySelector('.char-reveal');
+            const text = element.textContent;
+            element.innerHTML = '';
+            
+            text.split('').forEach((char, i) => {
+                const span = document.createElement('span');
+                span.textContent = char;
+                span.style.transitionDelay = `${i * staggerDelay}ms`;
+                element.appendChild(span);
+            });
+        }
+        
+        function initGlitchText() {
+            const element = document.querySelector('.glitch-text');
+            const text = element.textContent;
+            element.innerHTML = '';
+            
+            text.split('').forEach((char, i) => {
+                const span = document.createElement('span');
+                span.textContent = char;
+                span.style.transitionDelay = `${i * staggerDelay * 0.5}ms`;
+                element.appendChild(span);
+            });
+        }
+        
+        function initTypewriter() {
+            const element = document.getElementById('typewriterText');
+            const text = 'TYPEWRITER EFFECT';
+            let index = 0;
+            
+            // Clear any existing interval
+            if (typewriterInterval) {
+                clearInterval(typewriterInterval);
+            }
+            
+            element.textContent = '';
+            
+            typewriterInterval = setInterval(() => {
+                if (index < text.length) {
+                    element.textContent += text.charAt(index);
+                    index++;
+                } else {
+                    clearInterval(typewriterInterval);
+                }
+            }, 100 / animationSpeed);
+        }
+        
+        function setAnimationType(type) {
+            currentAnimationType = type;
+            
+            // Update active button
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update text input value
+            const textInput = document.getElementById('customText');
+            switch(type) {
+                case 'split':
+                    textInput.value = 'SPLIT TEXT ANIMATION';
+                    break;
+                case 'word':
+                    textInput.value = 'WORD BY WORD ANIMATION';
+                    break;
+                case 'char':
+                    textInput.value = 'CHARACTER REVEAL';
+                    break;
+                case 'glitch':
+                    textInput.value = 'GLITCH EFFECT';
+                    break;
+                case 'typewriter':
+                    textInput.value = 'TYPEWRITER EFFECT';
+                    break;
+            }
+            
+            updateText();
+        }
+        
+        function updateText() {
+            const text = document.getElementById('customText').value;
+            
+            // Update all text elements
+            document.querySelector('.split-text').textContent = text;
+            document.querySelector('.word-split').textContent = text;
+            document.querySelector('.char-reveal').textContent = text;
+            document.querySelector('.glitch-text').textContent = text;
+            
+            // Reinitialize animations
+            initSplitText();
+            initWordSplit();
+            initCharReveal();
+            initGlitchText();
+            
+            // Trigger animation
+            triggerAnimation();
+        }
+        
+        function triggerAnimation() {
+            // Remove animate class
+            document.querySelectorAll('.split-text, .word-split, .char-reveal, .glitch-text').forEach(element => {
+                element.classList.remove('animate');
+                // Force reflow
+                void element.offsetWidth;
+            });
+            
+            // Add animate class
+            setTimeout(() => {
+                document.querySelector('.split-text').classList.add('animate');
+                document.querySelector('.word-split').classList.add('animate');
+                document.querySelector('.char-reveal').classList.add('animate');
+                document.querySelector('.glitch-text').classList.add('animate');
+            }, 100);
+        }
+        
+        function playAll() {
+            // Trigger all animations in sequence
+            triggerAnimation();
+            
+            // Start typewriter after other animations
+            setTimeout(() => {
+                initTypewriter();
+            }, 2000);
+        }
+        
+        function updateAnimationSpeed() {
+            animationSpeed = parseFloat(document.getElementById('animSpeed').value);
+            document.getElementById('speedValue').textContent = animationSpeed + 's';
+            
+            // Update transition duration for all elements
+            document.querySelectorAll('.split-text span, .word-split span, .char-reveal span, .glitch-text span').forEach(span => {
+                span.style.transitionDuration = animationSpeed + 's';
+            });
+        }
+        
+        function updateStaggerDelay() {
+            staggerDelay = parseInt(document.getElementById('staggerDelay').value);
+            document.getElementById('delayValue').textContent = staggerDelay + 'ms';
+            
+            // Reinitialize animations with new delay
+            initSplitText();
+            initWordSplit();
+            initCharReveal();
+            initGlitchText();
+        }
+        
+        // Auto-trigger animation on page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                triggerAnimation();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
