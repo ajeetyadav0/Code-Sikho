@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Transform Showcase</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 1200px;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 2rem;
+        }
+
+        .showcase-item {
+            height: 250px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .cube-container {
+            width: 150px;
+            height: 150px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotateCube 10s infinite linear;
+        }
+
+        @keyframes rotateCube {
+            from { transform: rotateX(0deg) rotateY(0deg); }
+            to { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            color: white;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+
+        .cube-face.front {
+            background: rgba(255, 0, 0, 0.7);
+            transform: translateZ(75px);
+        }
+
+        .cube-face.back {
+            background: rgba(0, 255, 0, 0.7);
+            transform: rotateY(180deg) translateZ(75px);
+        }
+
+        .cube-face.right {
+            background: rgba(0, 0, 255, 0.7);
+            transform: rotateY(90deg) translateZ(75px);
+        }
+
+        .cube-face.left {
+            background: rgba(255, 255, 0, 0.7);
+            transform: rotateY(-90deg) translateZ(75px);
+        }
+
+        .cube-face.top {
+            background: rgba(255, 0, 255, 0.7);
+            transform: rotateX(90deg) translateZ(75px);
+        }
+
+        .cube-face.bottom {
+            background: rgba(0, 255, 255, 0.7);
+            transform: rotateX(-90deg) translateZ(75px);
+        }
+
+        .card-3d {
+            width: 200px;
+            height: 150px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            color: white;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            transform: rotateY(180deg);
+        }
+
+        .pyramid {
+            width: 0;
+            height: 0;
+            border-left: 100px solid transparent;
+            border-right: 100px solid transparent;
+            border-bottom: 150px solid rgba(255, 100, 50, 0.8);
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotatePyramid 8s infinite linear;
+            margin: 0 auto;
+        }
+
+        @keyframes rotatePyramid {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+
+        .sphere {
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle at 30% 30%, #4facfe, #00f2fe);
+            border-radius: 50%;
+            position: relative;
+            animation: rotateSphere 5s infinite linear;
+            box-shadow: 0 0 50px rgba(79, 172, 254, 0.5);
+        }
+
+        @keyframes rotateSphere {
+            from { transform: rotateY(0deg) rotateX(0deg); }
+            to { transform: rotateY(360deg) rotateX(360deg); }
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .control-btn.active {
+            background: rgba(255, 255, 255, 0.4);
+            border-color: white;
+        }
+
+        .slider-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .slider-control input {
+            width: 120px;
+        }
+
+        .code-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 100%;
+        }
+
+        .code-container pre {
+            color: white;
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .interactive-3d {
+            width: 250px;
+            height: 200px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.1s;
+        }
+
+        .interactive-3d-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            color: white;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+
+        .interactive-3d-face.front {
+            background: rgba(255, 100, 100, 0.7);
+            transform: translateZ(100px);
+        }
+
+        .interactive-3d-face.back {
+            background: rgba(100, 255, 100, 0.7);
+            transform: rotateY(180deg) translateZ(100px);
+        }
+
+        .interactive-3d-face.right {
+            background: rgba(100, 100, 255, 0.7);
+            transform: rotateY(90deg) translateZ(125px);
+        }
+
+        .interactive-3d-face.left {
+            background: rgba(255, 255, 100, 0.7);
+            transform: rotateY(-90deg) translateZ(125px);
+        }
+
+        .interactive-3d-face.top {
+            background: rgba(255, 100, 255, 0.7);
+            transform: rotateX(90deg) translateZ(100px);
+        }
+
+        .interactive-3d-face.bottom {
+            background: rgba(100, 255, 255, 0.7);
+            transform: rotateX(-90deg) translateZ(100px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>3D Transform Showcase</h1>
+        
+        <div class="showcase-grid">
+            <div class="showcase-item">
+                <div class="cube-container">
+                    <div class="cube-face front">Front</div>
+                    <div class="cube-face back">Back</div>
+                    <div class="cube-face right">Right</div>
+                    <div class="cube-face left">Left</div>
+                    <div class="cube-face top">Top</div>
+                    <div class="cube-face bottom">Bottom</div>
+                </div>
+            </div>
+            
+            <div class="showcase-item">
+                <div class="card-3d" id="flipCard">
+                    <div class="card-face card-front">Hover to Flip</div>
+                    <div class="card-face card-back">Back Side</div>
+                </div>
+            </div>
+            
+            <div class="showcase-item">
+                <div class="pyramid"></div>
+            </div>
+            
+            <div class="showcase-item">
+                <div class="sphere"></div>
+            </div>
+        </div>
+        
+        <div class="showcase-item" style="margin: 0 auto 2rem; width: 300px;">
+            <div class="interactive-3d" id="interactive3d">
+                <div class="interactive-3d-face front">Interactive</div>
+                <div class="interactive-3d-face back">3D</div>
+                <div class="interactive-3d-face right">Move</div>
+                <div class="interactive-3d-face left">Your</div>
+                <div class="interactive-3d-face top">Mouse</div>
+                <div class="interactive-3d-face bottom">To Rotate</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn" onclick="toggleAnimation()">Toggle Animation</button>
+            <button class="control-btn" onclick="changeSpeed()">Change Speed</button>
+            <button class="control-btn" onclick="resetTransforms()">Reset</button>
+            
+            <div class="slider-control">
+                <label>Perspective:</label>
+                <input type="range" id="perspective" min="500" max="2000" value="1000" onchange="updatePerspective()">
+                <span id="perspectiveValue">1000px</span>
+            </div>
+        </div>
+        
+        <div class="code-container">
+            <pre>/* 3D Transforms with CSS */
+.cube-container {
+    width: 150px;
+    height: 150px;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: rotateCube 10s infinite linear;
+}
+
+@keyframes rotateCube {
+    from { transform: rotateX(0deg) rotateY(0deg); }
+    to { transform: rotateX(360deg) rotateY(360deg); }
+}
+
+.cube-face {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+}
+
+.cube-face.front {
+    transform: translateZ(75px);
+}
+
+.cube-face.back {
+    transform: rotateY(180deg) translateZ(75px);
+}
+
+/* Interactive 3D with JavaScript */
+const interactive3d = document.getElementById('interactive3d');
+
+document.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 2;
+    const y = (e.clientY / window.innerHeight - 0.5) * 2;
+    
+    interactive3d.style.transform = `
+        rotateX(${y * 30}deg) 
+        rotateY(${x * 30}deg)
+    `;
+});</pre>
+        </div>
+    </div>
+
+    <script>
+        let animationPaused = false;
+        let currentSpeed = 1;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            setupFlipCard();
+            setupInteractive3D();
+        });
+        
+        function setupFlipCard() {
+            const flipCard = document.getElementById('flipCard');
+            let isFlipped = false;
+            
+            flipCard.addEventListener('mouseenter', () => {
+                if (!isFlipped) {
+                    flipCard.style.transform = 'rotateY(180deg)';
+                    isFlipped = true;
+                }
+            });
+            
+            flipCard.addEventListener('mouseleave', () => {
+                if (isFlipped) {
+                    flipCard.style.transform = 'rotateY(0deg)';
+                    isFlipped = false;
+                }
+            });
+        }
+        
+        function setupInteractive3D() {
+            const interactive3d = document.getElementById('interactive3d');
+            
+            document.addEventListener('mousemove', (e) => {
+                const rect = interactive3d.getBoundingClientRect();
+                const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+                const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+                
+                interactive3d.style.transform = `
+                    rotateX(${y * 30}deg) 
+                    rotateY(${x * 30}deg)
+                `;
+            });
+        }
+        
+        function toggleAnimation() {
+            animationPaused = !animationPaused;
+            
+            const animatedElements = document.querySelectorAll('.cube-container, .pyramid, .sphere');
+            
+            animatedElements.forEach(element => {
+                element.style.animationPlayState = animationPaused ? 'paused' : 'running';
+            });
+            
+            // Update button text
+            event.target.textContent = animationPaused ? 'Resume Animation' : 'Pause Animation';
+        }
+        
+        function changeSpeed() {
+            const speeds = [0.5, 1, 2, 3];
+            const currentIndex = speeds.indexOf(currentSpeed);
+            const nextIndex = (currentIndex + 1) % speeds.length;
+            currentSpeed = speeds[nextIndex];
+            
+            const animatedElements = document.querySelectorAll('.cube-container, .pyramid, .sphere');
+            
+            animatedElements.forEach(element => {
+                const currentAnimation = window.getComputedStyle(element).animationName;
+                const baseDuration = currentAnimation.includes('Cube') ? 10 : 
+                                     currentAnimation.includes('Pyramid') ? 8 : 5;
+                
+                element.style.animationDuration = `${baseDuration / currentSpeed}s`;
+            });
+        }
+        
+        function resetTransforms() {
+            const flipCard = document.getElementById('flipCard');
+            flipCard.style.transform = 'rotateY(0deg)';
+            
+            const interactive3d = document.getElementById('interactive3d');
+            interactive3d.style.transform = '';
+        }
+        
+        function updatePerspective() {
+            const perspective = document.getElementById('perspective').value;
+            document.getElementById('perspectiveValue').textContent = perspective + 'px';
+            document.body.style.perspective = perspective + 'px';
+        }
+        
+        // Add keyboard controls
+        document.addEventListener('keydown', (e) => {  
+            if (e.key === 'a') {
+                toggleAnimation();
+            } else if (e.key === 's') {
+                changeSpeed();
+            } else if (e.key === 'd') {
+                resetTransforms();
+            }
+        });
+    </script>
+</body> 
+</html>

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive SVG Animation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 1000px;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .svg-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+        }
+
+        .animated-svg {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .control-btn.active {
+            background: rgba(255, 255, 255, 0.4);
+            border-color: white;
+        }
+
+        .slider-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .slider-control input {
+            width: 120px;
+        }
+
+        .code-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 100%;
+        }
+
+        .code-container pre {
+            color: white;
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .svg-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 2rem;
+        }
+
+        .svg-example {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .svg-example h3 {
+            color: white;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .svg-example svg {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Interactive SVG Animation</h1>
+        
+        <div class="svg-container">
+            <svg class="animated-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <!-- Background circle -->
+                <circle cx="100" cy="100" r="90" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                
+                <!-- Animated circle -->
+                <circle class="animated-circle" cx="100" cy="100" r="60" fill="none" stroke="#4facfe" stroke-width="4"
+                        stroke-dasharray="377" stroke-dashoffset="377"/>
+                
+                <!-- Animated path -->
+                <path class="animated-path" d="M50,100 Q100,50 150,100 T250,100" fill="none" stroke="#00f2fe" stroke-width="3"
+                      stroke-dasharray="300" stroke-dashoffset="300"/>
+                
+                <!-- Interactive elements -->
+                <g class="interactive-group">
+                    <rect class="interactive-rect" x="40" y="40" width="40" height="40" fill="#ff6b6b" rx="5"/>
+                    <rect class="interactive-rect" x="120" y="40" width="40" height="40" fill="#4ecdc4" rx="5"/>
+                    <rect class="interactive-rect" x="40" y="120" width="40" height="40" fill="#ffe66d" rx="5"/>
+                    <rect class="interactive-rect" x="120" y="120" width="40" height="40" fill="#a8e6cf" rx="5"/>
+                </g>
+                
+                <!-- Morphing shape -->
+                <path class="morph-path" fill="#ff6b6b" opacity="0.7">
+                    <animate attributeName="d" 
+                             values="M80,80 Q120,60 140,100 T160,120 Q140,140 100,140 T60,120 Q40,100 80,80;
+                                     M80,80 Q100,40 120,80 T160,100 Q140,120 100,140 T60,120 Q40,100 80,80;
+                                     M80,80 Q120,60 140,100 T160,120 Q140,140 100,140 T60,120 Q40,100 80,80"
+                             dur="4s" 
+                             repeatCount="indefinite"/>
+                </path>
+            </svg>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn active" onclick="startCircleAnimation()">Circle</button>
+            <button class="control-btn" onclick="startPathAnimation()">Path</button>
+            <button class="control-btn" onclick="startMorphAnimation()">Morph</button>
+            <button class="control-btn" onclick="resetAnimations()">Reset</button>
+            
+            <div class="slider-control">
+                <label>Animation Speed:</label>
+                <input type="range" id="speed" min="0.5" max="3" step="0.1" value="1" onchange="updateSpeed()">
+                <span id="speedValue">1x</span>
+            </div>
+        </div>
+        
+        <div class="svg-examples">
+            <div class="svg-example">
+                <h3>Loading Spinner</h3>
+                <svg viewBox="0 0 50 50">
+                    <circle class="spinner" cx="25" cy="25" r="20" fill="none" stroke="#4facfe" stroke-width="4"
+                            stroke-dasharray="31.416 31.416" stroke-linecap="round">
+                        <animateTransform attributeName="transform" type="rotate" 
+                                         from="0 25 25" to="360 25 25" dur="1s" repeatCount="indefinite"/>
+                    </circle>
+                </svg>
+            </div>
+            
+            <div class="svg-example">
+                <h3>Pulse Effect</h3>
+                <svg viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="10" fill="#ff6b6b">
+                        <animate attributeName="r" values="10;25;10" dur="2s" repeatCount="indefinite"/>
+                        <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                </svg>
+            </div>
+            
+            <div class="svg-example">
+                <h3>Drawing Path</h3>
+                <svg viewBox="0 0 100 100">
+                    <path d="M20,50 Q35,20 50,50 T80,50" fill="none" stroke="#4ecdc4" stroke-width="3"
+                          stroke-dasharray="100" stroke-dashoffset="100">
+                        <animate attributeName="stroke-dashoffset" values="100;0" dur="2s" fill="freeze"/>
+                    </path>
+                </svg>
+            </div>
+            
+            <div class="svg-example">
+                <h3>Rotating Stars</h3>
+                <svg viewBox="0 0 100 100">
+                    <g transform="translate(50,50)">
+                        <animateTransform attributeName="transform" type="rotate" 
+                                         from="0" to="360" dur="10s" repeatCount="indefinite"/>
+                        <path d="M0,-20 L5,-5 L20,-5 L8,5 L12,20 L0,10 L-12,20 L-8,5 L-20,-5 L-5,-5 Z" 
+                              fill="#ffe66d"/>
+                    </g>
+                </svg>
+            </div>
+        </div>
+        
+        <div class="code-container">
+            <pre>// SVG Animation with JavaScript
+const svg = document.querySelector('.animated-svg');
+
+// Circle animation
+function animateCircle() {
+    const circle = svg.querySelector('.animated-circle');
+    circle.style.transition = 'stroke-dashoffset 2s ease-in-out';
+    circle.style.strokeDashoffset = '0';
+}
+
+// Path animation
+function animatePath() {
+    const path = svg.querySelector('.animated-path');
+    path.style.transition = 'stroke-dashoffset 2s ease-in-out';
+    path.style.strokeDashoffset = '0';
+}
+
+// Interactive elements
+document.querySelectorAll('.interactive-rect').forEach(rect => {
+    rect.addEventListener('mouseenter', () => {
+        rect.style.transform = 'scale(1.2)';
+        rect.style.transition = 'transform 0.3s ease';
+    });
+    
+    rect.addEventListener('mouseleave', () => {
+        rect.style.transform = 'scale(1)';
+    });
+});
+
+// Reset animations
+function resetAnimations() {
+    const circle = svg.querySelector('.animated-circle');
+    const path = svg.querySelector('.animated-path');
+    
+    circle.style.transition = 'none';
+    path.style.transition = 'none';
+    
+    circle.style.strokeDashoffset = '377';
+    path.style.strokeDashoffset = '300';
+}</pre>
+        </div>
+    </div>
+
+    <script>
+        let animationSpeed = 1;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            setupInteractiveElements();
+            
+            // Start with circle animation
+            setTimeout(() => {
+                startCircleAnimation();
+            }, 500);
+        });
+        
+        function setupInteractiveElements() {
+            const rects = document.querySelectorAll('.interactive-rect');
+            
+            rects.forEach(rect => {
+                rect.addEventListener('mouseenter', () => {
+                    rect.style.transform = 'scale(1.2)';
+                    rect.style.transition = 'transform 0.3s ease';
+                });
+                
+                rect.addEventListener('mouseleave', () => {
+                    rect.style.transform = 'scale(1)';
+                });
+                
+                rect.addEventListener('click', () => {
+                    // Create ripple effect
+                    const ripple = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    ripple.setAttribute('cx', parseFloat(rect.getAttribute('x')) + 20);
+                    ripple.setAttribute('cy', parseFloat(rect.getAttribute('y')) + 20);
+                    ripple.setAttribute('r', '0');
+                    ripple.setAttribute('fill', rect.getAttribute('fill'));
+                    ripple.setAttribute('opacity', '0.7');
+                    
+                    document.querySelector('.animated-svg').appendChild(ripple);
+                    
+                    // Animate ripple
+                    ripple.style.transition = 'all 0.6s ease-out';
+                    setTimeout(() => {
+                        ripple.setAttribute('r', '30');
+                        ripple.setAttribute('opacity', '0');
+                    }, 10);
+                    
+                    // Remove ripple after animation
+                    setTimeout(() => {
+                        document.querySelector('.animated-svg').removeChild(ripple);
+                    }, 600);
+                });
+            });
+        }
+        
+        function startCircleAnimation() {
+            const circle = document.querySelector('.animated-circle');
+            
+            // Reset animation
+            circle.style.transition = 'none';
+            circle.style.strokeDashoffset = '377';
+            
+            // Force reflow
+            void circle.offsetWidth;
+            
+            // Start animation
+            circle.style.transition = `stroke-dashoffset ${2 / animationSpeed}s ease-in-out`;
+            circle.style.strokeDashoffset = '0';
+            
+            // Update active button
+            updateActiveButton(event.target);
+        }
+        
+        function startPathAnimation() {
+            const path = document.querySelector('.animated-path');
+            
+            // Reset animation
+            path.style.transition = 'none';
+            path.style.strokeDashoffset = '300';
+            
+            // Force reflow
+            void path.offsetWidth;
+            
+            // Start animation
+            path.style.transition = `stroke-dashoffset ${2 / animationSpeed}s ease-in-out`;
+            path.style.strokeDashoffset = '0';
+            
+            // Update active button
+            updateActiveButton(event.target);
+        }
+        
+        function startMorphAnimation() {
+            const morphPath = document.querySelector('.morph-path');
+            const animateElement = morphPath.querySelector('animate');
+            
+            // Update animation duration
+            animateElement.setAttribute('dur', `${4 / animationSpeed}s`);
+            
+            // Restart animation
+            animateElement.beginElement();
+            
+            // Update active button
+            updateActiveButton(event.target);
+        }
+        
+        function resetAnimations() {
+            const circle = document.querySelector('.animated-circle');
+            const path = document.querySelector('.animated-path');
+            
+            // Reset animations
+            circle.style.transition = 'none';
+            path.style.transition = 'none';
+            
+            circle.style.strokeDashoffset = '377';
+            path.style.strokeDashoffset = '300';
+            
+            // Update active button
+            updateActiveButton(event.target);
+        }
+        
+        function updateSpeed() {
+            animationSpeed = parseFloat(document.getElementById('speed').value);
+            document.getElementById('speedValue').textContent = animationSpeed + 'x';
+            
+            // Update all animation durations
+            const animateElements = document.querySelectorAll('animate');
+            animateElements.forEach(element => {
+                const originalDur = element.getAttribute('dur');
+                if (originalDur && !originalDur.includes('s')) return;
+                
+                const duration = parseFloat(originalDur);
+                element.setAttribute('dur', `${duration / animationSpeed}s`);
+            });
+        }
+        
+        function updateActiveButton(activeBtn) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+        }
+        
+        // Add hover effect to the entire SVG
+        const svgContainer = document.querySelector('.svg-container');
+        const svg = document.querySelector('.animated-svg');
+        
+        svgContainer.addEventListener('mousemove', (e) => {
+            const rect = svgContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Calculate rotation based on mouse position
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
+            
+            svg.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        
+        svgContainer.addEventListener('mouseleave', () => {
+            svg.style.transform = '';
+        });
+    </script>
+</body>
+</html>
